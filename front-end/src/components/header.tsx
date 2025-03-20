@@ -94,13 +94,12 @@ function HeaderUpBanner() {
     <Box component='div' sx={{
       position: "relative",
       width: '100%',
-      height: {xl: '70px'},
       display: {
         xs: 'none',
         sm: 'block',
       }
     }}>
-      <img src={topBanner} alt={''}/>
+      <img src={topBanner} width={'100%'} alt={''}/>
     </Box>
   )
 }
@@ -166,7 +165,13 @@ function CartButton() {
 export function Header() {
   return (
     <Stack direction='column' sx={{backgroundColor: 'white'}}>
-      <HeaderUpBanner/>
+      <Box sx={{
+        backgroundColor: '#C92127'
+      }}>
+        <Container>
+          <HeaderUpBanner/>
+        </Container>
+      </Box>
       <Container sx={{
         backgroundColor: {
           md: 'transparent',
