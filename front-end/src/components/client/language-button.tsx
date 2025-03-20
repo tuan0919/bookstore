@@ -41,9 +41,13 @@ export function LanguageButton() {
                 disableRipple
                 sx={{
                     border: {
-                        xs: '2px solid'
+                        xs: '3px solid',
+                        md: '3px solid'
                     },
-                    borderColor: grey['A700'],
+                    borderColor: {
+                        md: grey['A700'],
+                        xs: grey['600']
+                    },
                     padding: 0,
                 }}
             >

@@ -1,14 +1,14 @@
-import { Box, Button, Grid2, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Container, Grid2, Stack, TextField, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import AddShoppingCartRoundedIcon from '@mui/icons-material/AddShoppingCartRounded';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import WidgetsOutlinedIcon from '@mui/icons-material/WidgetsOutlined';
 import * as React from 'react';
 import Image from 'next/image';
 import { grey, red } from '@mui/material/colors';
 import { LanguageButton } from './client/language-button';
+import { ProfileButton } from './client/account-button';
+import { NotificationButton } from './client/notification-button';
 
 function SearchField() {
   return (
@@ -17,8 +17,12 @@ function SearchField() {
       paddingX: '8px',
       paddingY: '2px',
       borderRadius: 2,
+      flex: {
+        md: 1,
+        xs: 0,
+      },
       width: {
-        md: '90%',
+        md: 'auto',
         xs: 190
       },
       backgroundColor: {
@@ -26,7 +30,6 @@ function SearchField() {
       },
       display: 'flex',
       alignItems: 'center',
-      gap: '20px'
     }}>
       <TextField
         placeholder='Tự học Toán lớp 12'
@@ -122,32 +125,6 @@ function Logo() {
   )
 }
 
-function NotificationButton() {
-  return (
-    <Stack direction={'column'} sx={{
-      alignItems: 'center',
-      justifyContent: 'center',
-      cursor: 'pointer',
-      display: {
-        xs: 'none',
-        md: 'flex',
-      }
-    }}>
-      <NotificationsOutlinedIcon sx={{
-        fontSize: 30,
-        color: grey[500],
-      }}/>
-      <Typography sx={{
-        color: grey[600],
-        fontWeight: 'light',
-        fontSize: '13px',
-      }}>
-        Thông Báo
-      </Typography>
-    </Stack>
-  )
-}
-
 function CartButton() {
   return (
     <Stack direction={'column'} sx={{
@@ -180,42 +157,13 @@ function CartButton() {
   )
 }
 
-function ProfileButton() {
-  return (
-    <Stack direction={'column'} sx={{
-      alignItems: 'center',
-      justifyContent: 'center',
-      cursor: 'pointer',
-    }}>
-      <PersonOutlineOutlinedIcon sx={{
-        fontSize: 30,
-        color: {
-          xs: grey[200],
-          md: grey[600],
-        },
-      }}/>
-      <Typography sx={{
-        color: grey[600],
-        fontWeight: 'light',
-        fontSize: '13px',
-        display: {
-          xs: 'none',
-          md: 'block',
-        }
-      }}>
-        Tài khoản
-      </Typography>
-    </Stack>
-  )
-}
-
 export function Header() {
   return (
-    <Stack direction='column'>
+    <Stack direction='column' sx={{backgroundColor: 'white'}}>
       <HeaderUpBanner/>
-      <Box sx={{
+      <Container sx={{
         backgroundColor: {
-          md: 'white',
+          md: 'transparent',
           xs: red['600']
         }
       }}>
@@ -239,20 +187,21 @@ export function Header() {
             xs: 7,
             md: 3
           }}>
-            <Box sx={{
-              display: 'flex', 
-              gap: '20px',
+            <Stack 
+            direction='row'
+            sx={{
+              gap: 1,
               justifyContent: 'center'
             }}>
               <CategoryButton/>
               <SearchField/>
-            </Box>
+            </Stack>
           </Grid2>
           <Grid2 size={{
             xs: 5,
             md: 3
           }}>
-            <Stack alignItems={'center'} direction={'row'} spacing={2}>
+            <Stack alignItems={'center'} justifyContent={'flex-end'} direction={'row'} spacing={2}>
               <NotificationButton/>
               <CartButton/>
               <ProfileButton/>
@@ -260,7 +209,7 @@ export function Header() {
             </Stack>
           </Grid2>
         </Grid2>
-      </Box>
+      </Container>
     </Stack>
   )
 }
