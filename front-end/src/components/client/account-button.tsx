@@ -1,4 +1,3 @@
-'use client';
 import { Box, Button, Paper, Stack, Typography } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';

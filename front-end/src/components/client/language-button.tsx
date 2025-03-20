@@ -1,18 +1,19 @@
 "use client";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import Image from "next/image";
 import { useState } from "react";
+import vnSVG from '/vn.svg';
+import usSVG from '/us.svg';
 
 function VNLang() {
     return (
-        <Image src="/vn.svg" width={30} height={30} alt="vn"/>
+        <img src={vnSVG} width={30} height={30} alt="vn"/>
     )
 }
 
 function USLang() {
     return (
-        <Image src="/us.svg" width={30} height={30} alt="vn"/>
+        <img src={usSVG} width={30} height={30} alt="vn"/>
     )
 }
 

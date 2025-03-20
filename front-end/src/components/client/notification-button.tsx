@@ -1,10 +1,8 @@
 'use client';
-import * as React from 'react';
 import { Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
-import Image from 'next/image';
-
+import icoLoginSVG from '/ico_login.svg';
 
 export function NotificationButton() {
     return (
@@ -75,7 +73,7 @@ export function NotificationButton() {
                 </Stack>
                 <Divider/>
                 <Stack direction={'column'} alignItems={'center'} justifyContent={'center'} spacing={3} py={1}>
-                    <Image src={'/ico_login.svg'} alt='icon-login' width={80} height={80}/>
+                    <img src={icoLoginSVG} alt='icon-login' width={80} height={80}/>
                     <Typography textAlign={'center'}>
                     Vui lòng đăng nhập để xem thông báo
                     </Typography>

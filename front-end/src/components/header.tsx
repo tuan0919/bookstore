@@ -3,12 +3,12 @@ import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import AddShoppingCartRoundedIcon from '@mui/icons-material/AddShoppingCartRounded';
 import WidgetsOutlinedIcon from '@mui/icons-material/WidgetsOutlined';
-import * as React from 'react';
-import Image from 'next/image';
 import { grey, red } from '@mui/material/colors';
 import { LanguageButton } from './client/language-button';
 import { ProfileButton } from './client/account-button';
 import { NotificationButton } from './client/notification-button';
+import topBanner from '/top-banner.png';
+import logo from '/logo.png';
 
 function SearchField() {
   return (
@@ -100,7 +100,7 @@ function HeaderUpBanner() {
         sm: 'block',
       }
     }}>
-      <Image src="/top-banner.png" alt={''} fill/>
+      <img src={topBanner} alt={''}/>
     </Box>
   )
 }
@@ -109,17 +109,23 @@ function Logo() {
   return (
     <Box sx={{
         position: "relative",
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         height: {
-          xs: '30px',
-          md: '45px'
+          xs: '100%',
+          md: '100%'
         },
+        width: {
+          xs: '50%',
+          md: '80%'
+        }
       }}>
-      <Image
-        src="/logo.png"
-        fill
-        priority
+      <img
+        src={logo}
         alt="Logo"
-        style={{ objectFit: "contain", position: 'absolute'}}
+        width={'100%'}
+        style={{ objectFit: "contain"}}
       />
     </Box>
   )
@@ -177,7 +183,12 @@ export function Header() {
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
-          <Grid2 size={{
+          <Grid2
+          sx={{
+            justifyContent: 'center',
+            display: 'flex',
+          }}
+          size={{
             xs: 12,
             md: 3
           }}>
