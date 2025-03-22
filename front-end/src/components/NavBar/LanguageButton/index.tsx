@@ -1,9 +1,8 @@
-"use client";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useState } from "react";
-import vnSVG from '/vn.svg';
-import usSVG from '/us.svg';
+import vnSVG from '~/assets/vn.svg';
+import usSVG from '~/assets/us.svg';
 
 function VNLang() {
     return (
