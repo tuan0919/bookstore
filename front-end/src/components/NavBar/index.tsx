@@ -14,8 +14,7 @@ export function NavBar() {
     <Stack direction='column' sx={{ backgroundColor: 'white' }}>
       <Box sx={{ backgroundColor: '#C92127' }}>
         <Container>
-          <Box component='div'
-            sx={{
+          <Box component='div' sx={{
               position: "relative",
               width: '100%',
               display: { xs: 'none', sm: 'block' }
@@ -28,9 +27,7 @@ export function NavBar() {
         backgroundColor: { md: 'transparent', xs: red['600'] }
       }}>
       <Grid2 container
-        paddingY={{xs: 1, md: 2}}
-        spacing={1}
-        sx={{
+        paddingY={{xs: 1, md: 2}} spacing={1} sx={{
           height: {md: '80px' },
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -52,17 +49,12 @@ export function NavBar() {
             </Box>
           </Grid2>
           <Grid2 size={{ xs: 7, md: 3}}>
-            <Stack 
-            direction='row'
-            sx={{ gap: 1, justifyContent: 'center'}}>
+            <Stack  direction='row' sx={{ gap: 1, justifyContent: 'center'}}>
               <CategoryButton/>
               <SearchField/>
             </Stack>
           </Grid2>
-          <Grid2 size={{
-            xs: 5,
-            md: 3
-          }}>
+          <Grid2 size={{ xs: 5, md: 3 }}>
             <Stack alignItems={'center'} justifyContent={'flex-end'} direction={'row'} spacing={2}>
               <NotificationButton/>
               <CartButton/>
