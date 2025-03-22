@@ -1,4 +1,3 @@
-"use client";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useState } from "react";

@@ -1,4 +1,3 @@
-'use client';
 import { Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
