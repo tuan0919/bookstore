@@ -1,10 +1,14 @@
 server:
   port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api
 spring:
   application:
     name: BackEnd-BookStore
-  servlet:
-    context-path: /api
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
   datasource:
     username: ${MYSQL_USER:admin}  # Lấy từ biến môi trường, nếu không có thì mặc định là "admin"
     password: ${MYSQL_PASSWORD:admin}
