@@ -12,8 +12,8 @@ Ensure you have the following installed:
 
 1. Clone this repository:
    ```sh
-   git clone https://github.com/your-username/your-repo.git
-   cd your-repo
+   git clone https://github.com/tuan0919/bookstore
+   cd back-end/BackEnd-BookStore
    ```
 
 2. Create environment variable files if they do not exist:
