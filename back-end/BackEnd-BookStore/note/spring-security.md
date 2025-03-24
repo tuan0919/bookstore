@@ -39,25 +39,35 @@ Spring Security có một interface **UserDetailsService** được viết sẵn
 - Chúng ta sẽ muốn implement lại interface này, vì chúng ta sẽ cần nó sử dụng thông tin user có trong database của hệ thống thay để thực hiện xác thực.
 - Có thể định nghĩa một bean mới cung cấp **UserDetailsService** để override lại service này.
 
+### AuthenticationManager
+**AuthenticationManager** là thành phần trung tâm của Spring Security, nó không trực tiếp thực hiện quá trình xác thực người dùng mà sẽ quản lý và ủy quyền cho các thành phần khác.
+
 ### AuthenticationProvider
 Về cơ bản thì để **UsernamePasswordAuthenticationFilter** có thể thực hiện xác minh, thì nó cần đến **AuthenticationProvider**
 
 ![img](../images/spring-security-2.png)
 
-- Người dùng sẽ gửi tài khoản, mật khẩu của họ đến hệ thống.
-- Servlet Filter sẽ yêu cầu **UserDetailsService** truy vấn hay load thông tin đăng nhập dựa vào tài khoản và mật khẩu đã nhận, tạo ra một đối tượng **Authentication chưa xác thực**.
-- Đối tượng **Authentication chưa xác thực** này sẽ được gửi đến **AuthenticationProvider** để kiểm tra, nếu thành công thì sẽ trở thành đối tượng **Authentication đã xác thực**.
-- Tại đây, Filter đã xem là request đã được xác thực và có thể vượt qua.
-- Đối tượng **Authentication** sau đó sẽ được gửi theo request đến các filter khác nếu cần thiết.
+1. Người dùng sẽ gửi tài khoản và mật khẩu đến hệ thống. Tại **UsernamePasswordAuthenticationFilter**, thông tin tài khoản và mật khẩu sẽ được chuyển đổi thành một đối tượng để xử lý (thường là **UsernamePasswordAuthenticationToken**)
+2. Token sau khi được tạo xong sẽ được gửi đến **AuthenticationManager**.
+3. **AuthenticationManager** không tự xử lý thông tin trong Token, mà sẽ gửi Token cho **AuthenticationProvider** để xử lý.
+4. **AuthenticationProvider** sau khi có được token, sẽ sử dụng **UserDetailsService** để thực hiện load thông tin user.
+5. Sau khi nhận kết quả truy vấn từ service, **AuthenticationProvider** thực hiện xác thực thông tin đăng nhập, so sánh mật khẩu và các kiểm tra cần thiết khác, nếu thông tin hợp lệ thì sẽ cho ra một đối tượng **Authentication** đã được xác thực.
+6. **Authentication được xác thực** sẽ được trả về cho **AuthenticationManager**.
+7. **AuthenticationManager** sau khi có được kết quả sẽ trả về đối tượng xác thực cho lớp Servlet khác (có thể là một tầng Filter khác hoặc cái Servlet sâu hơn bên dưới).
+8. Sau khi hoàn tất quá trình xác thực và trải qua toàn bộ các bước cần thiết khác, một HttpSession tương ứng sẽ được tạo ra trong hệ thống.
+9. Cuối cùng, hệ thống trả về sessionId tương ứng với session đã tạo cho người dùng.
 
 Như vậy, để implement được một logic xác thực bằng tài khoản & mật khẩu cho hệ thống back-end, chúng ta cần thiết lập lại tại **UserDetailsService** và **AuthenticationProvider**.
 
 ![img](../images/spring-security-3.png)
 
-- Thông tin client gửi đến được lưu và truyền đi dưới dạng đối tượng **Authentication**.
-- Tạo một lớp để hiện thực lại **UserDetailsService**, tại lớp này chúng ta viết logic truy vấn thông tin user trên repository dựa vào username.
-- Tạo lớp hiện thực lại **AuthenticationProvider**, có thể thiết lập một PasswordEncoder phù hợp với nhu cầu để thực hiện mã hóa mật khẩu.
-- Sử dụng mật khẩu đã được mã hóa để so sánh với mật khẩu trên database để xác thực quá trình đăng nhập.
+- **AuthenticationManager** sẽ sử dụng **MyProvider** mà chúng ta cung cấp thay vì mặc định.
+- **MyProvider** sẽ hiện thực lại **AuthenticationProvider** nhằm định nghĩa lại phương thức **authenticate()**, cho phép viết các logic xác thực phù hợp với nhu cầu
+  - Định nghĩa lại PasswordEncoder sẽ sử dụng.
+  - Định nghĩa lại logic xử lý authenticate, có thể là dựa vào nhiều thông tin hơn là chỉ username và password.
+  - Sử dụng service tự tạo thay vì **UserServiceDetails**
+- **MyService** sẽ hiện thực lại **UserDetailsService**, cho phép chúng ta viết lại logic truy vấn người dùng:
+  - Để thực hiện truy vấn, service này sẽ gọi đến **User Repository** để load thông tin người dùng từ database.
 
 Ngoài ra, cần tạo thêm một lớp để chứa thông tin xác thực của người dùng sau khi thực hiện truy vấn, lớp này cần implement lại interface **UserDetails**.
 
@@ -228,3 +238,5 @@ public class SecurityConfiguration {
     }
 }
 ```
+
+#
