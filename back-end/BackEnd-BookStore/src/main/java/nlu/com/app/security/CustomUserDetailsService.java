@@ -2,6 +2,8 @@ package nlu.com.app.security;
 
 import lombok.RequiredArgsConstructor;
 import nlu.com.app.entity.User;
+import nlu.com.app.exception.ApplicationException;
+import nlu.com.app.exception.ErrorCode;
 import nlu.com.app.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,7 +17,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username));
+                .orElseThrow(() -> new ApplicationException(ErrorCode.USER_NOT_EXISTED));
         return new UserPrincipal(user);
     }
 }

@@ -15,7 +15,9 @@ public enum ErrorCode {
     ROLE_NOT_EXISTED(1005, "Role is not existed!", HttpStatus.NOT_FOUND),
     ROLE_ALREADY_EXISTED(1006, "Role is already existed!", HttpStatus.BAD_REQUEST),
     PERMISSION_NOT_EXISTED(1007, "Permission is not existed!", HttpStatus.NOT_FOUND),
-    UNEXPECTED_BEHAVIOR(1008, "Something went wrong, this action shouldn't perform", HttpStatus.BAD_REQUEST);
+    UNEXPECTED_BEHAVIOR(1008, "Something went wrong, this action shouldn't perform", HttpStatus.BAD_REQUEST),
+    JWT_EXPIRED(1009, "Your session is out of date, please re-login", HttpStatus.FORBIDDEN)
+    ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;

@@ -1,6 +1,7 @@
 package nlu.com.app.configuration;
 
 import lombok.RequiredArgsConstructor;
+import nlu.com.app.exception.GlobalExceptionFilter;
 import nlu.com.app.security.CustomAuthenticationProvider;
 import nlu.com.app.security.JwtFilter;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,7 @@ import java.util.List;
 public class SecurityConfiguration {
     private final CustomAuthenticationProvider customAuthenticationProvider;
     private final JwtFilter jwtFilter;
+    private final GlobalExceptionFilter globalExceptionFilter;
 
     @Bean
     public AuthenticationManager authenticationManager() {
@@ -37,6 +39,7 @@ public class SecurityConfiguration {
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(globalExceptionFilter, jwtFilter.getClass())
                 .build();
     }
 
