@@ -2,11 +2,14 @@ package nlu.com.app.service;
 
 import lombok.RequiredArgsConstructor;
 import nlu.com.app.constant.UserRole;
+import nlu.com.app.dto.request.LoginUserDTO;
 import nlu.com.app.dto.request.RegisterUserDTO;
 import nlu.com.app.exception.ApplicationException;
 import nlu.com.app.exception.ErrorCode;
 import nlu.com.app.mapper.UserMapper;
 import nlu.com.app.repository.UserRepository;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +20,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final JWTService jwtService;
+    private final AuthenticationManager authenticationManager;
 
     @Transactional
     public void registerUser(RegisterUserDTO requestDTO) {
@@ -29,5 +34,14 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
         user.setRole(UserRole.CUSTOMER);
         userRepository.save(user);
+    }
+
+    public String verify(LoginUserDTO requestDTO) {
+        var authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDTO.getUsername(), requestDTO.getPassword()));
+        if (authentication.isAuthenticated()) {
+            return jwtService.generateToken(requestDTO.getUsername());
+        } else {
+            throw new ApplicationException(ErrorCode.USER_NOT_EXISTED);
+        }
     }
 }

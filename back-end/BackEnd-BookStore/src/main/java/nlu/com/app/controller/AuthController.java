@@ -2,6 +2,7 @@ package nlu.com.app.controller;
 
 import lombok.RequiredArgsConstructor;
 import nlu.com.app.dto.AppResponse;
+import nlu.com.app.dto.request.LoginUserDTO;
 import nlu.com.app.dto.request.RegisterUserDTO;
 import nlu.com.app.service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,14 @@ public class AuthController {
         userService.registerUser(requestDTO);
         return AppResponse.<String>builder()
                 .result("OK")
+                .build();
+    }
+
+    @PostMapping("/login")
+    public AppResponse<String> login(@RequestBody LoginUserDTO requestDTO) {
+        var token = userService.verify(requestDTO);
+        return AppResponse.<String>builder()
+                .result(token)
                 .build();
     }
 }

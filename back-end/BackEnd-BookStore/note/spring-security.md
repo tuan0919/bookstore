@@ -228,15 +228,239 @@ public class SecurityConfiguration {
         return http.csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request.anyRequest().authenticated())
                 .formLogin(form -> form.loginPage("/login"))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .build();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(16);
     }
 }
 ```
 
-#
+# Sử dụng JWT làm cơ chế xác thực
+## Phân biệt Stateful và Stateless
+### Lưu trữ trạng thái
+
+**Stateful**
+- **Trạng thái lưu trên server**: Mỗi lần người dùng đăng nhập, server tạo một phiên làm việc (session) và lưu trữ thông tin người dùng trong bộ nhớ (hoặc database, Redis,...).
+- **Session ID**: Client nhận được session ID (thường được lưu qua cookie) và gửi lại trong các request để server nhận diện phiên làm việc.
+- **Phụ thuộc vào server**: Nếu session được lưu trong bộ nhớ của một server cụ thể, cần có cơ chế chia sẻ (sticky session hoặc session replication) khi triển khai trên nhiều server.
+
+**Stateless**
+- **Không lưu trữ trạng thái trên server**: Thông tin đăng nhập (user identity, quyền hạn,...) được mã hóa vào một token, và client lưu trữ token này (trong local storage, cookie, hoặc header).
+- **Token tự chứa thông tin**: Mỗi request từ client kèm token, server chỉ cần kiểm tra tính hợp lệ của token (thông qua chữ ký) để xác thực.
+- **Tự mở rộng dễ dàng**: Không phụ thuộc vào session storage trên server, do đó dễ scale theo số lượng request và triển khai trên nhiều server.
+
+### Cơ chế xác thực
+
+**Stateful**
+- **Authentication ban đầu**: Khi người dùng đăng nhập, username/password được xác thực và thông tin user được lưu vào session.
+- **Lấy thông tin từ session**: Các request sau đó chỉ cần dựa vào session ID để xác thực, không cần kiểm tra lại username/password mỗi lần.
+- **Logout**: Khi logout, server sẽ xóa session khỏi bộ nhớ.
+
+**Stateless**
+- **Authentication ban đầu**: Khi người dùng đăng nhập, hệ thống xác thực username/password và sinh ra token.
+- **Xác thực token**: Các request sau đó kèm token trong header; server chỉ cần giải mã và kiểm tra chữ ký của token để xác thực người dùng.
+- **Logout**: Vì token là stateless nên không có cơ chế hủy token tự động (trừ khi dùng blacklist, thay đổi secret, hoặc refresh token).
+
+Nếu sử dụng JWT làm cơ chế xác thực, nghĩa là đang sử dụng **Stateless**, nên Spring Security sẽ không có session để tương tác.
+
+## Áp dụng JWT cho hệ thống
+
+Spring Security không cung cấp sẵn một cơ chế sinh JWT như một tính năng mặc định. Do đó để hiện thực thì chúng ta sẽ cần dùng đến một thư viện sinh JWT của bên thứ (JJWT, Auth0 Java JWT, vv...)
+
+Chúng ta có thể tạo một lớp **JwtService** như là một service có nhiệm vụ sinh và giải mã các JWT Token.
+
+```java
+package nlu.com.app.service;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import nlu.com.app.entity.User;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+
+import java.security.Key;
+import java.util.Date;
+import java.util.Map;
+import java.util.function.Function;
+
+@Service
+public class JWTService {
+    @Value("${app.jwt-key}")
+    String jwtKey;
+    public String generateToken(String user) {
+        return Jwts.builder()
+                .setClaims(Map.of())
+                .setSubject(user)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 30))
+                .signWith(getKey())
+                .compact();
+    }
+
+    private Key getKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtKey);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public boolean validateToken(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    }
+
+    private boolean isTokenExpired(String token) {
+        return extractClaim(token, Claims::getExpiration).before(new Date());
+    }
+
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+}
+```
+
+Flow login của người dùng sau khi chuyển sang xác minh bằng JWT:
+
+![img](../images/spring-security-4.png)
+
+- Ban đầu sẽ không có gì thay đổi, chỉ khác là thay vì tạo một HttpSession tương ứng cho người dùng, hệ thống sẽ trả về một chuỗi JWT cho người dùng thay vì sessionId.
+- Lớp JwtFilter là một filter custom kế thừa lại **OncePerRequestFilter**, sẽ đứng trước **UsernamePasswordAuthenticationFilter**, nhưng tạm thời sẽ không hoạt động vì với lần đăng nhập đầu tiên thì người dùng chưa có JWT để xử lý.
+
+> Trong Spring Security, **AuthenticationManager** được định nghĩa như một bean trung tâm. Chúng ta có thể expose nó cho nhiều Filter cùng sử dụng chứ nó không thuộc về một Filter cụ thể.
+
+Trong trường hợp người dùng đã đăng nhập và có chuỗi JWT trong header:
+
+![img](../images/spring-security-5.png)
+
+- **UsernamePasswordAuthenticationFilter** không cần phải hoạt động vì người dùng đã đăng nhập trước đó. Nhưng vì vậy, chúng ta cần phải tự tay quản lý việc cấp quyền xác minh cho người dùng (gọi hàm authenticate() của **AuthenticationManager**).
+- **JwtFilter** lúc này sẽ trích xuất chuỗi JWT trong header, sau đó đưa chuỗi JWT này cho **JWT Service**.
+- **JWT Service** sẽ phân tích chuỗi JWT vừa nhận, lấy ra các claims cần thiết có chứa thông tin người dùng để tạo thành một đối tượng **UsernamePasswordAuthenticationToken** thủ công.
+- Sau đó, **UsernamePasswordAuthenticationToken** vừa được tạo ra sẽ được **AuthenticationManager** xác thực bằng cách gọi hàm authenticate().
+
+Như vậy, để áp dụng xác thực bằng JWT cho Spring Security, chúng ta cần thực hiện các thay đổi sau:
+- Tạo một service để xử lý các tác vụ liên quan đến JWT.
+- Tạo một filter **JwtFilter**, đặt nó đứng trước **UsernamePasswordAuthenticationFilter** 
+- Expose một bean **AuthenticationManager** để có thể truy cập tại **JwtFilter**.
+- Chỉnh sửa lại logic tại endpoint đăng nhập, trả ra chuỗi JWT thay vì sessionId.
+
+Chúng ta đã tạo **JWT Service**, cho nên tiếp theo cần expose bean **AuthenticationManager** để cho phép custom filter có thể sử dụng:
+
+```java
+package nlu.com.app.configuration;
+@Configuration
+@EnableWebSecurity
+@RequiredArgsConstructor
+public class SecurityConfiguration {
+    private final CustomAuthenticationProvider customAuthenticationProvider;
+    private final JwtFilter jwtFilter;
+    // other configs
+    @Bean
+    public AuthenticationManager customizer(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+}
+```
+
+Tạo JwtFilter để xử lý JWT trong request của người dùng:
+
+```java
+package nlu.com.app.security;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import nlu.com.app.service.JWTService;
+import nlu.com.app.service.UserService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+
+@Component
+@RequiredArgsConstructor
+public class JwtFilter extends OncePerRequestFilter {
+  private final JWTService jwtService;
+  private final ApplicationContext context;
+
+  @Override
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    String authHeader = request.getHeader("Authorization");
+    String username = null;
+    String token = authHeader != null
+            && authHeader.startsWith("Bearer ") ? authHeader.substring(7) : null;
+    if (token != null) {
+      username = jwtService.extractUsername(token);
+      var userDetails = context.getBean(UserDetailsService.class).loadUserByUsername(username);
+      if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (jwtService.validateToken(token, userDetails)) {
+          UsernamePasswordAuthenticationToken authenticationToken =
+                  new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+          authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+          SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        }
+      }
+    }
+    filterChain.doFilter(request, response);
+  }
+}
+```
+
+Cuối cùng, chỉnh sửa lại logic endpoint /login, trả về chuỗi JWT nếu đăng nhập thành công:
+
+```java
+package nlu.com.app.service;
+
+import lombok.RequiredArgsConstructor;
+import nlu.com.app.constant.UserRole;
+import nlu.com.app.dto.request.LoginUserDTO;
+import nlu.com.app.dto.request.RegisterUserDTO;
+import nlu.com.app.exception.ApplicationException;
+import nlu.com.app.exception.ErrorCode;
+import nlu.com.app.mapper.UserMapper;
+import nlu.com.app.repository.UserRepository;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+public class UserService {
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final JWTService jwtService;
+    private final AuthenticationManager authenticationManager;
+
+    public String verify(LoginUserDTO requestDTO) {
+        var authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDTO.getUsername(), requestDTO.getPassword()));
+        if (authentication.isAuthenticated()) {
+            return jwtService.generateToken(requestDTO.getUsername());
+        } else {
+            throw new ApplicationException(ErrorCode.USER_NOT_EXISTED);
+        }
+    }
+}
+```
+
