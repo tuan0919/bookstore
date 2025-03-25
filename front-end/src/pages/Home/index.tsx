@@ -3,7 +3,7 @@ import { Carousel } from "./Carousel";
 import { Container } from "@mui/material";
 import { Event } from "./Event";
 import { Collection } from "./Collection";
-
+import { default as Footer } from "~/components/Footer";
 export function Home() {
     return (
         <>
@@ -12,7 +12,9 @@ export function Home() {
                 <Carousel/>
                 <Event/>
                 <Collection/>
+                <Footer/>
             </Container>
+            
         </>
     )
 }
