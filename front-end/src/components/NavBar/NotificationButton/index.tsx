@@ -5,40 +5,24 @@ import icoLoginSVG from '~/assets/ico_login.svg';
 
 export function NotificationButton() {
     return (
-        <Box sx={{
-            position: 'relative',
-        }}>
+        <Box sx={{ position: 'relative', }}>
             <Stack direction={'column'} sx={{
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
-                display: {
-                    xs: 'none',
-                    md: 'flex',
-                },
-                "&:hover ~ .notification-feed": {
-                    opacity: 1,
-                    visibility: 'visible',
-                }
-            }}>
+                display: { xs: 'none', md: 'flex', },
+                "&:hover ~ .notification-feed": { opacity: 1, visibility: 'visible' } 
+                }}>
                 <NotificationsOutlinedIcon sx={{
                     fontSize: 30,
-                    color: {
-                        xs: grey[200],
-                        md: grey[600],
-                    },
+                    color: { xs: grey[200], md: grey[600] }
                 }}/>
-                <Typography sx={{
-                    color: grey[600],
-                    fontWeight: 'light',
-                    fontSize: '13px',
-                }}>
-                Thông Báo
+                <Typography sx={{ color: grey[600], fontWeight: 'light', fontSize: '13px', }}>
+                    Thông Báo
                 </Typography>
             </Stack>
             <Paper
-            className='notification-feed'
-            sx={{
+            className='notification-feed' sx={{
                 position: "absolute",
                 top: 50,
                 right: 0,
@@ -53,19 +37,11 @@ export function NotificationButton() {
                 boxShadow: "0px 2px 8px rgba(0,0,0,0.32)",
                 zIndex: 10,
                 visibility: "hidden",
-                "&:hover": {
-                    opacity: 1,
-                    visibility: "visible",
-                },
+                "&:hover": { opacity: 1, visibility: "visible", },
                 padding: 1,
             }}>
                 <Stack direction={'row'} alignItems={'center'} spacing={1}>
-                    <NotificationsOutlinedIcon sx={{
-                        fontSize: 25,
-                        color: {
-                            md: grey[800],
-                        },
-                    }}/>
+                    <NotificationsOutlinedIcon sx={{ fontSize: 25, color: { md: grey[800] } }}/>
                     <Typography fontWeight={600}>
                         Thông báo
                     </Typography>
