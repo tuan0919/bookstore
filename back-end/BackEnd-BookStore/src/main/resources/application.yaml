@@ -1,1 +1,18 @@
-spring.application.name=BackEnd-BookStore
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /
+spring:
+  application:
+    name: BackEnd-BookStore
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  datasource:
+    username: ${MYSQL_USER:admin}  # Lấy từ biến môi trường, nếu không có thì mặc định là "admin"
+    password: ${MYSQL_PASSWORD:admin}
+    url: jdbc:mysql://${MYSQL_HOST:mysql}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:bookstore}
+
+app:
+  jwt-key: 1ytvns7A2HHo2GUQ2d82xS2I7dRyWWv1BTU51Ve+il0=
