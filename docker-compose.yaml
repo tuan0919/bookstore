@@ -1,0 +1,71 @@
+version: '3.8'
+services:
+  mysql:
+    container_name: mysql
+    image: 'mysql:8.0.19'
+    ports:
+      - '3306:3306'
+    env_file:
+      - env/mysql.env
+      - env/docker-compose.env
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - backend-network
+
+  spring-boot-backend:
+    image: eclipse-temurin:23-jdk-alpine
+    container_name: spring-boot-backend
+    working_dir: /app
+    env_file:
+      - ./env/springboot-backend.env
+    volumes:
+      - ./back-end/BackEnd-BookStore:/app  # Mount toàn bộ code vào container
+      - ~/.m2:/root/.m2 # Bind mount cache Maven
+    ports:
+      - "8181:8181"
+    command: [ "./mvnw", "spring-boot:run" ]
+    networks:
+      - backend-network
+    depends_on:
+      - mysql
+
+  # spring-boot-test:
+  #   image: eclipse-temurin:23-jdk-alpine
+  #   container_name: spring_app_test
+  #   working_dir: /app
+  #   env_file:
+  #     - ./env/springboot-backend.env
+  #   volumes:
+  #     - .:/app
+  #     - ~/.m2:/root/.m2
+  #   command: [ "./mvnw", "test" ]
+  #   networks:
+  #     - bookstore-backend-network
+
+  react-app:
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile.react
+    container_name: react-app
+    ports:
+    - "3000:80" # map 80 in container => 3000 in local
+    volumes:
+      - ./front-end/dist:/app/dist # bind mount đến thư mục gốc trong project để check
+    networks:
+      - frontend-network
+    
+      
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token eyJhIjoiNjJjMWNiYTQwYjlhNjJjZmVjMTMzYjZhMDAyZjM2NmIiLCJ0IjoiNzQ3OGM2YjMtZjZjOC00NGJmLTkyMTctNTVlYzUyZmQ1MzVmIiwicyI6IllXSXdOREF3TmpZdFpqUTNNeTAwT1RWbUxUa3haV0l0T0RZNFlqRmlNREk0WldNdyJ9
+
+
+volumes:
+  mysql_data:
+
+networks:
+  backend-network:
+  frontend-network:
