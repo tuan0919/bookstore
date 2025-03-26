@@ -20,7 +20,7 @@ services:
     env_file:
       - ./env/springboot-backend.env
     volumes:
-      - ./back-end/BackEnd-BookStore:/app  # Mount toàn bộ code vào container
+      - ./back-end:/app  # Mount toàn bộ code vào container
       - ~/.m2:/root/.m2 # Bind mount cache Maven
     ports:
       - "8181:8181"

@@ -6,7 +6,6 @@ import nlu.com.app.dto.request.RegisterUserDTO;
 import nlu.com.app.exception.ApplicationException;
 import nlu.com.app.exception.ErrorCode;
 import nlu.com.app.service.UserService;
-import nlu.com.app.service.UserServiceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
