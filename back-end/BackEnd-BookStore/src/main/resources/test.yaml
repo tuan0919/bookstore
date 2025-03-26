@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MYSQL
+    driverClassName: org.h2.Driver
+    username: sa
+    password: sa
+  jpa:
+    hibernate:
+      ddl-auto: update  # hoặc "create-drop" nếu muốn reset database khi chạy lại
+    database-platform: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true
+      path: /h2-console   # Truy cập tại http://localhost:8080/h2-console

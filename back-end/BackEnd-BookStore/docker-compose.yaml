@@ -30,6 +30,19 @@ services:
     depends_on:
       - mysql
 
+  spring-boot-test:
+    image: eclipse-temurin:23-jdk-alpine
+    container_name: spring_app_test
+    working_dir: /app
+    env_file:
+      - ./env/springboot-backend.env
+    volumes:
+      - .:/app
+      - ~/.m2:/root/.m2
+    command: [ "./mvnw", "test" ]
+    networks:
+      - bookstore-backend-network
+
 volumes:
   mysql_data:
 
