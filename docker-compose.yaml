@@ -51,7 +51,7 @@ services:
     ports:
     - "3000:80" # map 80 in container => 3000 in local
     volumes:
-      - ./front-end/dist:/app/dist # bind mount đến thư mục gốc trong project để check
+      - ./front-end/dist:/usr/share/nginx/html # bind mount đến thư mục gốc trong project để check
     networks:
       - frontend-network
     
