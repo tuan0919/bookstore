@@ -4,6 +4,7 @@ import { Container } from "@mui/material";
 import { Event } from "./Event";
 import { Collection } from "./Collection";
 import { default as Footer } from "~/components/Footer";
+import { TopWeekly } from "./TopWeekly";
 export function Home() {
     return (
         <>
@@ -12,6 +13,7 @@ export function Home() {
                 <Carousel/>
                 <Event/>
                 <Collection/>
+                <TopWeekly/>
                 <Footer/>
             </Container>
             
