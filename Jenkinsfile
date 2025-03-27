@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        COMPOSE_FILE = "docker-compose.yml"
+        COMPOSE_FILE = "docker-compose.yaml"
         SERVICE_NAME = "react-app"
         NETWORK_NAME = "frontend-network"
     }
@@ -14,14 +14,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/tuan0919/bookstore.git'
-            }
-        }
-
-        stage('Check Railway CLI') {
-            steps {
-                sh 'which railway || echo "🚨 Railway CLI not found!"'
-                sh 'echo $PATH'
+                git branch: 'feature/add-jenkins-pipeline', url: 'https://github.com/tuan0919/bookstore.git'
             }
         }
 
