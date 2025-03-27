@@ -6,9 +6,11 @@ pipeline {
     }
 
     environment {
-        COMPOSE_FILE = "docker-compose.yaml"
-        SERVICE_NAME = "react-app"
-        NETWORK_NAME = "frontend-network"
+        IMAGE_NAME = 'react-app-image'
+        CONTAINER_NAME = 'react-app'
+        FRONTEND_DIR = './front-end'
+        DOCKERFILE = 'Dockerfile.react'
+        NETWORK_NAME = 'frontend-network'
     }
 
     stages {
@@ -18,19 +20,35 @@ pipeline {
             }
         }
 
-        stage('Build and Start Container') {
+        stage('Build Image') {
             steps {
-                sh """
-                docker-compose -f ${COMPOSE_FILE} down
-                docker-compose -f ${COMPOSE_FILE} build ${SERVICE_NAME}
-                docker-compose -f ${COMPOSE_FILE} up -d ${SERVICE_NAME}
-                """
+                script {
+                    sh "docker build -t ${IMAGE_NAME} -f ${FRONTEND_DIR}/${DOCKERFILE} ${FRONTEND_DIR}"
+                }
             }
         }
 
-        stage('Clean Up Old Images') {
+        stage('Run Container') {
             steps {
-                sh "docker image prune -f"
+                script {
+                    // Kiểm tra nếu container đang chạy thì dừng trước
+                    sh """
+                    if [ \$(docker ps -q -f name=${CONTAINER_NAME}) ]; then
+                        docker stop ${CONTAINER_NAME}
+                    fi
+                    """
+
+                    // Chạy container mới
+                    sh """
+                    docker run --name ${CONTAINER_NAME} \\
+                        --rm -d \\
+                        --publish 3000:80 \\
+                        --volume \$(pwd)/front-end/dist:/app/dist \\
+                        --network ${NETWORK_NAME} \\
+                        --workdir /app \\
+                        ${IMAGE_NAME}
+                    """
+                }
             }
         }
     }
