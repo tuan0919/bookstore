@@ -1,15 +1,21 @@
 import { Box, Typography } from "@mui/material";
+import { grey } from "@mui/material/colors";
 import { Property } from "csstype";
 import React from "react";
 
 interface SectionHeaderProps {
     title: string,
-    iconHeader: React.ReactElement,
-    iconBackground: Property.BackgroundColor,
-    bgColor: Property.BackgroundColor
+    iconHeader?: React.ReactElement,
+    iconBackground?: Property.BackgroundColor,
+    bgColor?: Property.BackgroundColor,
+    textColor?: Property.Color
 }
 
-export function SectionHeader({title, iconHeader, iconBackground, bgColor} : SectionHeaderProps) {
+export function SectionHeader({title, iconHeader = undefined, 
+    iconBackground = 'white', 
+    bgColor = 'white', 
+    textColor = grey['900'],
+} : SectionHeaderProps) {
     return (
         <Box sx={{
             flexDirection: 'row', 
@@ -19,7 +25,7 @@ export function SectionHeader({title, iconHeader, iconBackground, bgColor} : Sec
             borderTopRightRadius: 10,
             alignItems: 'center'
         }} bgcolor={bgColor} padding={1}>
-        <Box sx={{
+        {iconHeader ? <Box sx={{
                 height: 30,
                 width: 30,
                 display: 'flex',
@@ -29,8 +35,8 @@ export function SectionHeader({title, iconHeader, iconBackground, bgColor} : Sec
                 background: iconBackground
             }}>
             {iconHeader}
-        </Box>
-        <Typography sx={{textTransform: 'uppercase'}} fontWeight={'bold'}>
+        </Box> : undefined}
+        <Typography sx={{textTransform: 'uppercase'}} fontWeight={'bold'} color={textColor}>
             {title}
         </Typography>
     </Box>
