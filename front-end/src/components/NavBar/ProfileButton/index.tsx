@@ -2,27 +2,56 @@ import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import LoginPopup from "~/components/Popup/login";
+import RegisterPopup from "~/components/Popup/register";
+import VerifyPopup from "~/components/Popup/verifyOTP"; // Import popup xác minh tài khoản
 import { useState } from "react";
+
 export function ProfileButton() {
-  const [isPopupOpen, setPopupOpen] = useState(false);
-  // Mở popup
+  const [isPopupLoginOpen, setPopupLoginOpen] = useState(false);
+  const [isPopupRegisterOpen, setPopupRegisterOpen] = useState(false);
+  const [isPopupVerifyOpen, setPopupVerifyOpen] = useState(false); // Thêm state cho popup xác minh
+  const [email, setEmail] = useState(""); // 
+  const [password, setPassword] = useState(""); 
+  // Mở popup login
   const handleOpenPopup = () => {
-    setPopupOpen(true);
+    setPopupLoginOpen(true);
   };
 
-  // Đóng popup
+  // Đóng popup login
   const handleClosePopup = () => {
-    setPopupOpen(false);
-    
+    setPopupLoginOpen(false);
   };
+
+  // Mở popup register
+  const handleOpenPopupRegister = () => {
+    setPopupRegisterOpen(true);
+  };
+
+  // Đóng popup register
+  const handleClosePopupRegister = () => {
+    setPopupRegisterOpen(false);
+  };
+
+  // Mở popup xác minh tài khoản
+ 
+
+  // Đóng popup xác minh tài khoản
+  const handleClosePopupVerify = () => {
+    setPopupVerifyOpen(false);
+  };
+
+  // Xử lý khi đăng ký thành công
+  const handleRegisterSuccess = (userEmail: string, userPassword: string) => {
+    setEmail(userEmail);
+    setPassword(userPassword);
+    setPopupRegisterOpen(false); // Đóng popup đăng ký
+    setPopupVerifyOpen(true); // Mở popup xác minh
+  };
+
   return (
-    <Box
-      sx={{
-        position: "relative",
-      }}
-    >
+    <Box sx={{ position: "relative" }}>
       <Stack
-        id={"profile-button"}
+        id="profile-button"
         role="button"
         aria-haspopup="true"
         sx={{
@@ -36,32 +65,19 @@ export function ProfileButton() {
           },
         }}
       >
-        <PersonOutlineOutlinedIcon
-          sx={{
-            fontSize: 30,
-            color: {
-              xs: grey[200],
-              md: grey[600],
-            },
-          }}
-        />
+        <PersonOutlineOutlinedIcon sx={{ fontSize: 30, color: { xs: grey[200], md: grey[600] } }} />
         <Typography
           sx={{
             color: grey[600],
             fontWeight: "light",
             fontSize: "13px",
-            display: {
-              xs: "none",
-              md: "block",
-            },
+            display: { xs: "none", md: "block" },
           }}
-          
         >
           Tài khoản
         </Typography>
-       
-       
       </Stack>
+
       <Paper
         className="account-menu"
         sx={{
@@ -88,11 +104,14 @@ export function ProfileButton() {
         <Button variant="contained" color="error" onClick={handleOpenPopup}>
           Đăng nhập
         </Button>
-         {/* Component popup */}
-        <LoginPopup open={isPopupOpen} onClose={handleClosePopup} />
-        <Button variant="outlined" color="error">
+        <LoginPopup open={isPopupLoginOpen} onClose={handleClosePopup} />
+
+        <Button variant="outlined" color="error" onClick={handleOpenPopupRegister}>
           Đăng ký
         </Button>
+        <RegisterPopup open={isPopupRegisterOpen} onClose={handleClosePopupRegister} onRegisterSuccess={handleRegisterSuccess} />
+
+        <VerifyPopup open={isPopupVerifyOpen} onClose={handleClosePopupVerify} onBackToRegister={handleOpenPopupRegister} email={email} password={password} />
       </Paper>
     </Box>
   );
