@@ -39,7 +39,7 @@ export function BookRating({ sx = undefined }: { sx?: SxProps<Theme> }) {
     return (
         <Stack sx={sx}>
             <Typography sx={{ fontWeight: 'medium', fontSize: 'large' }}>Đánh giá sản phẩm</Typography>
-            <Box display={'flex'} gap={3}>
+            <Box display={'flex'} gap={3} alignItems={'center'}>
                 <Stack display={'flex'} alignItems={'center'} spacing={0.5}>
                     <Box display={'flex'} alignItems={'flex-end'}>
                         <Typography
