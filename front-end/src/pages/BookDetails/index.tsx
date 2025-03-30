@@ -8,6 +8,8 @@ import { red } from "@mui/material/colors";
 import AddShoppingCartRoundedIcon from '@mui/icons-material/AddShoppingCartRounded';
 import { BookOverview } from "./BookOverview";
 import { BookInformation } from "./BookInformation";
+import { BookPreview } from "./BookPreview";
+import { BookRating } from "./BookRating";
 
 const CustomizeBox = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -17,6 +19,7 @@ const CustomizeBox = styled(Box)(({ theme }) => ({
     padding: theme.spacing(2),
     alignItems: 'center',
     gap: theme.spacing(2),
+    height: 'fit-content',
 }));
 
 export function BookDetails() {
@@ -42,7 +45,7 @@ export function BookDetails() {
                 {breadcrumbs}
             </Breadcrumbs>
             <Stack direction={'row'} spacing={2}>
-                <CustomizeBox sx={{ height: 'fit-content' }}>
+                <CustomizeBox sx={{ position: 'sticky', top: 10 }}>
                     <BookGallery gallery={BookGalleryMocks} />
                     <Box display={'flex'} width={'100%'} gap={2}>
                         <Button variant="outlined"
@@ -63,13 +66,17 @@ export function BookDetails() {
                             </Typography>
                         </Button>
                     </Box>
+                    <BookRating sx={{ width: '100%' }} />
                 </CustomizeBox>
                 <Stack width={'100%'} gap={2}>
-                    <CustomizeBox sx={{ flex: 1, height: 'fit-content' }}>
+                    <CustomizeBox>
                         <BookOverview sx={{ width: '100%' }} />
                     </CustomizeBox>
-                    <CustomizeBox sx={{ flex: 1, height: 'fit-content' }}>
+                    <CustomizeBox>
                         <BookInformation />
+                    </CustomizeBox>
+                    <CustomizeBox>
+                        <BookPreview />
                     </CustomizeBox>
                 </Stack>
             </Stack>
