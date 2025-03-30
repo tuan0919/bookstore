@@ -1,0 +1,20 @@
+# Dockerfile.jenkins
+FROM jenkins/jenkins:lts
+USER root
+# Cài đặt plugin từ danh sách plugins.txt
+COPY jenkins/plugins.txt /usr/share/jenkins/plugins.txt
+RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/plugins.txt
+
+# Cấu hình tự động với JCasC
+COPY jenkins/casc.yaml /var/jenkins_home/casc.yaml
+ENV CASC_JENKINS_CONFIG=/var/jenkins_home/casc.yaml
+
+# Chạy script Groovy để tạo user & agent
+COPY jenkins/init.groovy.d/ /var/jenkins_home/init.groovy.d/
+RUN chown -R jenkins:jenkins /var/jenkins_home/init.groovy.d/
+
+# Expose port cho Web UI và Agent
+EXPOSE 8080 50000
+USER jenkins
+# Chạy Jenkins
+CMD ["jenkins.sh"]
