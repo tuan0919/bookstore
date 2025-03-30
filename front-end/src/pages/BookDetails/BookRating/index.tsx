@@ -22,7 +22,7 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
     },
 }));
 
-const LabelText = styled(Typography)(({ theme }) => ({
+const LabelText = styled(Typography)(() => ({
     fontSize: 13,
     textWrap: 'nowrap'
 }));

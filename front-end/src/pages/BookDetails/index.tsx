@@ -10,6 +10,8 @@ import { BookOverview } from "./BookOverview";
 import { BookInformation } from "./BookInformation";
 import { BookPreview } from "./BookPreview";
 import { BookRating } from "./BookRating";
+import { BookComment } from "./BookComment";
+import { BookRelated } from "./BookRelated";
 
 const CustomizeBox = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -40,12 +42,12 @@ export function BookDetails() {
         </Typography>,
     ];
     return (
-        <Container>
+        <Container sx={{ paddingRight: '0 !important;' }}>
             <Breadcrumbs sx={{ marginY: 3 }} separator="›" aria-label="breadcrumb">
                 {breadcrumbs}
             </Breadcrumbs>
-            <Stack direction={'row'} spacing={2}>
-                <CustomizeBox sx={{ position: 'sticky', top: 10 }}>
+            <Stack direction={'row'} display={'flex'} gap={2}>
+                <CustomizeBox sx={{ position: 'sticky', top: 10, bottom: 10 }}>
                     <BookGallery gallery={BookGalleryMocks} />
                     <Box display={'flex'} width={'100%'} gap={2}>
                         <Button variant="outlined"
@@ -68,7 +70,7 @@ export function BookDetails() {
                     </Box>
                     <BookRating sx={{ width: '100%' }} />
                 </CustomizeBox>
-                <Stack width={'100%'} gap={2}>
+                <Stack gap={2}>
                     <CustomizeBox>
                         <BookOverview sx={{ width: '100%' }} />
                     </CustomizeBox>
@@ -80,6 +82,14 @@ export function BookDetails() {
                     </CustomizeBox>
                 </Stack>
             </Stack>
+            <Stack mt={2}>
+                <CustomizeBox>
+                    <BookComment sx={{ width: '100%' }} />
+                </CustomizeBox>
+            </Stack>
+            <Box mt={2}>
+                <BookRelated />
+            </Box>
         </Container>
     )
 }
