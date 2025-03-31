@@ -6,7 +6,11 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: [
-      {find: '~', replacement: '/src'}
+      { find: '~', replacement: '/src' }
     ]
-  }
+  },
+  build: {
+    cssCodeSplit: false,  // Đảm bảo CSS không bị tách nhỏ quá mức
+    sourcemap: true,  // Tạo sourcemap để debug
+  },
 })
