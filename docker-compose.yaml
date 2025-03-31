@@ -53,7 +53,7 @@ services:
     volumes:
       - ./front-end/dist:/app/dist # bind mount đến thư mục gốc trong project để check
     networks:
-      - frontend-network  
+      - frontend-network
 
   jenkins-docker:
     image: docker:dind
