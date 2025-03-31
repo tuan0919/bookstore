@@ -1,20 +1,18 @@
-FROM node:lts-alpine as build
+FROM node:lts-alpine AS react-build
 # Set working directory
 WORKDIR /app
 #
-COPY package.json ./
-COPY package-lock.json ./
-RUN npm install
 COPY . .
+RUN npm install
 ENV CI=true
 ENV PORT=3000
 RUN npm run build
 # 2. For Nginx setup
-FROM nginx:alpine
+FROM nginx:alpine AS deploy
 # Copy config nginx
 COPY .nginx/nginx.conf /etc/nginx/nginx.conf
 # Copy static assets from builder stage
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=react-build /app/dist /usr/share/nginx/html
 EXPOSE 80/tcp
 # Containers run nginx with global directives and daemon off
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+CMD [ "nginx", "-g", "daemon off;" ]

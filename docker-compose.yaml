@@ -50,8 +50,6 @@ services:
     container_name: react-app
     ports:
     - "3000:80" # map 80 in container => 3000 in local
-    volumes:
-      - ./front-end/dist:/app/dist
     networks:
       - frontend-network
     

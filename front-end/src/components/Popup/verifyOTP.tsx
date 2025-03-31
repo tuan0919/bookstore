@@ -21,6 +21,7 @@ const VerifyPopup: React.FC<VerifyPopupProps> = ({
   email = "",
   password = "",
 }) => {
+  console.log(password);
   const [codeOTP, setCodeOTP] = useState("");
   const handleChangeOTP = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCodeOTP(event.target.value);
