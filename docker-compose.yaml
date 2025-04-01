@@ -50,46 +50,44 @@ services:
     container_name: react-app
     ports:
     - "3000:80" # map 80 in container => 3000 in local
-    volumes:
-      - ./front-end/dist:/app/dist # bind mount đến thư mục gốc trong project để check
     networks:
       - frontend-network
 
-  jenkins-docker:
-    image: docker:dind
-    container_name: jenkins-docker
-    privileged: true
-    restart: unless-stopped
-    networks:
-      jenkins:
-        aliases:
-          - docker
-    environment:
-      DOCKER_TLS_CERTDIR: "/certs"
-    volumes:
-      - jenkins-docker-certs:/certs/client
-      - jenkins-data:/var/jenkins_home
-    ports:
-      - "2376:2376"
-    command: --storage-driver overlay2
+  # jenkins-docker:
+  #   image: docker:dind
+  #   container_name: jenkins-docker
+  #   privileged: true
+  #   restart: unless-stopped
+  #   networks:
+  #     jenkins:
+  #       aliases:
+  #         - docker
+  #   environment:
+  #     DOCKER_TLS_CERTDIR: "/certs"
+  #   volumes:
+  #     - jenkins-docker-certs:/certs/client
+  #     - jenkins-data:/var/jenkins_home
+  #   ports:
+  #     - "2376:2376"
+  #   command: --storage-driver overlay2
 
-  jenkins:
-    build:
-      context: .
-      dockerfile: Dockerfile.jenkins
-    container_name: jenkin
-    ports:
-      - "8080:8080"
-      - "50000:50000" 
-    volumes:
-      - jenkins-data:/var/jenkins_home
-      - jenkins-docker-certs:/certs/client:ro
-    environment:
-      - DOCKER_HOST=tcp://docker:2376
-      - DOCKER_CERT_PATH=/certs/client
-      - DOCKER_TLS_VERIFY=1
-    networks:
-      - jenkins
+  # jenkins:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.jenkins
+  #   container_name: jenkin
+  #   ports:
+  #     - "8080:8080"
+  #     - "50000:50000" 
+  #   volumes:
+  #     - jenkins-data:/var/jenkins_home
+  #     - jenkins-docker-certs:/certs/client:ro
+  #   environment:
+  #     - DOCKER_HOST=tcp://docker:2376
+  #     - DOCKER_CERT_PATH=/certs/client
+  #     - DOCKER_TLS_VERIFY=1
+  #   networks:
+  #     - jenkins
 
   cloudflared:
     image: cloudflare/cloudflared:latest
