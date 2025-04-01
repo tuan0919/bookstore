@@ -5,23 +5,23 @@ import {
   DialogContent,
   TextField,
   Button,
-  Typography,
-  Box,
+    Box,
   InputAdornment,
   IconButton,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
-interface LoginPopupProps {
-  open: boolean;
-  onClose: () => void;
-}
+interface RegisterPopupProps {
+    open: boolean;
+    onClose: () => void;
+    onRegisterSuccess?: (email: string, password: string) => void; 
+  }
 
-const phoneRegex = /^(0|\+84)(3[2-9]|5[2689]|7[0-9]|8[1-9]|9[0-9])\d{7}$/;
+
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
-  const [mode, setMode] = useState<"login" | "forgotPassword">("login");
+const RegisterPopup: React.FC<RegisterPopupProps> = ({ open, onClose,onRegisterSuccess  }) => {
+ 
   const [accountInfo, setAccountInfo] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -29,7 +29,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isValidAccount, setIsValidAccount] = useState(false);
   const [isValidPassword, setIsValidPassword] = useState(false);
-  const loginButtonRef = useRef<HTMLButtonElement | null>(null);
+  const loginRegisterRef = useRef<HTMLButtonElement | null>(null);
   const forgotPasswordButtonRef = useRef<HTMLButtonElement | null>(null);
   // Cập nhập lại data account khi người dùng nhập và reset lỗi
   const handleChangeAccount = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,13 +44,14 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
       setIsValidAccount(false);
       return;
     }
-    if (phoneRegex.test(accountInfo) || emailRegex.test(accountInfo)) {
-      setError("");
-      setIsValidAccount(true);
-    } else {
-      setError("Vui lòng nhập số điện thoại hoặc email hợp lệ!");
-      setIsValidAccount(false);
-    }
+    if (emailRegex.test(accountInfo)) {
+        setError("");
+        setIsValidAccount(true);
+      } else {
+        setError("Vui lòng nhập email hợp lệ!");
+        setIsValidAccount(false);
+      }
+   
   };
   //  Kiểm tra password khi rời khỏi input
   const handleBlurPassword = () => {
@@ -73,7 +74,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
   // Reset dữ liệu khi đóng popup
   useEffect(() => {
     if (!open) {
-      setMode("login");
+     
       setAccountInfo("");
       setPassword("");
       setError("");
@@ -84,47 +85,43 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
   }, [open]);
   // Bật/tắt nút login khi account và password hợp lệ
   useEffect(() => {
-    if (loginButtonRef.current) {
-      loginButtonRef.current.disabled = !(isValidAccount && isValidPassword);
+    if (loginRegisterRef.current) {
+        loginRegisterRef.current.disabled = !(isValidAccount && isValidPassword);
     }
     if (forgotPasswordButtonRef.current) {
       forgotPasswordButtonRef.current.disabled = !isValidAccount;
     }
   }, [isValidAccount, isValidPassword]);
 
-  //  Khi đổi mode, reset dữ liệu
-  const toggleMode = () => {
-    setMode((prev) => {
-      const newMode = prev === "login" ? "forgotPassword" : "login";
-      setAccountInfo("");
-      setPassword("");
-      setError("");
-      setPasswordError("");
-      setIsValidAccount(false);
-      setIsValidPassword(false);
-      return newMode;
-    });
+ 
+  // Xử lý đăng tài khoản
+  const handleProccessRegister = () => {
+    // Trường hợp email đã tồn tại
+    //  Trường hợp đăng ký thành công và chuyển sang verify bằng mã otp
+        console.log("Đăng ký thành công!");
+
+    // Nếu có onRegisterSuccess, gọi nó để mở popup xác minh tài khoản
+    if (onRegisterSuccess) {
+      onRegisterSuccess(accountInfo, password); 
+    }
   };
-  // Xử lý đăng nhập thành công
-  const handleProccessLogin = () => {};
-  // Xử lý lấy lại mật khẩu
-  const handleProccessGetPassword = () => {};
-  return (
+
+     return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle
         textAlign={"center"}
         color="#c92127"
         fontFamily={"sans-serif"}
       >
-        {mode === "login" ? "Đăng Nhập" : "Quên Mật Khẩu"}
+       Đăng ký
       </DialogTitle>
       <DialogContent>
-        {mode === "login" ? (
+       
           <Box>
             <TextField
               fullWidth
-              label="Số điện thoại/ Email"
-              placeholder="Nhập số điện thoại hoặc email"
+              label="Email"
+              placeholder="Nhập email của bạn"
               margin="dense"
               variant="outlined"
               value={accountInfo}
@@ -166,51 +163,18 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
               fullWidth
               variant="contained"
               sx={{ mt: 2, backgroundColor: "#c92127", color: "#fff" }}
-              onClick={handleProccessLogin}
+              onClick={handleProccessRegister}
               disabled={!isValidAccount || !isValidPassword} //  Vô hiệu hóa nếu tài khoản chưa hợp lệ
             >
-              Đăng nhập
+              Đăng ký
             </Button>
-            <Typography
-              sx={{ mt: 1, cursor: "pointer", color: "#c92127" }}
-              onClick={toggleMode}
-            >
-              Quên mật khẩu?
-            </Typography>
           </Box>
-        ) : (
-          <Box sx={{ width: 400 }}>
-            <TextField
-              fullWidth
-              label="Số điện thoại/ Email"
-              placeholder="Nhập email hoặc số điện thoại để đặt lại mật khẩu"
-              margin="dense"
-              value={accountInfo}
-              onChange={handleChangeAccount}
-              onBlur={handleBlurAccount}
-              error={!!error}
-              helperText={error}
-            />
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{ mt: 2, backgroundColor: "#c92127", color: "#fff" }}
-              onClick={handleProccessGetPassword}
-              disabled={!isValidAccount} // Vô hiệu hóa nếu tài khoản chưa hợp lệ
-            >
-              Gửi yêu cầu
-            </Button>
-            <Typography
-              sx={{ mt: 1, cursor: "pointer", color: "#c92127" }}
-              onClick={toggleMode}
-            >
-              Quay lại đăng nhập
-            </Typography>
-          </Box>
-        )}
+        
+         
+        
       </DialogContent>
     </Dialog>
   );
 };
 
-export default LoginPopup;
+export default RegisterPopup;

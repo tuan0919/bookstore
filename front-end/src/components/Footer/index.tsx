@@ -11,6 +11,7 @@ import {
 import AddLocationIcon from "@mui/icons-material/AddLocation";
 import MarkunreadIcon from "@mui/icons-material/Markunread";
 import CallIcon from "@mui/icons-material/Call";
+import logoImage from '~/assets/logo.png';
 function Footer() {
   const socialLinks = [
     {
@@ -63,7 +64,7 @@ function Footer() {
           <Grid2 marginTop={3} size={{ xs: 12, sm: 6, md: 4 }}>
             <Box
               component={"img"}
-              src="/src/assets/logo.png"
+              src={logoImage}
               sx={{ width: 226, height: 41 }}
             ></Box>
             <p style={{ fontSize: 13 }}>
@@ -294,26 +295,26 @@ function Footer() {
                   60-62 Lê Lợi, Q.1, TP. HCM
                 </Box>
                 <Box minWidth={200} fontSize={13} display="flex">
-                  <MarkunreadIcon sx={{ fontSize: 16 ,marginRight: 0.5 }} />
+                  <MarkunreadIcon sx={{ fontSize: 16, marginRight: 0.5 }} />
                   cskh@fahasa.com.vn
                 </Box>
                 <Box minWidth={200} fontSize={13} display="flex">
-                  <CallIcon sx={{ fontSize: 16 ,marginRight: 0.5 }} />
+                  <CallIcon sx={{ fontSize: 16, marginRight: 0.5 }} />
                   1900636467
                 </Box>
               </Stack>
             </Stack>
             <Stack marginTop={2}>
               <Stack marginLeft={3} direction={"row"} spacing={20} >
-              <Box component={"img"} src="https://cdn0.fahasa.com/media/wysiwyg/Logo-NCC/logo_lex.jpg" width={90} height={44}></Box>
-              <Box component={"img"} src="https://cdn0.fahasa.com/media/wysiwyg/Logo-NCC/Logo_ninjavan.png" width={150} height={71}></Box>
-              <Box component={"img"} src="https://cdn0.fahasa.com/media/wysiwyg/Logo-NCC/vnpost1.png" width={100} height={49}></Box>
+                <Box component={"img"} src="https://cdn0.fahasa.com/media/wysiwyg/Logo-NCC/logo_lex.jpg" width={90} height={44}></Box>
+                <Box component={"img"} src="https://cdn0.fahasa.com/media/wysiwyg/Logo-NCC/Logo_ninjavan.png" width={150} height={71}></Box>
+                <Box component={"img"} src="https://cdn0.fahasa.com/media/wysiwyg/Logo-NCC/vnpost1.png" width={100} height={49}></Box>
               </Stack>
               <Stack marginTop={2} marginLeft={-2} direction={"row"} spacing={13}>
-              <Box component={"img"} src="https://cdn1.fahasa.com/media//wysiwyg/Logo-NCC/vnpay_logo.png" width={120} height={41}></Box>
-              <Box component={"img"} src="https://cdn1.fahasa.com/media//wysiwyg/Logo-NCC/momopay.png" width={50} height={50}></Box>
-              <Box component={"img"} src="https://cdn1.fahasa.com/media//wysiwyg/Logo-NCC/shopeepay_logo.png" width={95} height={44}></Box>
-              <Box component={"img"} src="https://cdn1.fahasa.com/media//wysiwyg/Logo-NCC/logo_zalopay_2.png" width={176} height={40}></Box>
+                <Box component={"img"} src="https://cdn1.fahasa.com/media//wysiwyg/Logo-NCC/vnpay_logo.png" width={120} height={41}></Box>
+                <Box component={"img"} src="https://cdn1.fahasa.com/media//wysiwyg/Logo-NCC/momopay.png" width={50} height={50}></Box>
+                <Box component={"img"} src="https://cdn1.fahasa.com/media//wysiwyg/Logo-NCC/shopeepay_logo.png" width={95} height={44}></Box>
+                <Box component={"img"} src="https://cdn1.fahasa.com/media//wysiwyg/Logo-NCC/logo_zalopay_2.png" width={176} height={40}></Box>
               </Stack>
             </Stack>
           </Grid2>
@@ -322,7 +323,7 @@ function Footer() {
         {/* Dòng bản quyền */}
         <Box mt={3} textAlign="center">
           <Typography color="#adadad" fontSize={12} marginBottom={1} variant="body2">
-          Giấy chứng nhận Đăng ký Kinh doanh số 0304132047 do Sở Kế hoạch và Đầu tư Thành phố Hồ Chí Minh cấp ngày 20/12/2005, đăng ký thay đổi lần thứ 10, ngày 20/05/2022.
+            Giấy chứng nhận Đăng ký Kinh doanh số 0304132047 do Sở Kế hoạch và Đầu tư Thành phố Hồ Chí Minh cấp ngày 20/12/2005, đăng ký thay đổi lần thứ 10, ngày 20/05/2022.
           </Typography>
         </Box>
       </Container>
