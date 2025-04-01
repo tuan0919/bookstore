@@ -93,8 +93,6 @@ Nếu thành công thì gitlab sẽ được phục vụ tại địa chỉ: htt
 
 ![img_5.png](img_5.png)
 
-##### Sử dụng Gitlab
-
 Để đăng nhập vào gitlab chúng ta sử dụng user root với mật khẩu mặc định trong file **/etc/gitlab/initial_root_password**
 
 Tiếp theo, cần disable tạo mới user
@@ -107,3 +105,43 @@ Tiếp theo, bỏ phần auto devops trong **CI/CD**
 
 Để best practice thì, nên tạo một user mới có quyền admin rồi sử dụng user đó chứ không dùng user root.
 
+## Sử dụng GitLab
+
+Về cơ bản thì Gitlab cũng giống như Github, mỗi một project sẽ có một Repository riêng, giả sử chúng ta muốn tạo dự án [shoes shop](../devops/devops-1.md#back-end-springboot-app---shoeshop), chúng ta cũng sẽ tạo một folder (repository) cho dự án đó trên gitlab.
+
+![img_8.png](img_8.png)
+
+Sau khi tạo dự án xong thì cũng sẽ có các bước để bắt đầu dự án
+
+![img_9.png](img_9.png)
+
+```shell
+root@lab-server:~# git config --global user.name "Nguyễn Quốc Anh Tuấn"
+root@lab-server:~# git config --global user.email "nqat0919@gmail.com"
+root@lab-server:~# mkdir /data && cd /data && git clone http://localhost:6769/nqat0919/shoeshop.git
+Cloning into 'shoeshop'...
+Username for 'http://localhost:6769': nqat0919
+Password for 'http://nqat0919@localhost:6769':
+warning: You appear to have cloned an empty repository.
+root@lab-server:/data# cd shoeshop
+```
+
+Bây giờ, tiến hành copy source code của dự án shoeshop vào thư mục này, cách chuẩn bị dự án [đã được trình bày trước đó](../devops/devops-1.md#back-end-springboot-app---shoeshop)
+
+```shell
+root@lab-server:/data/shoeshop# cp /projects/shoeshop/* /data/shoeshop/
+root@lab-server:/data/shoeshop# ls
+pom.xml  README.md  shoe_shopdb.sql  src
+```
+Khi kiểm tra thử thì thấy chúng ta đang ở nhánh master/
+
+![img_10.png](img_10.png)
+
+Có thể tạo mới và chuyển sang nhánh main:
+
+```shell
+root@lab-server:/data/shoeshop# git checkout -b main
+Switched to a new branch 'main'
+```
+
+Tương tự Github, lúc này chúng ta có thể commmit và push dự án lên với các lệnh quen thuộc.
