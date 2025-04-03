@@ -148,7 +148,7 @@ server {
     ssl_certificate /etc/letsencrypt/live/harbor.anhtuan.online/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/harbor.anhtuan.online/privkey.pem;
 
-    location / {
+    location / {  
         root /var/www/html;
         index index.html index.htm;
     }

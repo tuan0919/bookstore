@@ -268,3 +268,54 @@ deploy:
 Sau khi commit, gitlab runner sẽ tự động build và deploy phiên bản mới nhất của dự án.
 
 ![img_20.png](img_20.png)
+
+### Gitlab CI/CD bằng Docker
+
+Bên cạnh việc viết kịch bản deploy dự án trực tiếp trên máy, chúng ta có thể đóng gói dự án thành các container và sẽ viết kịch bản để dùng docker deploy.
+
+```yaml
+variables:
+  DOCKER_IMAGE: ${REGISTRY_URL}/${CI_PROJECT_NAME}/${CI_COMMIT_TAG}:${CI_COMMIT_SHORT_SHA}
+  DOCKER_CONTAINER: shoeshop
+stages:
+    - build
+    - deploy
+    - showlog
+
+build:
+    stage: build
+    variables:
+        GIT_STRATEGY: clone
+    before_script:
+        - docker login ${REGISTRY_URL} -u ${REGISTRY_USER} -p ${REGISTRY_PASSWD}
+    script:
+        - docker build -t $DOCKER_IMAGE .
+        - docker push $DOCKER_IMAGE
+    tags:
+        - lab-server
+    only:
+        - tags
+deploy:
+    stage: deploy
+    variables:
+        GIT_STRATEGY: none
+    script:
+        - docker pull $DOCKER_IMAGE
+        - docker rm -f $DOCKER_CONTAINER
+        - docker run --name $DOCKER_CONTAINER -d -p 18181:8080 $DOCKER_IMAGE
+    tags:
+        - lab-server
+    only:
+        - tags
+showlog:
+    stage: showlog
+    variables:
+        GIT_STRATEGY: none
+    script:
+        - sleep 10
+        - docker logs $DOCKER_CONTAINER
+    tags:
+        - lab-server
+    only:
+        - tags
+```
