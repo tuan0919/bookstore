@@ -3,7 +3,7 @@ import KeyboardArrowLeftRoundedIcon from '@mui/icons-material/KeyboardArrowLeftR
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import shadows from "@mui/material/styles/shadows";
 import { grey, red } from "@mui/material/colors";
-
+import { useNavigate } from "react-router-dom";
 interface CategoryDrawerProps {
     open: boolean,
     setClose: () => void,
@@ -67,6 +67,13 @@ const CustomizeAccordionDetails = styled(AccordionDetails)(() => ({
 }));
 
 export function CategoryDrawer({ open, setClose }: CategoryDrawerProps) {
+    const navigate = useNavigate();
+     // Hàm xử lý khi click vào thể loại
+     const handleCategoryClick = (categoryPath: string) => {
+        navigate(`/category/${categoryPath}`);
+        setClose(); // Đóng Drawer sau khi chọn
+    };
+
     return (
         <Drawer
             open={open}
@@ -111,11 +118,11 @@ export function CategoryDrawer({ open, setClose }: CategoryDrawerProps) {
                         <Typography component="span">Sách tiếng việt</Typography>
                     </CustomizeAccordionSummary>
                     <CustomizeAccordionDetails>
-                        <CustomizeLink>Manga</CustomizeLink>
-                        <CustomizeLink>Comic</CustomizeLink>
-                        <CustomizeLink>Manhua</CustomizeLink>
-                        <CustomizeLink>Manhwa</CustomizeLink>
-                        <CustomizeLink>Light Novel</CustomizeLink>
+                        <CustomizeLink onClick={() => handleCategoryClick("sach-tieng-viet/manga")}>Manga</CustomizeLink>
+                        <CustomizeLink onClick={() => handleCategoryClick("sach-tieng-viet/comic")}>Comic</CustomizeLink>
+                        <CustomizeLink onClick={() => handleCategoryClick("sach-tieng-viet/manhua")}>Manhua</CustomizeLink>
+                        <CustomizeLink onClick={() => handleCategoryClick("sach-tieng-viet/manhwa")}>Manhwa</CustomizeLink>
+                        <CustomizeLink onClick={() => handleCategoryClick("sach-tieng-viet/light-novel")}>Light Novel</CustomizeLink>
                     </CustomizeAccordionDetails>
                 </CustomizeAccordion>
                 <CustomizeAccordion>
@@ -125,11 +132,11 @@ export function CategoryDrawer({ open, setClose }: CategoryDrawerProps) {
                         <Typography component="span">Sách ngoại văn</Typography>
                     </CustomizeAccordionSummary>
                     <CustomizeAccordionDetails>
-                        <CustomizeLink>Manga</CustomizeLink>
-                        <CustomizeLink>Comic</CustomizeLink>
-                        <CustomizeLink>Manhua</CustomizeLink>
-                        <CustomizeLink>Manhwa</CustomizeLink>
-                        <CustomizeLink>Light Novel</CustomizeLink>
+                        <CustomizeLink onClick={() => handleCategoryClick("sach-ngoai-van/manga")}>Manga</CustomizeLink>
+                        <CustomizeLink onClick={() => handleCategoryClick("sach-ngoai-van/comic")}>Comic</CustomizeLink>
+                        <CustomizeLink onClick={() => handleCategoryClick("sach-ngoai-van/manhua")}>Manhua</CustomizeLink>
+                        <CustomizeLink onClick={() => handleCategoryClick("sach-ngoai-van/manhwa")}>Manhwa</CustomizeLink>
+                        <CustomizeLink onClick={() => handleCategoryClick("sach-ngoai-van/light-novel")}>Light Novel</CustomizeLink>
                     </CustomizeAccordionDetails>
                 </CustomizeAccordion>
                 <CustomizeAccordion>
