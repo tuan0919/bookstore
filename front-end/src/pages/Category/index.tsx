@@ -20,7 +20,7 @@ function CategoryPage() {
 
   return (
     <>
-      <NavBar />
+    
       <Container sx={{ marginTop: 2, display: "flex", flexDirection: "column", gap: 2 }}>
         {/* Breadcrumbs */}
         <Breadcrumbs separator="›" aria-label="breadcrumb"  sx={{ fontSize: 12, "& .MuiLink-root": { fontSize: 14 }, "& .MuiTypography-root": { fontSize: 14 } }}>
@@ -64,7 +64,7 @@ function CategoryPage() {
           </Grid2>
         </Grid2>
 
-        <Footer />
+        
       </Container>
     </>
   );

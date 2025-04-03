@@ -13,7 +13,6 @@ function App() {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route path="/" element={<Navigate to="/home" />} />
-          <Route path="/category" element={undefined} />
           <Route path="/details" Component={BookDetails} />
           <Route path="/home" Component={Home} />
           <Route
