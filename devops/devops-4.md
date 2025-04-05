@@ -7,7 +7,7 @@ Bên cạnh **[Gitlab CI/CD](./devops-3.md#gitlab-cicd)** thì trên thực tế
 - Một máy ảo gitlab hoặc 1 github repo có sẵn project để thực hành.
 - Một máy ảo / VPS để cài Jenkins Server.
 
-### Cài đặt jenkins
+### Cài đặt jenkins server
 
 Nhập đoạn script sau để cài đặt Jenkins:
 
@@ -77,4 +77,32 @@ Có nhiều tùy chọn để thao tác tại trang dashboard, nhưng hiện t�
 
 Cách tiếp cận của chúng ta sẽ là: **Jenkins Server** là nơi quản lý Pipeline, không phải là nơi triển khai dự án.
 
+### Cài đặt Jenkins agent
 
+Trước khi cài đặt Jenkins agent thì chúng ta cần phải đảm bảo nó có cùng phiên bản với Jenkins server.
+
+Tiếp theo, tạo một user jenkins trên server sẽ cài jenkins agent (server host)
+
+Tiếp theo, tạo một node trên màn hình dashboard của jenkins server
+
+![img_30.png](img_30.png)
+
+Nhập **Remote root directory** là **/var/lib/jenkins**, phải đảm bảo thư mục này cũng đã tồn tại trên server host, nếu chưa có thì tạo với lệnh mkdir.
+
+Vì agent cần phải đi vào jenkins server, cho nên tại jenkins server chúng ta cần phải setup một inbound rule tại một port nào đó để cho phép jenkins agent có thể đi vào.
+
+![img_31.png](img_31.png)
+
+Các trường còn lại có thể để mặc định.
+
+Sau khi thiết lập xong node, bấm vào để chuyển sang trang hướng dẫn cài đặt jenkins agent tương ứng tại host server.
+
+![img_32.png](img_32.png)
+
+Tại đây jenkins sẽ generate sẵn cho chúng ta các câu lệnh để paste vào mà không cần phải tự tay nhập.
+
+![img_33.png](img_33.png)
+
+Lưu ý, trước khi paste câu lệnh vào server host thì chúng ta nên chuyển sang user jenkins, vì câu lệnh này sẽ cài đặt một số công cụ nhất định, nên best practice là quyền truy cập các công cụ này nên thuộc về bản thân user jenkins.
+
+Sau khi agent kết nối thành công, chúng ta sẽ tiến hành tạo pipeline
