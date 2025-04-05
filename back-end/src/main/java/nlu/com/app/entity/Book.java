@@ -13,7 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Created by: VuLuu
+ * @author VuLuu
  */
 @Entity
 @Table(name = "books")
@@ -26,20 +26,32 @@ public class Book {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "book_id")
   private Long bookId;
-  @Column(name = "publisher")
-  private String publisher;
   @Column(name = "title")
   private String title;
+  @Column(name = "publisher")
+  private String publisher;
   @Column(name = "publish_year")
   private int publishYear;
   @Column(name = "weight")
   private double weight;
-  @Column(name = "dimensions")
-  private String dimensions;
+  @Column(name = "product_code")
+  private String productCode;
+  @Column(name = "supplier")
+  String supplier;
+  @Column(name = "author")
+  String author;
+  @Column(name = "author")
+  String language;
   @Column(name = "page_count")
-  private int page_count;
+  int pageCount;
+  @Column(name = "translator")
+  String translator;
+  @Column(name = "size")
+  String size;
   @Column(name = "format")
   private String format;
+  @Column(name = "age")
+  private String age;
   @Column(name = "description", columnDefinition = "TEXT")
   private String description;
   @Column(name = "qty_in_stock")
@@ -50,5 +62,9 @@ public class Book {
   @ManyToOne
   @JoinColumn(name = "category_id")
   private Category category;
+
+  @ManyToOne
+  @JoinColumn(name = "genre_id")
+  private Genre genre;
 }
 

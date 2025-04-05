@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 import nlu.com.app.constant.ReviewType;
 
 /**
- * Created by: VuLuu
+ * @author VuLuu
  */
 @Entity
 @Table(name = "user_reviews")

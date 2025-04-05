@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 
 
 /**
- * Created by: VuLuu
+ * @author VuLuu
  */
 @Entity
 @Table(name = "user_addresses")
