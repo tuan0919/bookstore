@@ -29,10 +29,13 @@ services:
       dockerfile: Dockerfile.production
     container_name: nginx
     environment:
-      - DOMAIN_NAME=${DOMAIN_NAME}
+      - DOMAIN_BACK_END=${DOMAIN_BACK_END}
+      - DOMAIN_FRONT_END=${DOMAIN_FRONT_END}
     volumes:
-      - ${FULL_CHAIN_PATH}:/etc/nginx/ssl/fullchain.pem
-      - ${PRIVATE_KEY_PATH}:/etc/nginx/ssl/privkey.pem
+      - ${FRONTEND_FULL_CHAIN_PATH}:/etc/nginx/ssl/front-end/fullchain.pem
+      - ${FRONTEND_PRIVATE_KEY_PATH}:/etc/nginx/ssl/front-end/privkey.pem
+      - ${BACKEND_FULL_CHAIN_PATH}:/etc/nginx/ssl/back-end/fullchain.pem
+      - ${BACKEND_PRIVATE_KEY_PATH}:/etc/nginx/ssl/back-end/privkey.pem
     ports:
       - "443:443"
       - "80:80"
