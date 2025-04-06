@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  mysql:
+    container_name: mysql
+    image: 'mysql:8.0.19'
+    ports:
+      - '3306:3306'
+    env_file:
+      - env/mysql.env
+      - env/docker-compose.env
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  spring-boot-backend:
+    image: eclipse-temurin:23-jdk-alpine
+    container_name: spring-boot-backend
+    working_dir: /app
+    env_file:
+      - ./env/backend.develop.env
+    volumes:
+      - ./back-end:/app  # Mount toàn bộ code vào container
+      - ~/.m2:/root/.m2 # Bind mount cache Maven
+    ports:
+      - "8181:8181"
+    command: [ "./mvnw", "spring-boot:run" ]
+    depends_on:
+      - mysql
+
+  react-app:
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile.develop
+    container_name: react-app
+    ports:
+    - "3000:80" # map 80 in container => 3000 in local
+
+volumes:
+  mysql_data:

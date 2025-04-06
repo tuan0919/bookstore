@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  mysql:
+    container_name: mysql
+    image: 'mysql:8.0.19'
+    ports:
+      - '3306:3306'
+    env_file:
+      - env/mysql.env
+      - env/docker-compose.env
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  springboot:
+    build:
+      context: ./back-end
+      dockerfile: Dockerfile.production
+    container_name: springboot
+    env_file:
+      - ./env/backend.production.env
+    ports:
+      - "8181:8181"
+    depends_on:
+      - mysql
+
+  nginx:
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile.production
+    container_name: nginx
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}
+    volumes:
+      - ${FULL_CHAIN_PATH}:/etc/nginx/ssl/fullchain.pem:ro
+      - ${PRIVATE_KEY_PATH}:/etc/nginx/ssl/privkey.pem:ro
+    ports:
+      - "443:443"
+      - "80:80"
+
+volumes:
+  mysql_data:

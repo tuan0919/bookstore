@@ -10,9 +10,9 @@ spring:
       ddl-auto: update
     show-sql: true
   datasource:
-    username: ${MYSQL_USER:admin}  # Lấy từ biến môi trường, nếu không có thì mặc định là "admin"
-    password: ${MYSQL_PASSWORD:admin}
-    url: jdbc:mysql://${MYSQL_HOST:mysql}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:bookstore}
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:123}
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:bookstore}
 
 app:
   jwt-key: 1ytvns7A2HHo2GUQ2d82xS2I7dRyWWv1BTU51Ve+il0=
