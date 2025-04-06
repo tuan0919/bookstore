@@ -1,3 +1,15 @@
+<!-- TOC -->
+* [I. Web Server là gì?](#i-web-server-là-gì)
+* [II. Tìm hiểu Nginx](#ii-tìm-hiểu-nginx)
+  * [1) Module HTTP trong Nginx](#1-module-http-trong-nginx)
+  * [2) Các chỉ thị thường gặp](#2-các-chỉ-thị-thường-gặp)
+    * [2.1) Chỉ thị liên quan đến HOST và SOCKET](#21-chỉ-thị-liên-quan-đến-host-và-socket)
+    * [2.2) Chỉ thị liên quan đến cấu hình đường dẫn và tài liệu](#22-chỉ-thị-liên-quan-đến-cấu-hình-đường-dẫn-và-tài-liệu)
+    * [2.3) Chỉ thị liên quan đến cấu hình Reverse Proxy](#23-chỉ-thị-liên-quan-đến-cấu-hình-reverse-proxy)
+    * [2.4) Chỉ thị liên quan đến MIME Types](#24-chỉ-thị-liên-quan-đến-mime-types)
+  * [3) Các biến có sẵn trong nginx](#3-các-biến-có-sẵn-trong-nginx)
+<!-- TOC -->
+
 # I. Web Server là gì?
 Máy chủ Web (Web Server) là một máy chủ sẽ được cài đặt các phần mềm thích hợp để phục vụ web, đôi khi người ta cũng gọi chính bản thân phần mềm đó là Web Server.
 
@@ -13,9 +25,7 @@ Không giống với các Web Server truyền thống, Nginx không sử dụng 
 
 C10K là bài toán nói về việc do các máy chủ web truyền thống sử dụng thread để xử lý yêu cầu, cho nên nếu số lượng yêu cầu đồng thời quá cao sẽ dẫn đến lượng thread sinh ra cũng sẽ quá nhiều và đến một lúc nào đấy sẽ xảy ra tình trạng thiếu hụt tài nguyên trên máy chủ khi cố cung cấp cho các luồng xử lý trên
 
-## Kiến trúc của Nginx
-
-### 1) Module HTTP trong Nginx
+## 1) Module HTTP trong Nginx
 
 Module HTTP Core là thành phần sẽ chứa tất cả các khối, chỉ thị và biến cơ bản của máy chủ HTTP. Mặc định thì module này được cài đặt trong lúc biên dịch, nhưng không được bật lên khi Nginx đang chạy, việc sử dụng module này là không bất buộc.
 
@@ -29,9 +39,9 @@ Module này là một trong các module tiêu chuẩn lớn nhất của Nginx -
 
 Trong biểu đồ trên, khu vực HTTP, được định nghĩa bởi khối http, bao quanh toàn bộ các cấu hình liên quan đến web. Nó cũng chứa 1 hoặc nhiều khối server, định nghĩa các tên miền của các website mà chúng ta có. Với mỗi website này, chúng ta có thể định nghĩa nhiều khối location mà cho phép chúng ta áp dụng các thiết lập bổ sung đến 1 URI yêu cầu cụ thể của website hoặc các URI yêu cầu khớp 1 mẫu nào đó.
 
-### 2) Các chỉ thị thường gặp
+## 2) Các chỉ thị thường gặp
 
-#### 2.1) Chỉ thị liên quan đến HOST và SOCKET
+### 2.1) Chỉ thị liên quan đến HOST và SOCKET
 
 - `listen`: 
   - Sử dụng trong khối `server`.
@@ -102,7 +112,7 @@ Trong biểu đồ trên, khu vực HTTP, được định nghĩa bởi khối h
       - Khi truy cập `http://example.com:8080/`, Nginx sẽ redirect tới: `https://example.com:8080/`.
       - Còn nếu để `off`, Nginx sẽ redirect tới: `https://example.com/`
 
-#### 2.2) Chỉ thị liên quan đến cấu hình đường dẫn và tài liệu
+### 2.2) Chỉ thị liên quan đến cấu hình đường dẫn và tài liệu
 - `root`:
   - Sử dụng trong khối: `server`, `http`, `location`, `if`.
   - Dùng để xác định thư mục gốc trong hệ thống file mà Nginx sẽ tìm nội dung tĩnh để phục vụ khi có request đến.
@@ -127,3 +137,129 @@ Trong biểu đồ trên, khu vực HTTP, được định nghĩa bởi khối h
       ```
     - Giả sử user truy cập: `http://example.com/images/logo.png`. Nginx sẽ tìm file tại: `/var/www/assets/images/logo.png`.
     - Không phải `/var/www/assets/logo.png`!
+- `alias`:
+  - Sử dụng trong khối `location`.
+  - Chỉ thị alias nói với Nginx rằng: “khi URL khớp với `location`, hãy bỏ phần `location` đó đi, và nối phần còn lại vào `alias`.”
+  - Cú pháp: `alias <đường_dẫn_thực>;`.
+    - Ví dụ:
+      - ```shell
+          location /images/ {
+              alias /var/www/static/;
+          }
+          ```
+      - Khi client truy cập: `http://example.com/images/logo.png`, Nginx sẽ tìm `/var/www/static/logo.png`.
+    - Chú ý, alias rất dễ bị dùng sai nếu không có dấu `/` cuối:
+      - ```shell
+          location /images/ {
+              alias /var/www/static; # Sai!
+          }
+          ```
+      - Nginx sẽ tìm `/var/www/staticlogo.png` (bị dính vào nhau).
+- `try_files`
+  - Sử dụng trong khối: `server`, `location`.
+  - Chỉ thị này yêu cầu Nginx: **"Hãy thử tìm từng file theo thứ tự. Nếu không tìm thấy cái nào, thì xử lý bằng cái cuối cùng."**
+  - Cú pháp: `try_files <file1> <file2> ... <fallback>;`
+    - Ví dụ:
+      - ```shell
+        location / {
+          root /var/www/html;
+          try_files $uri $uri/ =404;
+         }
+          ```
+      - Truy cập `/about` sẽ kiểm tra theo thứ tự:
+        - `/var/www/html/about`
+        - `/var/www/html/about/`
+        - Nếu không có thì trả ra lỗi 404;
+  
+### 2.3) Chỉ thị liên quan đến cấu hình Reverse Proxy
+- `proxy_pass`:
+  - Dùng trong khối `location`
+  - Khi Nginx nhận được request từ client, nó gửi lại (forward) request đó đến địa chỉ proxy_pass, và trả lại kết quả cho client như thể từ Nginx gửi ra.
+  - Cú pháp: `proxy_pass <url_backend>;`.
+    - Ví dụ:
+      - ```shell
+          location /api/ {
+              proxy_pass http://localhost:3000;
+          }
+          ```
+      - Khi client truy cập `http://yourdomain.com/api/users` thì Nginx sẽ chuyển tiếp đến `http://localhost:3000/api/users` rồi trả kết quả lại cho client.
+- `proxy_set_header`:
+  - Dùng trong khối `http`, `server`, `location` 
+  - Chỉ thị này bảo Nginx: **"Khi proxy request đến backend, hãy gửi kèm theo HTTP header này, với giá trị cụ thể."**
+    - Nói đơn giản thì có thể đặt lại các HTTP headers để backend biết thông tin thật của client hoặc hoạt động đúng môi trường.
+  - Cú pháp: `proxy_set_header <tên_header> <giá_trị>;`
+  - Ví dụ:
+    - ```shell
+        location / {
+        proxy_pass http://localhost:3000;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+        ```
+    - `Host`: Gửi tên host gốc mà client truy cập (thường là domain).
+    - `X-Real-IP`: Địa chỉ IP thực của client.
+    - `X-Forwarded-For`: Danh sách IP qua các proxy trung gian.
+    - `X-Forwarded-Proto`: Giao thức client đang dùng.
+
+### 2.4) Chỉ thị liên quan đến MIME Types
+
+MIME type (Multipurpose Internet Mail Extensions) là kiểu nội dung (content type) mà server thông báo cho client (trình duyệt) biết: **“Ê, cái file tao đang gửi cho mày là dạng gì đó nha!”**
+
+MIME type gửi cho trình duyệt dưới dạng: `Content-Type: text/html`.
+
+Nginx có chỉ thị `types` để giải quyết các vấn đề xoay quanh MIME Type:
+- `types`:
+  - Sử dụng ở khối `http`, `server` và `location`:
+    - Mặc định Nginx đã include sẵn từ file `mime.types`.
+    - File MIME types mặc định thường ở `include /etc/nginx/mime.types;`
+  - Nếu không thấy MIME Type phù hợp thì nginx dùng: `default_type application/octet-stream;`
+    - Nghĩa là **"Tao không biết đây là file gì nên mày cứ tải về đi."**
+  - Cú pháp sử dụng:
+    - ```shell
+        types {
+            <mime_type>  <danh_sách_extension>;
+        }
+        ```
+  - Ví dụ:
+    - ```shell
+        types {
+            text/html  html htm;
+            text/css   css;
+            application/javascript js;
+            image/png  png;
+            ...
+        }
+        ```
+- `default_type`:
+  - Chỉ thị này bảo Nginx: **"Nếu tao không xác định được MIME type dựa vào types (đuôi file), thì tao sẽ gán cái MIME này cho response."**
+  - Cú pháp: `default_type <mime-type>;`.
+    - Ví dụ:
+      - ```shell
+          http {
+            include /etc/nginx/mime.types;
+            default_type application/octet-stream;
+            server {
+                ...
+            }
+          }
+        ```
+      - Khi một file có đuôi không rõ ràng (hoặc không có đuôi luôn), Nginx không biết dùng MIME nào → nó dùng `application/octet-stream`.
+
+## 3) Các biến có sẵn trong nginx
+- **$host** - Tên host trong request (domain mà client truy cập).
+- **$remote_addr** - Địa chỉ IP của client.
+- **$remote_port** - Port của client.
+- **$server_addr** - IP server của Nginx.
+- **$server_port** - Port mà Nginx nhận request.
+- **$cheme** - Giao thức.
+- **$request_uri** - Đường dẫn đầy đủ của request (bao gồm query string).
+- **$uri** - Phần đường dẫn của request (KHÔNG có query string).
+- **$args** - Phần query string (sau dấu ?).
+- **$query_string** - Giống **\$arg**.
+- **$request_method** - GET, POST, PUT, DELETE…
+- **$document_root** - Đường dẫn gốc được khai báo trong `root`.
+- **$request_filename** - Đường dẫn đầy đủ tới file thực tế mà Nginx sẽ truy cập (kết hợp root + uri).
+- **$http_cookie** - Cookie từ client gửi lên.
+- **$status** - Status code của response.
