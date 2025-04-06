@@ -21,4 +21,17 @@ public enum EGenre {
   public String getDescription() {
     return description;
   }
+
+  public static EGenre getGenreByDescription(String text) {
+    for (EGenre e : EGenre.values()) {
+      if (e.getDescription().equalsIgnoreCase(text)) {
+        return e;
+      }
+    }
+    return null;
+  }
+
+  public static void main(String[] args) {
+    System.out.println(getGenreByDescription("Supernatural"));
+  }
 }

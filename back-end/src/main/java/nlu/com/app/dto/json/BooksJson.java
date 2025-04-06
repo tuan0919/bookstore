@@ -55,5 +55,5 @@ public class BooksJson {
   @JsonProperty("category")
   String category;
   @JsonProperty("genres")
-  String genres;
+  String genre;
 }

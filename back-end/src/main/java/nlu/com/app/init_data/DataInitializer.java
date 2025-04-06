@@ -1,16 +1,14 @@
 package nlu.com.app.init_data;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nlu.com.app.dto.json.BooksWrapper;
+import nlu.com.app.service.BookService;
+import nlu.com.app.service.CategoryService;
+import nlu.com.app.service.GenreService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 
 /**
  * @author VuLuu
@@ -20,16 +18,17 @@ import org.springframework.core.io.ClassPathResource;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DataInitializer {
 
-  ObjectMapper objectMapper;
+  CategoryService categoryService;
+  BookService bookService;
+  GenreService genreService;
 
   @Bean
   public CommandLineRunner demo() {
     return (args) -> {
-      ClassPathResource resource = new ClassPathResource("ArtAnime.json");
-      List<BooksWrapper> listBookWrapper = objectMapper.readValue(resource.getInputStream(),
-          new TypeReference<List<BooksWrapper>>() {
-          });
-      System.out.println(listBookWrapper);
+      // Generate default data
+      categoryService.initData();
+      genreService.initData();
+      bookService.initData();
     };
   }
 }
