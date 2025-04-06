@@ -24,8 +24,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        source ~/.bashrc
-                        docker compose -f ${dockerFile} build
+                        sudo su bookstore -c "docker compose -f ${dockerFile} build"
                     """
                 }
             }
@@ -35,9 +34,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                        source ~/.bashrc
-                        docker compose -f ${dockerFile} down -v
-                        docker compose -f ${dockerFile} up -d
+                        sudo su bookstore -c "docker compose -f ${dockerFile} down -v"
+                        sudo su bookstore -c "docker compose -f ${dockerFile} up -d"
                     """
                 }
             }

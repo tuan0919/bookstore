@@ -62,3 +62,10 @@ pipeline {
         }
     }
 }
+
+export DOMAIN_BACK_END="back-end.anhtuan.online"
+export DOMAIN_FRONT_END="front-end.anhtuan.online"
+export FRONTEND_FULL_CHAIN_PATH="/etc/letsencrypt/live/front-end.anhtuan.online/fullchain.pem"
+export FRONTEND_PRIVATE_KEY_PATH="/etc/letsencrypt/live/front-end.anhtuan.online/privkey.pem"
+export BACKEND_FULL_CHAIN_PATH="/etc/letsencrypt/live/back-end.anhtuan.online/fullchain.pem"
+export BACKEND_PRIVATE_KEY_PATH="/etc/letsencrypt/live/back-end.anhtuan.online/privkey.pem"

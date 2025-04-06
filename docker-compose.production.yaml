@@ -29,13 +29,13 @@ services:
       dockerfile: Dockerfile.production
     container_name: nginx
     environment:
-      - DOMAIN_BACK_END=${DOMAIN_BACK_END}
-      - DOMAIN_FRONT_END=${DOMAIN_FRONT_END}
+      - DOMAIN_BACK_END=back-end.anhtuan.online
+      - DOMAIN_FRONT_END=front-end.anhtuan.online
     volumes:
-      - ${FRONTEND_FULL_CHAIN_PATH}:/etc/nginx/ssl/front-end/fullchain.pem
-      - ${FRONTEND_PRIVATE_KEY_PATH}:/etc/nginx/ssl/front-end/privkey.pem
-      - ${BACKEND_FULL_CHAIN_PATH}:/etc/nginx/ssl/back-end/fullchain.pem
-      - ${BACKEND_PRIVATE_KEY_PATH}:/etc/nginx/ssl/back-end/privkey.pem
+      - /etc/letsencrypt/live/front-end.anhtuan.online/fullchain.pem:/etc/nginx/ssl/front-end/fullchain.pem
+      - /etc/letsencrypt/live/front-end.anhtuan.online/privkey.pem:/etc/nginx/ssl/front-end/privkey.pem
+      - /etc/letsencrypt/live/back-end.anhtuan.online/fullchain.pem:/etc/nginx/ssl/back-end/fullchain.pem
+      - /etc/letsencrypt/live/back-end.anhtuan.online/privkey.pem:/etc/nginx/ssl/back-end/privkey.pem
     ports:
       - "443:443"
       - "80:80"
