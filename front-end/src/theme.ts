@@ -12,7 +12,7 @@ let theme = createTheme({
       default: grey['100']
     },
     primary: {
-      main: '#556cd6',
+      main: '#C92127',
     },
     secondary: {
       main: '#19857b',

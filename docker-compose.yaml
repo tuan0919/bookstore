@@ -50,22 +50,21 @@ services:
     container_name: react-app
     ports:
     - "3000:80" # map 80 in container => 3000 in local
-    volumes:
-      - ./front-end/dist:/app/dist # bind mount đến thư mục gốc trong project để check
     networks:
       - frontend-network
-    
-      
+
   cloudflared:
     image: cloudflare/cloudflared:latest
     container_name: cloudflared
     restart: unless-stopped
     command: tunnel --no-autoupdate run --token eyJhIjoiNjJjMWNiYTQwYjlhNjJjZmVjMTMzYjZhMDAyZjM2NmIiLCJ0IjoiNzQ3OGM2YjMtZjZjOC00NGJmLTkyMTctNTVlYzUyZmQ1MzVmIiwicyI6IllXSXdOREF3TmpZdFpqUTNNeTAwT1RWbUxUa3haV0l0T0RZNFlqRmlNREk0WldNdyJ9
 
-
 volumes:
   mysql_data:
+  jenkins-docker-certs:
+  jenkins-data:
 
 networks:
   backend-network:
   frontend-network:
+  jenkins:
