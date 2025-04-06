@@ -15,4 +15,4 @@ COPY --from=react-build /app/dist /usr/share/nginx/html
 EXPOSE 80
 EXPOSE 443
 # Containers run nginx with global directives and daemon off
-CMD sh -c "envsubst '\$DOMAIN_NAME' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
+CMD sh -c "envsubst '\$DOMAIN_FRONT_END \$DOMAIN_BACK_END' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
