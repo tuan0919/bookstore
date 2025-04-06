@@ -24,7 +24,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                        sudo su ${projectUser} -c "source ~/.bashrc && docker compose -f ${dockerFile} build"
+                        source ~/.bashrc
+                        docker compose -f ${dockerFile} build
                     """
                 }
             }
@@ -34,8 +35,9 @@ pipeline {
             steps {
                 script {
                     sh """
-                        sudo su ${projectUser} -c "source ~/.bashrc && docker compose -f ${dockerFile} down -v"
-                        sudo su ${projectUser} -c "source ~/.bashrc && docker compose -f ${dockerFile} up -d"
+                        source ~/.bashrc
+                        docker compose -f ${dockerFile} down -v
+                        docker compose -f ${dockerFile} up -d
                     """
                 }
             }
