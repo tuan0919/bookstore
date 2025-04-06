@@ -31,8 +31,8 @@ services:
     environment:
       - DOMAIN_NAME=${DOMAIN_NAME}
     volumes:
-      - ${FULL_CHAIN_PATH}:/etc/nginx/ssl/fullchain.pem:ro
-      - ${PRIVATE_KEY_PATH}:/etc/nginx/ssl/privkey.pem:ro
+      - ${FULL_CHAIN_PATH}:/etc/nginx/ssl/fullchain.pem
+      - ${PRIVATE_KEY_PATH}:/etc/nginx/ssl/privkey.pem
     ports:
       - "443:443"
       - "80:80"

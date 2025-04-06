@@ -1,35 +1,33 @@
 # Stage 1: Build using Maven Wrapper
 FROM eclipse-temurin:23-jdk-alpine AS builder
 
-# Install bash (if needed)
-RUN apk add --no-cache bash
-
 WORKDIR /app
 
-# Copy Maven Wrapper files first to cache dependencies
+# Copy Maven wrapper and related files first (to leverage layer caching)
 COPY mvnw ./
 COPY .mvn .mvn
-COPY pom.xml .
+COPY pom.xml ./
+RUN chmod +x mvnw
 
-# Download dependencies
+# Pre-fetch dependencies (improve cache efficiency)
 RUN ./mvnw dependency:go-offline
 
-# Copy the rest of the code
-COPY . .
+# Copy the rest of the source code
+COPY src ./src
 
-# Build the application
+# Build the application (skip tests for faster build)
 RUN ./mvnw clean package -DskipTests
 
-# Stage 2: Runtime
+# Stage 2: Runtime only
 FROM eclipse-temurin:23-jdk-alpine
 
 WORKDIR /app
 
-# Copy built JAR from previous stage
+# Copy built JAR from builder stage
 COPY --from=builder /app/target/*.jar app.jar
 
-# Expose port
+# Expose application port
 EXPOSE 8181
 
-# Run the application
+# Default command
 CMD ["java", "-jar", "app.jar"]
