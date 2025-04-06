@@ -28,7 +28,7 @@ public class BookImage {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "book_image_id")
   private Long bookImageId;
-  @Column(name = "image_url")
+  @Column(name = "image_url", columnDefinition = "TEXT")
   private String imageUrl;
   @Column(name = "is_thumbnail")
   private boolean isThumbnail;

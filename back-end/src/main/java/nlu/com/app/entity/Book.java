@@ -37,23 +37,23 @@ public class Book {
   @Column(name = "publisher")
   private String publisher;
   @Column(name = "publish_year")
-  private int publishYear;
+  private String publishYear;
   @Column(name = "weight")
   private double weight;
   @Column(name = "product_code")
   private String productCode;
   @Column(name = "supplier")
-  String supplier;
+  private String supplier;
   @Column(name = "author")
-  String author;
+  private String author;
   @Column(name = "language")
-  String language;
+  private String language;
   @Column(name = "page_count")
-  int pageCount;
+  private int pageCount;
   @Column(name = "translator")
-  String translator;
+  private String translator;
   @Column(name = "size")
-  String size;
+  private String size;
   @Column(name = "format")
   private String format;
   @Column(name = "age")
@@ -66,7 +66,7 @@ public class Book {
   private double price;
 
   @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
-  List<BookImage> images = new ArrayList<>();
+  private List<BookImage> images = new ArrayList<>();
 
   @ManyToOne
   @JoinColumn(name = "category_id")

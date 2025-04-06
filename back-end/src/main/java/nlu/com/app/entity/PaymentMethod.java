@@ -2,6 +2,8 @@ package nlu.com.app.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -10,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nlu.com.app.constant.EPaymentMethod;
 
 /**
  * @author VuLuu
@@ -27,5 +30,6 @@ public class PaymentMethod {
   @Column(name = "payment_method_id")
   private Long paymentMethodId;
   @Column(name = "method_name")
-  private String methodName;
+  @Enumerated(EnumType.STRING)
+  private EPaymentMethod methodName;
 }

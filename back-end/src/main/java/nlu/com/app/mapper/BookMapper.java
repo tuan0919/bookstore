@@ -36,42 +36,53 @@ public interface BookMapper {
   Book jsonToEntity(BooksJson booksJson, @Context CategoryRepository categoryRepository,
       @Context GenreRepository genreRepository);
 
+  List<Book> jsonToEntityList(List<BooksJson> booksJsonList,
+      @Context CategoryRepository categoryRepository,
+      @Context GenreRepository genreRepository);
+
   @Named("stringToCategory")
   default Category stringToCategory(String value, @Context CategoryRepository categoryRepository) {
-    List<Category> categoryList = new ArrayList<>();
+    List<Category> categoryList;
     Map<ECategory, Category> categoryMap = new HashMap<>();
+
     switch (value) {
       case "Manga":
       case "Light Novel":
+        // Tìm các Category con của VN_BOOK
         categoryList = categoryRepository.findByParentCategory(
-            categoryRepository.findCategoriesByCategoryName(ECategory.VN_BOOK).get());
-
-        categoryMap = categoryList.stream()
-            .collect(Collectors.toMap(Category::getCategoryName, category -> category));
-
-        if (value.equals("Manga")) {
-          return categoryMap.get(ECategory.MANGA);
-        } else {
-          return categoryMap.get(ECategory.LIGHT_NOVEL);
-        }
+            categoryRepository.findCategoriesByCategoryName(ECategory.VN_BOOK)
+                .orElseThrow(() -> new ApplicationException(
+                    ErrorCode.UNKNOWN_EXCEPTION)));  // Kiểm tra null nếu cần
+        break;
       case "MangaJP":
       case "LNJP":
       case "ArtAnime":
+        // Tìm các Category con của F_BOOK
         categoryList = categoryRepository.findByParentCategory(
-            categoryRepository.findCategoriesByCategoryName(ECategory.VN_BOOK).get());
-        categoryMap = categoryList.stream()
-            .collect(Collectors.toMap(Category::getCategoryName, category -> category));
-        if (value.equals("Manga")) {
-          return categoryMap.get(ECategory.MANGA);
-        } else if (value.equals("ArtAnime")) {
-          return categoryMap.get(ECategory.ART_ANIME_CHAR);
-        } else {
-          return categoryMap.get(ECategory.LIGHT_NOVEL);
-        }
-
+            categoryRepository.findCategoriesByCategoryName(ECategory.F_BOOK)
+                .orElseThrow(() -> new ApplicationException(
+                    ErrorCode.UNKNOWN_EXCEPTION)));  // Kiểm tra null nếu cần
+        break;
       default:
         throw new ApplicationException(ErrorCode.UNKNOWN_EXCEPTION);
+    }
 
+    // Lọc các category có tên tương ứng
+    categoryMap = categoryList.stream()
+        .collect(Collectors.toMap(Category::getCategoryName, category -> category));
+
+    switch (value) {
+      case "Manga":
+        return categoryMap.get(ECategory.MANGA);
+      case "Light Novel":
+        return categoryMap.get(ECategory.LIGHT_NOVEL);
+      case "ArtAnime":
+        return categoryMap.get(ECategory.ART_ANIME_CHAR);
+      case "MangaJP":
+      case "LNJP":
+        return categoryMap.get(ECategory.LIGHT_NOVEL);
+      default:
+        throw new ApplicationException(ErrorCode.UNKNOWN_EXCEPTION);
     }
   }
 
