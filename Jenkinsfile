@@ -45,14 +45,14 @@ pipeline {
             steps {
                 script {
                     // Lấy danh sách các container Docker đang chạy
-                    def containers = sh(script: "docker ps -q", returnStdout: true).trim().split("\n")
+                    def containers = sh(script: "sudo su bookstore -c \"docker ps -q\"", returnStdout: true).trim().split("\n")
 
                     // Kiểm tra nếu có container đang chạy
                     if (containers.size() > 0) {
                         // Duyệt qua các container và in log ra màn hình
                         containers.each { containerId ->
                             echo "Showing logs for container ID: ${containerId}"
-                            sh "docker logs ${containerId} --tail 100"  // Lấy 100 dòng cuối của log từ mỗi container
+                            sh "sudo su bookstore -c \"docker logs ${containerId} --tail 100\""  // Lấy 100 dòng cuối của log từ mỗi container
                         }
                     } else {
                         echo "No containers are currently running."
