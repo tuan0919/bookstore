@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Show info') {
             when {
-                branch 'main'
+                expression { return env.GIT_BRANCH == 'origin/main' }
             }
             steps {
                 script {
@@ -25,7 +25,7 @@ pipeline {
 
         stage('Build') {
             when {
-                branch 'main'
+                expression { return env.GIT_BRANCH == 'origin/main' }
             }
             steps {
                 script {
@@ -52,7 +52,7 @@ pipeline {
 
         stage('Show Logs') {
             when {
-                branch 'main'
+                expression { return env.GIT_BRANCH == 'origin/main' }
             }
             steps {
                 script {
