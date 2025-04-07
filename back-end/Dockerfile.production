@@ -1,0 +1,37 @@
+# Stage 1: Build using Maven Wrapper
+FROM eclipse-temurin:23-jdk-alpine AS builder
+
+WORKDIR /app
+
+# Copy Maven wrapper and related files first (to leverage layer caching)
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+COPY wait-for-it.sh .
+RUN chmod +x mvnw
+
+# Pre-fetch dependencies (improve cache efficiency)
+RUN ./mvnw dependency:go-offline
+
+# Copy the rest of the source code
+COPY src ./src
+
+# Build the application (skip tests for faster build)
+RUN ./mvnw clean package -DskipTests
+
+# Stage 2: Runtime only
+FROM eclipse-temurin:23-jdk-alpine
+
+WORKDIR /app
+
+# Copy built JAR from builder stage
+COPY --from=builder /app/target/*.jar app.jar
+COPY --from=builder /app/wait-for-it.sh .
+RUN apk add --no-cache bash
+RUN chmod +x wait-for-it.sh
+
+# Expose application port
+EXPOSE 8181
+
+# Default command
+CMD ["./wait-for-it.sh", "mysql:3306", "--", "java", "-jar", "app.jar"]

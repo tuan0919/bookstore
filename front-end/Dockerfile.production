@@ -1,0 +1,18 @@
+FROM node:lts-alpine AS react-build
+# Set working directory
+WORKDIR /app
+#
+COPY . .
+RUN npm install
+ENV CI=true
+RUN npm run build
+# 2. For Nginx setup
+FROM nginx:alpine AS deploy
+# Copy config nginx
+COPY .nginx/nginx.production.conf /etc/nginx/nginx.conf.template
+# Copy static assets from builder stage
+COPY --from=react-build /app/dist /usr/share/nginx/html
+EXPOSE 80
+EXPOSE 443
+# Containers run nginx with global directives and daemon off
+CMD sh -c "envsubst '\$DOMAIN_FRONT_END \$DOMAIN_BACK_END' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
