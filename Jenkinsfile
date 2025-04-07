@@ -8,6 +8,9 @@ pipeline {
 
     stages {
         stage('Show info') {
+            when {
+                branch 'main'
+            }
             steps {
                 script {
                     sh """
@@ -21,6 +24,9 @@ pipeline {
         }
 
         stage('Build') {
+            when {
+                branch 'main'
+            }
             steps {
                 script {
                     sh """
@@ -31,6 +37,9 @@ pipeline {
         }
 
         stage('Deploy') {
+            when {
+                branch 'main'
+            }
             steps {
                 script {
                     sh """
@@ -42,6 +51,9 @@ pipeline {
         }
 
         stage('Show Logs') {
+            when {
+                branch 'main'
+            }
             steps {
                 script {
                     echo "Showing logs for container mysql"
@@ -54,12 +66,6 @@ pipeline {
                     sh "docker logs nginx"
                 }
             }
-        }
-    }
-
-    triggers {
-        gitPush {
-            branches('main')
         }
     }
 }
