@@ -23,7 +23,7 @@ export function SearchField() {
       alignItems: 'center',
     }}>
       <TextField
-        placeholder='Tự học Toán lớp 12'
+        placeholder='One Piece - Đảo Hải Tặc tập 63'
         variant="standard" sx={{
           width: 400,
         }}
