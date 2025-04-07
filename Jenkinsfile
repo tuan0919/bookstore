@@ -38,7 +38,7 @@ pipeline {
 
         stage('Deploy') {
             when {
-                branch 'main'
+                expression { return env.GIT_BRANCH == 'origin/main' }
             }
             steps {
                 script {
@@ -57,13 +57,13 @@ pipeline {
             steps {
                 script {
                     echo "Showing logs for container mysql"
-                    sh "docker logs mysql"
+                    sh "sudo su bookstore -c \"docker logs mysql\""
 
                     echo "Showing logs for container springboot"
-                    sh "docker logs springboot"
+                    sh "sudo su bookstore -c \"docker logs springboot\""
 
                     echo "Showing logs for container nginx"
-                    sh "docker logs nginx"
+                    sh "sudo su bookstore -c \"docker logs nginx\""
                 }
             }
         }
