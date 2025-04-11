@@ -36,6 +36,7 @@
 		<jjwt-jackson.version>0.11.5</jjwt-jackson.version>
 		<jackson-databind.version>2.15.2</jackson-databind.version>
 		<h2database.version>2.2.224</h2database.version>
+		<aws.java.sdk.version>2.31.19</aws.java.sdk.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -123,8 +124,28 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>s3</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>software.amazon.awssdk</groupId>
+					<artifactId>netty-nio-client</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>software.amazon.awssdk</groupId>
+				<artifactId>bom</artifactId>
+				<version>${aws.java.sdk.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
 		<plugins>

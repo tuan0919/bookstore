@@ -16,7 +16,8 @@ public enum ErrorCode {
     ROLE_ALREADY_EXISTED(1006, "Role is already existed!", HttpStatus.BAD_REQUEST),
     PERMISSION_NOT_EXISTED(1007, "Permission is not existed!", HttpStatus.NOT_FOUND),
     UNEXPECTED_BEHAVIOR(1008, "Something went wrong, this action shouldn't perform", HttpStatus.BAD_REQUEST),
-    JWT_EXPIRED(1009, "Your session is out of date, please re-login", HttpStatus.FORBIDDEN)
+    JWT_EXPIRED(1009, "Your session is out of date, please re-login", HttpStatus.FORBIDDEN),
+    S3_KEY_OBJECT_DUPLICATED(1010, "Object with same key existed on server", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
