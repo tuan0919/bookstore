@@ -6,6 +6,7 @@ pipeline {
         projectUser = 'bookstore'
         executeCommand = 'sudo su bookstore -c'
         loadEnv = 'source ~/.my_env'
+        compose = 'docker compose'
     }
 
     stages {
@@ -32,7 +33,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        ${executeCommand} "${loadEnv} && docker compose -f ${dockerFile} build"
+                        ${executeCommand} "${loadEnv} && ${compose} -f ${dockerFile} build"
                     """
                 }
             }
@@ -45,8 +46,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                        ${executeCommand} "${loadEnv} && docker compose -f ${dockerFile} down -v"
-                        ${executeCommand} "${loadEnv} && docker compose -f ${dockerFile} up -d"
+                        ${executeCommand} "${loadEnv} && ${compose} -f ${dockerFile} down -v"
+                        ${executeCommand} "${loadEnv} && ${compose} -f ${dockerFile} up -d"
                     """
                 }
             }
