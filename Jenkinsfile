@@ -5,6 +5,7 @@ pipeline {
         dockerFile = 'docker-compose.production.yaml'
         projectUser = 'bookstore'
         executeCommand = 'sudo su - bookstore -c'
+        loadEnv = 'source ~/.my_env'
     }
 
     stages {
@@ -31,7 +32,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        ${executeCommand} "docker compose -f ${dockerFile} build"
+                        ${executeCommand} "${loadEnv} && docker compose -f ${dockerFile} build"
                     """
                 }
             }
@@ -44,8 +45,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                        ${executeCommand} "docker compose -f ${dockerFile} down -v"
-                        ${executeCommand} "docker compose -f ${dockerFile} up -d"
+                        ${executeCommand} "${loadEnv} && docker compose -f ${dockerFile} down -v"
+                        ${executeCommand} "${loadEnv} && docker compose -f ${dockerFile} up -d"
                     """
                 }
             }
@@ -59,7 +60,7 @@ pipeline {
                 script {
                     ['mysql', 'springboot', 'nginx'].each { container ->
                         echo "Showing logs for container ${container}"
-                        sh "${executeCommand} \"docker logs ${container}\""
+                        sh "${executeCommand} \"${loadEnv} && docker logs ${container}\""
                     }
                 }
             }
