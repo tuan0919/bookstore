@@ -4,6 +4,7 @@ pipeline {
     environment {
         dockerFile = 'docker-compose.production.yaml'
         projectUser = 'bookstore'
+        executeCommand = 'sudo su - bookstore -c'
     }
 
     stages {
@@ -30,7 +31,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        sudo su bookstore -c "docker compose -f ${dockerFile} build"
+                        ${executeCommand} "docker compose -f ${dockerFile} build"
                     """
                 }
             }
@@ -43,8 +44,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                        sudo su bookstore -c "docker compose -f ${dockerFile} down -v"
-                        sudo su bookstore -c "docker compose -f ${dockerFile} up -d"
+                        ${executeCommand} "docker compose -f ${dockerFile} down -v"
+                        ${executeCommand} "docker compose -f ${dockerFile} up -d"
                     """
                 }
             }
@@ -56,14 +57,10 @@ pipeline {
             }
             steps {
                 script {
-                    echo "Showing logs for container mysql"
-                    sh "sudo su bookstore -c \"docker logs mysql\""
-
-                    echo "Showing logs for container springboot"
-                    sh "sudo su bookstore -c \"docker logs springboot\""
-
-                    echo "Showing logs for container nginx"
-                    sh "sudo su bookstore -c \"docker logs nginx\""
+                    ['mysql', 'springboot', 'nginx'].each { container ->
+                        echo "Showing logs for container ${container}"
+                        sh "${executeCommand} \"docker logs ${container}\""
+                    }
                 }
             }
         }
