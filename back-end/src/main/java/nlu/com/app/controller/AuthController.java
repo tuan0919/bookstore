@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nlu.com.app.dto.AppResponse;
 import nlu.com.app.dto.request.LoginUserDTO;
 import nlu.com.app.dto.request.RegisterUserDTO;
-import nlu.com.app.service.UserService;
+import nlu.com.app.service.impl.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

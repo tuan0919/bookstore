@@ -4,15 +4,14 @@ import nlu.com.app.dto.request.RegisterUserDTO;
 import nlu.com.app.entity.User;
 import nlu.com.app.exception.ApplicationException;
 import nlu.com.app.exception.ErrorCode;
-import nlu.com.app.mapper.UserMapper;
 import nlu.com.app.repository.UserRepository;
+import nlu.com.app.service.impl.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.Optional;

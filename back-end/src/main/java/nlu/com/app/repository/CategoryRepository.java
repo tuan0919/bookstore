@@ -12,7 +12,10 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-
+  Optional<Category> findByCategoryName(ECategory name);
   Optional<Category> findCategoriesByCategoryName(ECategory eCategory);
+
   List<Category> findByParentCategory(Category parentCategory);
+
+  List<Category> findByParentCategoryIsNull();
 }

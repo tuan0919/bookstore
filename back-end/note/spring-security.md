@@ -383,11 +383,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import nlu.com.app.service.JWTService;
+import nlu.com.app.service.impl.JWTService;
 import nlu.com.app.service.UserServiceTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -399,23 +398,27 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
+
   private final JWTService jwtService;
   private final ApplicationContext context;
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+      FilterChain filterChain) throws ServletException, IOException {
     String authHeader = request.getHeader("Authorization");
     String username = null;
     String token = authHeader != null
-            && authHeader.startsWith("Bearer ") ? authHeader.substring(7) : null;
+        && authHeader.startsWith("Bearer ") ? authHeader.substring(7) : null;
     if (token != null) {
       username = jwtService.extractUsername(token);
       var userDetails = context.getBean(UserDetailsService.class).loadUserByUsername(username);
       if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
         if (jwtService.validateToken(token, userDetails)) {
           UsernamePasswordAuthenticationToken authenticationToken =
-                  new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-          authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+              new UsernamePasswordAuthenticationToken(userDetails, null,
+                  userDetails.getAuthorities());
+          authenticationToken.setDetails(
+              new WebAuthenticationDetailsSource().buildDetails(request));
           SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
       }
@@ -431,36 +434,37 @@ Cuối cùng, chỉnh sửa lại logic endpoint /login, trả về chuỗi JWT 
 package nlu.com.app.service;
 
 import lombok.RequiredArgsConstructor;
-import nlu.com.app.constant.UserRole;
 import nlu.com.app.dto.request.LoginUserDTO;
-import nlu.com.app.dto.request.RegisterUserDTO;
 import nlu.com.app.exception.ApplicationException;
 import nlu.com.app.exception.ErrorCode;
 import nlu.com.app.mapper.UserMapper;
 import nlu.com.app.repository.UserRepository;
+import nlu.com.app.service.impl.JWTService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
-    private final PasswordEncoder passwordEncoder;
-    private final JWTService jwtService;
-    private final AuthenticationManager authenticationManager;
 
-    public String verify(LoginUserDTO requestDTO) {
-        var authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDTO.getUsername(), requestDTO.getPassword()));
-        if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(requestDTO.getUsername());
-        } else {
-            throw new ApplicationException(ErrorCode.USER_NOT_EXISTED);
-        }
+  private final UserRepository userRepository;
+  private final UserMapper userMapper;
+  private final PasswordEncoder passwordEncoder;
+  private final JWTService jwtService;
+  private final AuthenticationManager authenticationManager;
+
+  public String verify(LoginUserDTO requestDTO) {
+    var authentication = authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(requestDTO.getUsername(),
+            requestDTO.getPassword()));
+    if (authentication.isAuthenticated()) {
+      return jwtService.generateToken(requestDTO.getUsername());
+    } else {
+      throw new ApplicationException(ErrorCode.USER_NOT_EXISTED);
     }
+  }
 }
 ```
 

@@ -1,4 +1,4 @@
-package nlu.com.app.service;
+package nlu.com.app.service.impl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -22,7 +22,7 @@ public class JWTService {
                 .setClaims(Map.of())
                 .setSubject(user)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 30))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 30))
                 .signWith(getKey())
                 .compact();
     }

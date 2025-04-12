@@ -1,12 +1,15 @@
-package nlu.com.app.service;
+package nlu.com.app.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nlu.com.app.constant.ECategory;
+import nlu.com.app.dto.response.CategoryResponseDTO;
 import nlu.com.app.entity.Category;
 import nlu.com.app.repository.CategoryRepository;
+import nlu.com.app.service.ICategoryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class CategoryService {
+public class CategoryService implements ICategoryService {
 
   CategoryRepository categoryRepository;
 
@@ -53,4 +56,24 @@ public class CategoryService {
         .build();
   }
 
+  @Override
+  public List<CategoryResponseDTO> getAllCategories() {
+    List<Category> rootCategories = categoryRepository.findByParentCategoryIsNull();
+
+    return rootCategories.stream()
+        .map(this::mapToDTO)
+        .collect(Collectors.toList());
+  }
+
+  private CategoryResponseDTO mapToDTO(Category category) {
+    List<CategoryResponseDTO> children = categoryRepository.findByParentCategory(category).stream()
+        .map(this::mapToDTO)
+        .collect(Collectors.toList());
+
+    return CategoryResponseDTO.builder()
+        .id(category.getCategoryId())
+        .name(category.getCategoryName().getDescription())
+        .children(children)
+        .build();
+  }
 }
