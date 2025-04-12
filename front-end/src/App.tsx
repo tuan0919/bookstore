@@ -6,7 +6,7 @@ import { BookDetails } from "./pages/BookDetails";
 import { MainLayout } from "./components/MainLayout";
 
 import CategoryPage from "./pages/Category";
-
+import Cart from "./pages/Cart";
 function App() {
   return (
     <>
@@ -24,6 +24,7 @@ function App() {
             }
           />
           <Route path="/category/*" element={<CategoryPage />} />
+          <Route path="/cart" element={<Cart />} />
         </Route>
       </Routes>
     </>
