@@ -5,7 +5,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nlu.com.app.constant.EGenre;
+import nlu.com.app.dto.response.GenreResponseDTO;
 import nlu.com.app.entity.Genre;
+import nlu.com.app.mapper.GenreMapper;
 import nlu.com.app.repository.GenreRepository;
 import nlu.com.app.service.IGenreService;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class GenreService implements IGenreService {
 
   GenreRepository genreRepository;
+  GenreMapper genreMapper;
 
   public void initData() {
     Genre comedy = Genre.builder().name(EGenre.COMEDY).build();
@@ -40,7 +43,8 @@ public class GenreService implements IGenreService {
    * @return
    */
   @Override
-  public List<Genre> getAllGenre() {
-    return genreRepository.findAll();
+  public List<GenreResponseDTO> getAllGenre() {
+    var result = genreRepository.findAll();
+    return genreMapper.toGenreResponseDtoList(result);
   }
 }

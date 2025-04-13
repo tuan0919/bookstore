@@ -13,6 +13,7 @@ import nlu.com.app.dto.json.BooksJson;
 import nlu.com.app.dto.json.BooksWrapper;
 import nlu.com.app.dto.request.BookSearchRequestDTO;
 import nlu.com.app.dto.response.CategoryResponseDTO;
+import nlu.com.app.dto.response.GenreResponseDTO;
 import nlu.com.app.dto.response.PageBookResponseDTO;
 import nlu.com.app.dto.response.ShopDataInitDTO;
 import nlu.com.app.entity.Book;
@@ -56,6 +57,7 @@ public class BookService implements IBookService {
   UserReviewRepository userReviewRepository;
   BookImageRepository bookImageRepository;
   CategoryService categoryService;
+  GenreService genreService;
 
   public void initData() throws IOException {
     for (String file : initJsonFile) {
@@ -155,10 +157,11 @@ public class BookService implements IBookService {
   @Override
   public ShopDataInitDTO getShopInitData() {
     List<CategoryResponseDTO> categoryList = categoryService.getAllCategories();
+    List<GenreResponseDTO> genreResponseList = genreService.getAllGenre();
     return ShopDataInitDTO
         .builder()
         .categoryResponseDTOs(categoryList.get(0))
-        .genreResponseDTOs(null)
+        .genreResponseDTOs(genreResponseList)
         .build();
   }
 }
