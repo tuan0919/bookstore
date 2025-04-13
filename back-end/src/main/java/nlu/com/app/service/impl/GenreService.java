@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import nlu.com.app.constant.EGenre;
 import nlu.com.app.entity.Genre;
 import nlu.com.app.repository.GenreRepository;
+import nlu.com.app.service.IGenreService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class GenreService {
+public class GenreService implements IGenreService {
 
   GenreRepository genreRepository;
 
@@ -35,4 +36,11 @@ public class GenreService {
         , drama, sciFi, supernatural));
   }
 
+  /**
+   * @return
+   */
+  @Override
+  public List<Genre> getAllGenre() {
+    return genreRepository.findAll();
+  }
 }

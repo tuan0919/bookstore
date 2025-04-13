@@ -1,12 +1,12 @@
 package nlu.com.app.dto.response;
 
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 /**
  * @author VuLuu
@@ -15,11 +15,10 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-public class CategoryResponseDTO {
+@FieldDefaults(level = AccessLevel.PUBLIC)
+public class ShopDataInitDTO {
 
-  Long id;
-  String name;
-  List<CategoryResponseDTO> children;
+  CategoryResponseDTO categoryResponseDTOs;
+  List<GenreResponseDTO> genreResponseDTOs;
+
 }

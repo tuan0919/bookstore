@@ -1,6 +1,5 @@
 package nlu.com.app.dto.response;
 
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,9 +16,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CategoryResponseDTO {
+public class GenreResponseDTO {
 
-  Long id;
+  long id;
   String name;
-  List<CategoryResponseDTO> children;
 }

@@ -13,6 +13,10 @@ spring:
     username: root  # Lấy từ biến môi trường, nếu không có thì mặc định là "admin"
     password: 12345678
     url: jdbc:mysql://localhost:3306/book-store
+  data:
+    redis:
+      port: 6389
+      host: localhost
 
 app:
   jwt-key: 1ytvns7A2HHo2GUQ2d82xS2I7dRyWWv1BTU51Ve+il0=

@@ -12,7 +12,9 @@ import lombok.experimental.FieldDefaults;
 import nlu.com.app.dto.json.BooksJson;
 import nlu.com.app.dto.json.BooksWrapper;
 import nlu.com.app.dto.request.BookSearchRequestDTO;
+import nlu.com.app.dto.response.CategoryResponseDTO;
 import nlu.com.app.dto.response.PageBookResponseDTO;
+import nlu.com.app.dto.response.ShopDataInitDTO;
 import nlu.com.app.entity.Book;
 import nlu.com.app.entity.BookImage;
 import nlu.com.app.entity.Category;
@@ -53,6 +55,7 @@ public class BookService implements IBookService {
   PromotionCategoriesRepository promotionCategoriesRepository;
   UserReviewRepository userReviewRepository;
   BookImageRepository bookImageRepository;
+  CategoryService categoryService;
 
   public void initData() throws IOException {
     for (String file : initJsonFile) {
@@ -144,5 +147,18 @@ public class BookService implements IBookService {
         .toList();
 
     return new PageImpl<>(result, pageable, books.getTotalElements());
+  }
+
+  /**
+   * @return
+   */
+  @Override
+  public ShopDataInitDTO getShopInitData() {
+    List<CategoryResponseDTO> categoryList = categoryService.getAllCategories();
+    return ShopDataInitDTO
+        .builder()
+        .categoryResponseDTOs(categoryList.get(0))
+        .genreResponseDTOs(null)
+        .build();
   }
 }
