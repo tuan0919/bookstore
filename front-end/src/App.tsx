@@ -4,6 +4,7 @@ import { Box, Typography } from "@mui/material";
 
 import { BookDetails } from "./pages/BookDetails";
 import { MainLayout } from "./components/MainLayout";
+import { ProfileUser } from "./pages/ProfileUser";
 
 import CategoryPage from "./pages/Category";
 
@@ -12,9 +13,10 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<MainLayout />}>
-          <Route path="/" element={<Navigate to="/home" />} />
+          <Route path="/" element={<Navigate to="/profileUser" />} />
           <Route path="/details" Component={BookDetails} />
           <Route path="/home" Component={Home} />
+          <Route path="/profileUser" Component={ProfileUser} />
           <Route
             path="*"
             element={
