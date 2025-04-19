@@ -8,6 +8,7 @@ import { useMemo } from "react";
 import { NavBar } from "./components/NavBar";
 import Footer from "./components/Footer";
 import Cart from "./pages/Cart";
+import Search from "./pages/Search";
 function App() {
   const CheckoutLayout = useMemo(() => {
     return (
@@ -48,6 +49,7 @@ function App() {
           />
           <Route path="/category/*" element={<CategoryPage />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/search" Component={Search} />
         </Route>
         <Route element={CheckoutLayout}>
           <Route path="/checkout" Component={Checkout} />
