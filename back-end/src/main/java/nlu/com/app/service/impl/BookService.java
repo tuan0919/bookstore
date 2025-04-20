@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nlu.com.app.dto.json.BooksJson;
 import nlu.com.app.dto.json.BooksWrapper;
+import nlu.com.app.dto.request.BookDetailsDTO;
+import nlu.com.app.dto.request.BookDetailsDTO.ReviewDTO;
 import nlu.com.app.dto.request.BookSearchRequestDTO;
 import nlu.com.app.dto.response.CategoryResponseDTO;
 import nlu.com.app.dto.response.GenreResponseDTO;
@@ -99,9 +101,9 @@ public class BookService implements IBookService {
     return false;
   }
 
+
   /**
-   * @param bookSearchRequestDTO
-   * @return
+   * {@inheritDoc}
    */
   public Page<PageBookResponseDTO> getBooksByCategory(BookSearchRequestDTO bookSearchRequestDTO) {
     Pageable pageable = PageRequest.of(bookSearchRequestDTO.getPage(),
@@ -112,8 +114,16 @@ public class BookService implements IBookService {
 
     List<Category> subCategories = categoryRepository.findByParentCategory(category);
     subCategories.add(category);
+    Double minPrice =
+        bookSearchRequestDTO.getMinPrice() != null ? bookSearchRequestDTO.getMinPrice() / 1000
+            : 0.0;
+    Double maxPrice =
+        bookSearchRequestDTO.getMaxPrice() != null ? bookSearchRequestDTO.getMaxPrice() / 1000
+            : Double.MAX_VALUE;
 
-    Page<Book> books = bookRepository.findAllByCategoryIn(subCategories, pageable);
+    Page<Book> books = bookRepository.findAllByCategoryInAndPriceBetweenAndTitleContainingIgnoreCase(
+        subCategories, minPrice, maxPrice, bookSearchRequestDTO.getContext(), pageable
+    );
 
     List<Long> bookIds = books.stream().map(Book::getBookId).toList();
     List<Long> categoryIds = subCategories.stream().map(Category::getCategoryId).toList();
@@ -152,7 +162,7 @@ public class BookService implements IBookService {
   }
 
   /**
-   * @return
+   * {@inheritDoc}
    */
   @Override
   public ShopDataInitDTO getShopInitData() {
@@ -163,5 +173,44 @@ public class BookService implements IBookService {
         .categoryResponseDTOs(categoryList.get(0))
         .genreResponseDTOs(genreResponseList)
         .build();
+  }
+
+  /**
+   * {{@inheritDoc}}
+   */
+  @Override
+  public BookDetailsDTO getBookDetails(Long bookId) {
+    Book book = bookRepository.findById(bookId)
+        .orElseThrow(() -> new ApplicationException(ErrorCode.UNKNOWN_EXCEPTION));
+
+    List<String> imageUrls = book.getImages().stream()
+        .map(BookImage::getImageUrl)
+        .collect(Collectors.toList());
+
+    List<ReviewDTO> reviews = userReviewRepository.findAllByBook(book).stream()
+        .map(review -> ReviewDTO.builder()
+            .userName(review.getUser().getUsername())
+            .rating(review.getRating())
+            .reviewText(review.getReviewText())
+            .reviewDate(review.getReview_date().toString())
+            .build())
+        .collect(Collectors.toList());
+
+    List<Promotion> promotions = promotionCategoriesRepository.findActivePromotionsByCategoryIds(
+        List.of(book.getCategory().getCategoryId()));
+
+    Double discount = promotions.stream()
+        .flatMap(promotion -> promotion.getPromotionCategories().stream()
+            .filter(
+                pc -> pc.getCategory().getCategoryId().equals(book.getCategory().getCategoryId()))
+            .map(pc -> promotion.getDiscountPercentage()))
+        .max(Double::compare)
+        .orElse(0D);
+
+    Double originalPrice = book.getPrice() * 1000;
+    Double discountedPrice = originalPrice * (1 - discount / 100) * 1000;
+
+//    return bookMapper.toBookDetailsDTO(book, imageUrls, reviews, originalPrice, discountedPrice);
+    return null;
   }
 }

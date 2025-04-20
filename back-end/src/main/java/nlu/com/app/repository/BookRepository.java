@@ -19,4 +19,15 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
   @EntityGraph(attributePaths = {"images", "category", "genre"})
   Page<Book> findAllByCategoryIn(List<Category> categories, Pageable pageable);
+
+  @EntityGraph(attributePaths = {"images", "category", "genre"})
+  Page<Book> findAllByCategoryInAndPriceBetweenAndTitleContainingIgnoreCase(
+      List<Category> categories,
+      Double minPrice,
+      Double maxPrice,
+      String bookName,
+      Pageable pageable
+  );
+
+
 }
