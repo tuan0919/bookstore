@@ -3,10 +3,10 @@ import {
   DialogTitle,
   DialogContent,
   DialogContentText,
-  DialogActions,
   Button,
   FormControlLabel,
   Checkbox,
+  Box,
 } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
@@ -43,18 +43,26 @@ export function SaveBookDialog(props: SaveBookDialogProps) {
             label="Truyện ít tái bản"
           />
         </DialogContentText>
-      </DialogContent>
-      <DialogActions sx={{ display: "flex", justifyContent: "center" }}>
-        <Button
-          variant="contained"
-          color="success"
-          startIcon={<AddRoundedIcon />}
-          onClick={() => onClickAddBtn()}
-          sx={{ borderRadius: 23, px: 2 }}
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            mt: 1,
+          }}
         >
-          Tạo bộ sách mới
-        </Button>
-      </DialogActions>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<AddRoundedIcon />}
+            onClick={() => onClickAddBtn()}
+            size="small"
+            sx={{ borderRadius: 23, px: 2 }}
+          >
+            Tạo bộ sách mới
+          </Button>
+        </Box>
+      </DialogContent>
     </Dialog>
   );
 }
