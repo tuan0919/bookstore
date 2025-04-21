@@ -2,6 +2,8 @@ import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { Box, Typography } from "@mui/material";
 import { BookDetails } from "./pages/BookDetails";
+import { MainLayout } from "./components/MainLayout";
+import { ProfileUser } from "./pages/ProfileUser";
 import CategoryPage from "./pages/Category";
 import { Checkout } from "./pages/Checkout";
 import { useMemo } from "react";
@@ -39,6 +41,7 @@ function App() {
           <Route path="/" element={<Navigate to="/home" />} />
           <Route path="/details" Component={BookDetails} />
           <Route path="/home" Component={Home} />
+          <Route path="/profileUser" Component={ProfileUser} />
           <Route
             path="*"
             element={
