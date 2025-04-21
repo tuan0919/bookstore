@@ -1,13 +1,8 @@
 import React, { useState } from "react";
 import { Box } from "@mui/material";
-import SidebarMenu from "./Sidebar";
+import SidebarMenu from "./SidebarMenu";
 import PersonalProfile from "./ProfileSections/PersonalProfile";
-import AddressBook from "./ProfileSections/AddressBook";
-import ChangePassword from "./ProfileSections/ChangePassword";
-import InvoiceInfo from "./ProfileSections/InvoiceInfo";
-import Privileges from "./ProfileSections/Privileges";
-
-import BookSeries from "./PageOther/BookSeries";
+// import các section khác ở đây...
 
 export function ProfileUser() {
   const [openAccount, setOpenAccount] = useState(true);
@@ -16,12 +11,7 @@ export function ProfileUser() {
   const renderContent = () => {
     switch (selected) {
       case 'Hồ sơ cá nhân': return <PersonalProfile />;
-      case 'Sổ địa chỉ': return < AddressBook/>;
-      case 'Đổi mật khẩu': return <ChangePassword />;
-      case 'Thông tin xuất hóa đơn GTGT': return <InvoiceInfo />;
-      case 'Ưu đãi thành viên': return <Privileges />;
-
-      case 'Sách theo bộ': return <BookSeries />;
+      case 'Sổ địa chỉchỉ': return <PersonalProfile />;
 
       default: return <div>Chưa có nội dung</div>;
     }
