@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 import nlu.com.app.constant.ECategory;
 import nlu.com.app.constant.EGenre;
 import nlu.com.app.dto.json.BooksJson;
+import nlu.com.app.dto.request.BookDetailsDTO;
+import nlu.com.app.dto.request.BookDetailsDTO.ReviewDTO;
+import nlu.com.app.dto.response.PageBookResponseDTO;
 import nlu.com.app.entity.Book;
 import nlu.com.app.entity.BookImage;
 import nlu.com.app.entity.Category;
@@ -52,7 +55,7 @@ public interface BookMapper {
         categoryList = categoryRepository.findByParentCategory(
             categoryRepository.findCategoriesByCategoryName(ECategory.VN_BOOK)
                 .orElseThrow(() -> new ApplicationException(
-                    ErrorCode.UNKNOWN_EXCEPTION)));  // Kiểm tra null nếu cần
+                    ErrorCode.UNKNOWN_EXCEPTION)));
         break;
       case "MangaJP":
       case "LNJP":
@@ -61,7 +64,7 @@ public interface BookMapper {
         categoryList = categoryRepository.findByParentCategory(
             categoryRepository.findCategoriesByCategoryName(ECategory.F_BOOK)
                 .orElseThrow(() -> new ApplicationException(
-                    ErrorCode.UNKNOWN_EXCEPTION)));  // Kiểm tra null nếu cần
+                    ErrorCode.UNKNOWN_EXCEPTION)));
         break;
       default:
         throw new ApplicationException(ErrorCode.UNKNOWN_EXCEPTION);
@@ -92,7 +95,7 @@ public interface BookMapper {
   }
 
   @Named("toImageList")
-  public static List<BookImage> toImageList(String[] images) {
+  default List<BookImage> toImageList(String[] images) {
     if (images == null || images.length == 0) {
       return new ArrayList<>();
     }
@@ -108,5 +111,58 @@ public interface BookMapper {
     return result;
   }
 
+  @Mapping(target = "imageUrl", source = "book", qualifiedByName = "mapImage")
+  @Mapping(target = "discountedPrice", source = "book", qualifiedByName = "calculateDiscountedPrice")
+  @Mapping(target = "averageRating", source = "averageRating")
+  PageBookResponseDTO toPageDto(Book book, @Context double discountPercentage,
+      double averageRating);
+
+  @Named("mapImage")
+  default String mapImage(Book book) {
+    if (book.getImages() == null || book.getImages().isEmpty()) {
+      return null;
+    }
+
+    return book.getImages().stream()
+        .filter(image -> image.isThumbnail() && image.getImageUrl() != null && !image.getImageUrl()
+            .isEmpty())
+        .map(BookImage::getImageUrl)
+        .findFirst()
+        .orElse(null);
+  }
+
+  @Named("calculateDiscountedPrice")
+  default double calculateDiscountedPrice(Book book, @Context double discountPercentage) {
+    if (book.getPrice() <= 0) {
+      return 0;
+    }
+    return book.getPrice() * (1 - discountPercentage / 100) * 1000;
+  }
+
+//  @Mapping(source = "book.bookId", target = "bookId")
+//  @Mapping(source = "title", target = "title")
+//  @Mapping(source = "publisher", target = "publisher")
+//  @Mapping(source = "publishYear", target = "publishYear")
+//  @Mapping(source = "weight", target = "weight")
+//  @Mapping(source = "productCode", target = "productCode")
+//  @Mapping(source = "supplier", target = "supplier")
+//  @Mapping(source = "author", target = "author")
+//  @Mapping(source = "language", target = "language")
+//  @Mapping(source = "pageCount", target = "pageCount")
+//  @Mapping(source = "translator", target = "translator")
+//  @Mapping(source = "size", target = "size")
+//  @Mapping(source = "format", target = "format")
+//  @Mapping(source = "age", target = "age")
+//  @Mapping(source = "description", target = "description")
+//  @Mapping(source = "qtyInStock", target = "qtyInStock")
+//  @Mapping(source = "price", target = "price")
+//  @Mapping(source = "discountedPrice", target = "discountedPrice")
+//  @Mapping(source = "imageUrls", target = "imageUrls")
+//  @Mapping(source = "reviews", target = "reviews")
+//  BookDetailsDTO toBookDetailsDTO(Book book,
+//      List<String> imageUrls,
+//      List<ReviewDTO> reviews,
+//      Double originalPrice,
+//      Double discountedPrice);
 }
 

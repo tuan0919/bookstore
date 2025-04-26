@@ -26,6 +26,7 @@ public class GlobalExceptionFilter extends OncePerRequestFilter {
         }
         catch (Exception ex) {
             // Sử dụng HandlerExceptionResolver để chuyển hướng exception sang GlobalExceptionHandler
+            ex.printStackTrace();
             handlerExceptionResolver.resolveException(request, response, null, ex);
         }
     }

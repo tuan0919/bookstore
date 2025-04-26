@@ -13,6 +13,10 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME:admin}
     password: ${SPRING_DATASOURCE_PASSWORD:admin}
     url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/bookstore}
+  data:
+    redis:
+      port: 6389
+      host: localhost
 
 app:
   jwt-key: 1ytvns7A2HHo2GUQ2d82xS2I7dRyWWv1BTU51Ve+il0=

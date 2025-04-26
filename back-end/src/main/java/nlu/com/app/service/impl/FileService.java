@@ -1,9 +1,10 @@
-package nlu.com.app.service;
+package nlu.com.app.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import nlu.com.app.dto.request.PutObjectDTO;
 import nlu.com.app.exception.ApplicationException;
 import nlu.com.app.exception.ErrorCode;
+import nlu.com.app.service.IFileService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -17,7 +18,7 @@ import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
-public class FileService {
+public class FileService implements IFileService {
     @Value("${app.aws.bucket.name}")
     private String bucketName;
     @Value("${app.aws.bucket.request-timeout}")
@@ -25,6 +26,7 @@ public class FileService {
     private final S3Presigner s3Presigner;
     private final S3Client s3Client;
 
+    @Override
     public String signPutObjectRequest(PutObjectDTO dto) {
         String key = dto.getKey();
         if (doesObjectExist(key)) {

@@ -10,6 +10,12 @@ services:
       - env/docker-compose.env
     volumes:
       - mysql_data:/var/lib/mysql
+  redis:
+    container_name: redis
+    image: 'redis:7.0'
+    ports:
+      - '6389:6379'
+    restart: unless-stopped
 
 volumes:
   mysql_data:
