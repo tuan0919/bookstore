@@ -1,4 +1,4 @@
-package nlu.com.app.service;
+package nlu.com.app.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;

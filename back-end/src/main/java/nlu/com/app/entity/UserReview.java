@@ -42,11 +42,11 @@ public class UserReview {
 
   @ManyToOne
   @JoinColumn(name = "book_id", nullable = true)
-  private Book book; // NULL nếu là review bộ sưu tập
+  private Book book; // NULL if review collection
 
   @ManyToOne
   @JoinColumn(name = "collection_id", nullable = true)
-  private BookCollection collection; // NULL nếu là review sách
+  private BookCollection collection; // NULL if review book
 
   @Column(name = "rating")
   private double rating;

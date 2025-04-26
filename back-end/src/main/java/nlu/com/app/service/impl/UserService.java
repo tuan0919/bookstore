@@ -1,4 +1,4 @@
-package nlu.com.app.service;
+package nlu.com.app.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import nlu.com.app.constant.UserRole;
