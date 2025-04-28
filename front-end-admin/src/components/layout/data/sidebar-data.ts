@@ -15,6 +15,7 @@ import {
   IconServerOff,
   IconSettings,
   IconTool,
+  IconBox,
   IconUserCog,
   IconUserOff,
   IconUsers,
@@ -47,7 +48,7 @@ export const sidebarData: SidebarData = {
   ],
   navGroups: [
     {
-      title: 'General',
+      title: 'Cơ bản',
       items: [
         {
           title: 'Dashboard',
@@ -55,7 +56,25 @@ export const sidebarData: SidebarData = {
           icon: IconLayoutDashboard,
         },
         {
-          title: 'Tasks',
+          title: 'Shop',
+          items: [
+            {
+              title: 'Sản phẩm',
+              url: '/products',
+            },
+            {
+              title: 'Đơn hàng',
+              url: '/sign-in-2',
+            },
+            {
+              title: 'Liên lạc',
+              url: '/sign-in-2',
+            },
+          ],
+          icon: IconBox,
+        },
+        {
+          title: 'Nhiệm vụ',
           url: '/tasks',
           icon: IconChecklist,
         },
@@ -71,7 +90,7 @@ export const sidebarData: SidebarData = {
           icon: IconMessages,
         },
         {
-          title: 'Users',
+          title: 'Người dùng',
           url: '/users',
           icon: IconUsers,
         },
