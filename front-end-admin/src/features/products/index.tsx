@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Form,
   FormControl,
@@ -20,6 +21,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Slider } from '@/components/ui/slider'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
@@ -29,9 +31,8 @@ import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 
 const formSchema = z.object({
-  username: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
-  }),
+  languages: z.string(),
+  priceRange: z.number(),
 })
 
 export default function Dashboard() {
@@ -39,7 +40,8 @@ export default function Dashboard() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: '',
+      languages: '',
+      priceRange: 100000,
     },
   })
 
@@ -100,30 +102,41 @@ export default function Dashboard() {
                       onSubmit={form.handleSubmit(onSubmit)}
                       className='space-y-8'
                     >
+                      <FormLabel className='text-base'>
+                        Chọn ngôn ngữ truyện
+                      </FormLabel>
                       <FormField
                         control={form.control}
-                        name='username'
+                        name='languages'
                         render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Username</FormLabel>
-                            <FormControl>
-                              <Input placeholder='shadcn' {...field} />
-                            </FormControl>
-                            <FormDescription>
-                              This is your public display name.
-                            </FormDescription>
-                            <FormMessage />
-                          </FormItem>
+                          <>
+                            <FormItem className='flex flex-row items-center space-y-0 space-x-3'>
+                              <FormControl>
+                                <Checkbox />
+                              </FormControl>
+                              <FormLabel>Truyện tiếng việt</FormLabel>
+                            </FormItem>
+                            <FormItem className='flex flex-row items-center space-y-0 space-x-3'>
+                              <FormControl>
+                                <Checkbox />
+                              </FormControl>
+                              <FormLabel>Truyện ngoại văn</FormLabel>
+                            </FormItem>
+                          </>
+                        )}
+                      />
+                      <FormLabel className='text-base'>Chọn giá tiền</FormLabel>
+                      <FormField
+                        control={form.control}
+                        name='priceRange'
+                        render={({ field }) => (
+                          <Slider defaultValue={[50]} max={100} step={1} />
                         )}
                       />
                       <Button type='submit'>Submit</Button>
                     </form>
                   </Form>
                 </CardContent>
-                <CardFooter className='flex justify-between'>
-                  <Button variant='outline'>Cancel</Button>
-                  <Button>Deploy</Button>
-                </CardFooter>
               </Card>
               <div className='col-span-3 bg-blue-200'>Cột 2</div>
             </div>
