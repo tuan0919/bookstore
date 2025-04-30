@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Link } from '@tanstack/react-router'
 import {
   IconPencil,
   IconSearch,
@@ -61,7 +62,7 @@ const formSchema = z.object({
   genres: z.string().array(),
 })
 
-export default function Dashboard() {
+export default function Product() {
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -210,10 +211,12 @@ export default function Dashboard() {
                         <SelectItem value='40'>40 sản phẩm</SelectItem>
                       </SelectContent>
                     </Select>
-                    <Button variant='outline' className='gap-1'>
-                      <IconPlus size={18} />
-                      Thêm sản phẩm
-                    </Button>
+                    <Link to='/products/new'>
+                      <Button variant='outline' className='gap-1'>
+                        <IconPlus size={18} />
+                        Thêm sản phẩm
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </CardHeader>

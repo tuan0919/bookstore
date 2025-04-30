@@ -60,7 +60,7 @@ export const sidebarData: SidebarData = {
           items: [
             {
               title: 'Sản phẩm',
-              url: '/products',
+              url: '/products/overview',
             },
             {
               title: 'Đơn hàng',
