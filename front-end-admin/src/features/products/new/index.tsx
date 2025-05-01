@@ -1,7 +1,13 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { IconUpload } from '@tabler/icons-react'
+import {
+  IconCheckbox,
+  IconCirclePlus,
+  IconSquare,
+  IconUpload,
+} from '@tabler/icons-react'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import {
@@ -9,6 +15,15 @@ import {
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from '@/components/ui/command'
 import {
   Form,
   FormControl,
@@ -18,6 +33,11 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import {
   Select,
   SelectContent,
@@ -44,6 +64,8 @@ const formSchema = z.object({
     message: 'Phải chọn nhà cung cấp cho sản phẩm!',
   }),
   language: z.string(),
+  age: z.number(),
+  genres: z.string().array(),
 })
 
 export default function New() {
@@ -168,6 +190,34 @@ export default function New() {
                   <CardContent className='flex flex-col gap-6'>
                     <FormField
                       control={form.control}
+                      name='age'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Độ tuổi</FormLabel>
+                          <Select
+                            onValueChange={(val) => field.onChange(Number(val))}
+                            defaultValue='0'
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value='0'>
+                                Bất kỳ độ tuổi nào
+                              </SelectItem>
+                              <SelectItem value='1'>13 tuổi trở lên</SelectItem>
+                              <SelectItem value='2'>16 tuổi trở lên</SelectItem>
+                              <SelectItem value='3'>18 tuổi trở lên</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
                       name='name'
                       render={() => (
                         <FormItem>
@@ -191,6 +241,67 @@ export default function New() {
                                 ))}
                               </CarouselContent>
                             </Carousel>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name='genres'
+                      render={() => (
+                        <FormItem>
+                          <FormLabel>Thể loại</FormLabel>
+                          <FormControl>
+                            <div className='flex gap-2'>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <div className='flex gap-1'>
+                                    <Button variant='outline' type='button'>
+                                      <IconCirclePlus />
+                                      Chọn thể loại
+                                    </Button>
+                                  </div>
+                                </PopoverTrigger>
+                                <PopoverContent className='w-80'>
+                                  <Command>
+                                    <CommandInput placeholder='Nhập thể loại...' />
+                                    <CommandList>
+                                      <CommandEmpty>
+                                        No results found.
+                                      </CommandEmpty>
+                                      <CommandGroup heading='Đề xuất'>
+                                        <CommandItem>
+                                          <IconSquare />
+                                          <span>Phiêu lưu</span>
+                                        </CommandItem>
+                                        <CommandItem>
+                                          <IconSquare />
+                                          <span>Tình cảm</span>
+                                        </CommandItem>
+                                        <CommandItem>
+                                          <IconCheckbox />
+                                          <span>Trinh khám</span>
+                                        </CommandItem>
+                                        <CommandItem>
+                                          <IconSquare />
+                                          <span>Kinh dị</span>
+                                        </CommandItem>
+                                      </CommandGroup>
+                                      <CommandSeparator />
+                                      <CommandGroup>
+                                        <CommandItem className='justify-center text-center'>
+                                          Thêm thể loại mới
+                                        </CommandItem>
+                                      </CommandGroup>
+                                    </CommandList>
+                                  </Command>
+                                </PopoverContent>
+                              </Popover>
+                              <div className='flex flex-wrap gap-1 border border-dashed p-2'>
+                                <Badge variant='outline'>Trinh khám</Badge>
+                              </div>
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
