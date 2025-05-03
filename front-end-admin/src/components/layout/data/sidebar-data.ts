@@ -15,10 +15,11 @@ import {
   IconServerOff,
   IconSettings,
   IconTool,
-  IconBox,
   IconUserCog,
   IconUserOff,
   IconUsers,
+  IconBooks,
+  IconShoppingBag,
 } from '@tabler/icons-react'
 import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react'
 import { type SidebarData } from '../types'
@@ -56,22 +57,32 @@ export const sidebarData: SidebarData = {
           icon: IconLayoutDashboard,
         },
         {
-          title: 'Shop',
+          title: 'Sản phẩm',
           items: [
             {
-              title: 'Sản phẩm',
+              title: 'Danh sách',
               url: '/products/overview',
             },
             {
-              title: 'Đơn hàng',
-              url: '/sign-in-2',
-            },
-            {
-              title: 'Liên lạc',
-              url: '/sign-in-2',
+              title: 'Thêm mới',
+              url: '/products/new',
             },
           ],
-          icon: IconBox,
+          icon: IconBooks,
+        },
+        {
+          title: 'Đơn hàng',
+          items: [
+            {
+              title: 'Danh sách',
+              url: '/orders/overview',
+            },
+            {
+              title: 'Thêm mới',
+              url: '/products/new',
+            },
+          ],
+          icon: IconShoppingBag,
         },
         {
           title: 'Nhiệm vụ',
