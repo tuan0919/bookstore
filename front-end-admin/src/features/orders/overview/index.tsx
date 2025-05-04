@@ -17,7 +17,7 @@ import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { OrderDataTable } from './components/order-data-datable'
 
-export default function Order() {
+export default function OrderOverview() {
   return (
     <>
       {/* ===== Top Heading ===== */}

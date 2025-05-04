@@ -312,10 +312,12 @@ const columns: ColumnDef<Payment>[] = [
             </DropdownMenuSub>
             <DropdownMenuSeparator />
             <DropdownMenuLabel>Xem</DropdownMenuLabel>
-            <DropdownMenuItem>
-              <IconEye />
-              <span>Chi tiết đơn hàng</span>
-            </DropdownMenuItem>
+            <Link to={'/orders/details'}>
+              <DropdownMenuItem>
+                <IconEye />
+                <span>Chi tiết đơn hàng</span>
+              </DropdownMenuItem>
+            </Link>
             <DropdownMenuItem>
               <IconUser />
               <span>Chi tiết khách hàng</span>

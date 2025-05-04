@@ -37,7 +37,7 @@ import { Route as AuthenticatedSettingsAccountImport } from './routes/_authentic
 import { Route as AuthenticatedProductsOverviewImport } from './routes/_authenticated/products/overview'
 import { Route as AuthenticatedProductsNewImport } from './routes/_authenticated/products/new'
 import { Route as AuthenticatedOrdersOverviewImport } from './routes/_authenticated/orders/overview'
-import { Route as AuthenticatedOrdersNewImport } from './routes/_authenticated/orders/new'
+import { Route as AuthenticatedOrdersDetailsImport } from './routes/_authenticated/orders/details'
 
 // Create/Update Routes
 
@@ -207,11 +207,13 @@ const AuthenticatedOrdersOverviewRoute =
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
-const AuthenticatedOrdersNewRoute = AuthenticatedOrdersNewImport.update({
-  id: '/orders/new',
-  path: '/orders/new',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+const AuthenticatedOrdersDetailsRoute = AuthenticatedOrdersDetailsImport.update(
+  {
+    id: '/orders/details',
+    path: '/orders/details',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any,
+)
 
 // Populate the FileRoutesByPath interface
 
@@ -308,11 +310,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexImport
       parentRoute: typeof AuthenticatedRouteImport
     }
-    '/_authenticated/orders/new': {
-      id: '/_authenticated/orders/new'
-      path: '/orders/new'
-      fullPath: '/orders/new'
-      preLoaderRoute: typeof AuthenticatedOrdersNewImport
+    '/_authenticated/orders/details': {
+      id: '/_authenticated/orders/details'
+      path: '/orders/details'
+      fullPath: '/orders/details'
+      preLoaderRoute: typeof AuthenticatedOrdersDetailsImport
       parentRoute: typeof AuthenticatedRouteImport
     }
     '/_authenticated/orders/overview': {
@@ -437,7 +439,7 @@ const AuthenticatedSettingsRouteRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
-  AuthenticatedOrdersNewRoute: typeof AuthenticatedOrdersNewRoute
+  AuthenticatedOrdersDetailsRoute: typeof AuthenticatedOrdersDetailsRoute
   AuthenticatedOrdersOverviewRoute: typeof AuthenticatedOrdersOverviewRoute
   AuthenticatedProductsNewRoute: typeof AuthenticatedProductsNewRoute
   AuthenticatedProductsOverviewRoute: typeof AuthenticatedProductsOverviewRoute
@@ -451,7 +453,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
-  AuthenticatedOrdersNewRoute: AuthenticatedOrdersNewRoute,
+  AuthenticatedOrdersDetailsRoute: AuthenticatedOrdersDetailsRoute,
   AuthenticatedOrdersOverviewRoute: AuthenticatedOrdersOverviewRoute,
   AuthenticatedProductsNewRoute: AuthenticatedProductsNewRoute,
   AuthenticatedProductsOverviewRoute: AuthenticatedProductsOverviewRoute,
@@ -479,7 +481,7 @@ export interface FileRoutesByFullPath {
   '/500': typeof errors500Route
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
-  '/orders/new': typeof AuthenticatedOrdersNewRoute
+  '/orders/details': typeof AuthenticatedOrdersDetailsRoute
   '/orders/overview': typeof AuthenticatedOrdersOverviewRoute
   '/products/new': typeof AuthenticatedProductsNewRoute
   '/products/overview': typeof AuthenticatedProductsOverviewRoute
@@ -507,7 +509,7 @@ export interface FileRoutesByTo {
   '/500': typeof errors500Route
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
-  '/orders/new': typeof AuthenticatedOrdersNewRoute
+  '/orders/details': typeof AuthenticatedOrdersDetailsRoute
   '/orders/overview': typeof AuthenticatedOrdersOverviewRoute
   '/products/new': typeof AuthenticatedProductsNewRoute
   '/products/overview': typeof AuthenticatedProductsOverviewRoute
@@ -538,7 +540,7 @@ export interface FileRoutesById {
   '/(errors)/500': typeof errors500Route
   '/(errors)/503': typeof errors503Route
   '/_authenticated/': typeof AuthenticatedIndexRoute
-  '/_authenticated/orders/new': typeof AuthenticatedOrdersNewRoute
+  '/_authenticated/orders/details': typeof AuthenticatedOrdersDetailsRoute
   '/_authenticated/orders/overview': typeof AuthenticatedOrdersOverviewRoute
   '/_authenticated/products/new': typeof AuthenticatedProductsNewRoute
   '/_authenticated/products/overview': typeof AuthenticatedProductsOverviewRoute
@@ -570,7 +572,7 @@ export interface FileRouteTypes {
     | '/500'
     | '/503'
     | '/'
-    | '/orders/new'
+    | '/orders/details'
     | '/orders/overview'
     | '/products/new'
     | '/products/overview'
@@ -597,7 +599,7 @@ export interface FileRouteTypes {
     | '/500'
     | '/503'
     | '/'
-    | '/orders/new'
+    | '/orders/details'
     | '/orders/overview'
     | '/products/new'
     | '/products/overview'
@@ -626,7 +628,7 @@ export interface FileRouteTypes {
     | '/(errors)/500'
     | '/(errors)/503'
     | '/_authenticated/'
-    | '/_authenticated/orders/new'
+    | '/_authenticated/orders/details'
     | '/_authenticated/orders/overview'
     | '/_authenticated/products/new'
     | '/_authenticated/products/overview'
@@ -699,7 +701,7 @@ export const routeTree = rootRoute
       "children": [
         "/_authenticated/settings",
         "/_authenticated/",
-        "/_authenticated/orders/new",
+        "/_authenticated/orders/details",
         "/_authenticated/orders/overview",
         "/_authenticated/products/new",
         "/_authenticated/products/overview",
@@ -755,8 +757,8 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/index.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/orders/new": {
-      "filePath": "_authenticated/orders/new.tsx",
+    "/_authenticated/orders/details": {
+      "filePath": "_authenticated/orders/details.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/orders/overview": {
