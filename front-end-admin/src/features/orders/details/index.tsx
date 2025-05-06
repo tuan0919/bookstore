@@ -72,9 +72,9 @@ export default function OrderDetails() {
               <Separator />
               <CardContent>
                 <div className='relative ml-2 flex flex-col space-y-12'>
-                  <div className='absolute top-0 left-0 h-full w-[1.5px] bg-neutral-100' />
+                  <div className='absolute top-0 left-0 h-full w-[1.5px] bg-neutral-100 dark:bg-gray-700' />
                   <div className='relative ps-16'>
-                    <div className='absolute top-0 left-0 flex h-10 w-10 -translate-x-5 items-center justify-center rounded-full bg-gray-100'>
+                    <div className='absolute top-0 left-0 flex h-10 w-10 -translate-x-5 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700'>
                       <IconTruck className='text-yellow-500' size={20} />
                     </div>
                     <div className='flex items-center justify-between'>
@@ -89,7 +89,7 @@ export default function OrderDetails() {
                     </div>
                   </div>
                   <div className='relative ps-16'>
-                    <div className='absolute top-0 left-0 flex h-10 w-10 -translate-x-5 items-center justify-center rounded-full bg-gray-100'>
+                    <div className='absolute top-0 left-0 flex h-10 w-10 -translate-x-5 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700'>
                       <IconCircleCheck className='text-green-500' size={20} />
                     </div>
                     <div className='flex items-center justify-between'>
@@ -108,7 +108,7 @@ export default function OrderDetails() {
                     </div>
                   </div>
                   <div className='relative ps-16'>
-                    <div className='absolute top-0 left-0 flex h-10 w-10 -translate-x-5 items-center justify-center rounded-full bg-gray-100'>
+                    <div className='absolute top-0 left-0 flex h-10 w-10 -translate-x-5 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700'>
                       <IconCircleCheck className='text-green-500' size={20} />
                     </div>
                     <div className='flex items-center justify-between'>
@@ -123,7 +123,7 @@ export default function OrderDetails() {
                     </div>
                   </div>
                   <div className='relative ps-16'>
-                    <div className='absolute top-0 left-0 flex h-10 w-10 -translate-x-5 items-center justify-center rounded-full bg-gray-100'>
+                    <div className='absolute top-0 left-0 flex h-10 w-10 -translate-x-5 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700'>
                       <IconCircleCheck className='text-green-500' size={20} />
                     </div>
                     <div className='flex items-center justify-between'>
@@ -140,7 +140,7 @@ export default function OrderDetails() {
                     </div>
                   </div>
                   <div className='relative ps-16'>
-                    <div className='absolute top-0 left-0 flex h-10 w-10 -translate-x-5 items-center justify-center rounded-full bg-gray-100'>
+                    <div className='absolute top-0 left-0 flex h-10 w-10 -translate-x-5 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700'>
                       <IconCircleCheck className='text-green-500' size={20} />
                     </div>
                     <div className='flex items-center justify-between'>

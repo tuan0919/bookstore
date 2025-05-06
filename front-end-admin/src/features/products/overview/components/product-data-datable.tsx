@@ -33,6 +33,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
 import {
   Table,
   TableBody,
@@ -54,54 +55,7 @@ const data: Payment[] = [
     reviewCount: 4,
     thumbnail:
       'https://nhasachphuongnam.com/images/detailed/277/manga-duoc-su-tu-su-tap-13.jpg',
-  },
-  {
-    id: 'm5gr84i9',
-    sold: 316,
-    category: 'Sách tiếng việt',
-    name: 'Dược sư tự sự (Manga) - Tập 13',
-    inStock: 69,
-    price: 39000,
-    rating: 4.5,
-    reviewCount: 4,
-    thumbnail:
-      'https://nhasachphuongnam.com/images/detailed/277/manga-duoc-su-tu-su-tap-13.jpg',
-  },
-  {
-    id: 'm5gr84i9',
-    sold: 316,
-    category: 'Sách tiếng việt',
-    name: 'Dược sư tự sự (Manga) - Tập 13',
-    inStock: 69,
-    price: 39000,
-    rating: 4.5,
-    reviewCount: 4,
-    thumbnail:
-      'https://nhasachphuongnam.com/images/detailed/277/manga-duoc-su-tu-su-tap-13.jpg',
-  },
-  {
-    id: 'm5gr84i9',
-    sold: 316,
-    category: 'Sách tiếng việt',
-    name: 'Dược sư tự sự (Manga) - Tập 13',
-    inStock: 69,
-    price: 39000,
-    rating: 4.5,
-    reviewCount: 4,
-    thumbnail:
-      'https://nhasachphuongnam.com/images/detailed/277/manga-duoc-su-tu-su-tap-13.jpg',
-  },
-  {
-    id: 'm5gr84i9',
-    sold: 316,
-    category: 'Sách ngoại văn',
-    name: 'Dược sư tự sự (Manga) - Tập 13',
-    inStock: 69,
-    price: 39000,
-    rating: 4.5,
-    reviewCount: 4,
-    thumbnail:
-      'https://nhasachphuongnam.com/images/detailed/277/manga-duoc-su-tu-su-tap-13.jpg',
+    publish: true,
   },
 ]
 
@@ -115,6 +69,7 @@ export type Payment = {
   price: number
   category: string
   thumbnail: string
+  publish: boolean
 }
 
 const columns: ColumnDef<Payment>[] = [
@@ -175,6 +130,17 @@ const columns: ColumnDef<Payment>[] = [
         <div className='flex flex-col gap-1'>
           <span className='font-light'>Còn {inStock} trong kho</span>
           <span className='font-light'>Bán được {sold}</span>
+        </div>
+      )
+    },
+  },
+  {
+    header: 'Phát hành',
+    cell: ({ row }) => {
+      const { publish } = row.original as Payment
+      return (
+        <div className='flex flex-col gap-1'>
+          <Switch checked={publish} />
         </div>
       )
     },

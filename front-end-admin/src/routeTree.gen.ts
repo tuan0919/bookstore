@@ -38,6 +38,8 @@ import { Route as AuthenticatedProductsOverviewImport } from './routes/_authenti
 import { Route as AuthenticatedProductsNewImport } from './routes/_authenticated/products/new'
 import { Route as AuthenticatedOrdersOverviewImport } from './routes/_authenticated/orders/overview'
 import { Route as AuthenticatedOrdersDetailsImport } from './routes/_authenticated/orders/details'
+import { Route as AuthenticatedCategoriesOverviewImport } from './routes/_authenticated/categories/overview'
+import { Route as AuthenticatedCategoriesNewImport } from './routes/_authenticated/categories/new'
 
 // Create/Update Routes
 
@@ -215,6 +217,21 @@ const AuthenticatedOrdersDetailsRoute = AuthenticatedOrdersDetailsImport.update(
   } as any,
 )
 
+const AuthenticatedCategoriesOverviewRoute =
+  AuthenticatedCategoriesOverviewImport.update({
+    id: '/categories/overview',
+    path: '/categories/overview',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+
+const AuthenticatedCategoriesNewRoute = AuthenticatedCategoriesNewImport.update(
+  {
+    id: '/categories/new',
+    path: '/categories/new',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any,
+)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -308,6 +325,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedIndexImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/categories/new': {
+      id: '/_authenticated/categories/new'
+      path: '/categories/new'
+      fullPath: '/categories/new'
+      preLoaderRoute: typeof AuthenticatedCategoriesNewImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/categories/overview': {
+      id: '/_authenticated/categories/overview'
+      path: '/categories/overview'
+      fullPath: '/categories/overview'
+      preLoaderRoute: typeof AuthenticatedCategoriesOverviewImport
       parentRoute: typeof AuthenticatedRouteImport
     }
     '/_authenticated/orders/details': {
@@ -439,6 +470,8 @@ const AuthenticatedSettingsRouteRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedCategoriesNewRoute: typeof AuthenticatedCategoriesNewRoute
+  AuthenticatedCategoriesOverviewRoute: typeof AuthenticatedCategoriesOverviewRoute
   AuthenticatedOrdersDetailsRoute: typeof AuthenticatedOrdersDetailsRoute
   AuthenticatedOrdersOverviewRoute: typeof AuthenticatedOrdersOverviewRoute
   AuthenticatedProductsNewRoute: typeof AuthenticatedProductsNewRoute
@@ -453,6 +486,8 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedCategoriesNewRoute: AuthenticatedCategoriesNewRoute,
+  AuthenticatedCategoriesOverviewRoute: AuthenticatedCategoriesOverviewRoute,
   AuthenticatedOrdersDetailsRoute: AuthenticatedOrdersDetailsRoute,
   AuthenticatedOrdersOverviewRoute: AuthenticatedOrdersOverviewRoute,
   AuthenticatedProductsNewRoute: AuthenticatedProductsNewRoute,
@@ -481,6 +516,8 @@ export interface FileRoutesByFullPath {
   '/500': typeof errors500Route
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
+  '/categories/new': typeof AuthenticatedCategoriesNewRoute
+  '/categories/overview': typeof AuthenticatedCategoriesOverviewRoute
   '/orders/details': typeof AuthenticatedOrdersDetailsRoute
   '/orders/overview': typeof AuthenticatedOrdersOverviewRoute
   '/products/new': typeof AuthenticatedProductsNewRoute
@@ -509,6 +546,8 @@ export interface FileRoutesByTo {
   '/500': typeof errors500Route
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
+  '/categories/new': typeof AuthenticatedCategoriesNewRoute
+  '/categories/overview': typeof AuthenticatedCategoriesOverviewRoute
   '/orders/details': typeof AuthenticatedOrdersDetailsRoute
   '/orders/overview': typeof AuthenticatedOrdersOverviewRoute
   '/products/new': typeof AuthenticatedProductsNewRoute
@@ -540,6 +579,8 @@ export interface FileRoutesById {
   '/(errors)/500': typeof errors500Route
   '/(errors)/503': typeof errors503Route
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/categories/new': typeof AuthenticatedCategoriesNewRoute
+  '/_authenticated/categories/overview': typeof AuthenticatedCategoriesOverviewRoute
   '/_authenticated/orders/details': typeof AuthenticatedOrdersDetailsRoute
   '/_authenticated/orders/overview': typeof AuthenticatedOrdersOverviewRoute
   '/_authenticated/products/new': typeof AuthenticatedProductsNewRoute
@@ -572,6 +613,8 @@ export interface FileRouteTypes {
     | '/500'
     | '/503'
     | '/'
+    | '/categories/new'
+    | '/categories/overview'
     | '/orders/details'
     | '/orders/overview'
     | '/products/new'
@@ -599,6 +642,8 @@ export interface FileRouteTypes {
     | '/500'
     | '/503'
     | '/'
+    | '/categories/new'
+    | '/categories/overview'
     | '/orders/details'
     | '/orders/overview'
     | '/products/new'
@@ -628,6 +673,8 @@ export interface FileRouteTypes {
     | '/(errors)/500'
     | '/(errors)/503'
     | '/_authenticated/'
+    | '/_authenticated/categories/new'
+    | '/_authenticated/categories/overview'
     | '/_authenticated/orders/details'
     | '/_authenticated/orders/overview'
     | '/_authenticated/products/new'
@@ -701,6 +748,8 @@ export const routeTree = rootRoute
       "children": [
         "/_authenticated/settings",
         "/_authenticated/",
+        "/_authenticated/categories/new",
+        "/_authenticated/categories/overview",
         "/_authenticated/orders/details",
         "/_authenticated/orders/overview",
         "/_authenticated/products/new",
@@ -755,6 +804,14 @@ export const routeTree = rootRoute
     },
     "/_authenticated/": {
       "filePath": "_authenticated/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/categories/new": {
+      "filePath": "_authenticated/categories/new.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/categories/overview": {
+      "filePath": "_authenticated/categories/overview.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/orders/details": {

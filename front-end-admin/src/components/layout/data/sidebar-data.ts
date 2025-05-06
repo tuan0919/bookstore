@@ -5,7 +5,6 @@ import {
   IconChecklist,
   IconError404,
   IconHelp,
-  IconLayoutDashboard,
   IconLock,
   IconLockAccess,
   IconMessages,
@@ -20,6 +19,8 @@ import {
   IconUsers,
   IconBooks,
   IconShoppingBag,
+  IconCategory,
+  IconDeviceDesktopAnalytics,
 } from '@tabler/icons-react'
 import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react'
 import { type SidebarData } from '../types'
@@ -54,7 +55,7 @@ export const sidebarData: SidebarData = {
         {
           title: 'Dashboard',
           url: '/',
-          icon: IconLayoutDashboard,
+          icon: IconDeviceDesktopAnalytics,
         },
         {
           title: 'Sản phẩm',
@@ -69,6 +70,20 @@ export const sidebarData: SidebarData = {
             },
           ],
           icon: IconBooks,
+        },
+        {
+          title: 'Danh mục',
+          items: [
+            {
+              title: 'Danh sách',
+              url: '/categories/overview',
+            },
+            {
+              title: 'Thêm mới',
+              url: '/categories/new',
+            },
+          ],
+          icon: IconCategory,
         },
         {
           title: 'Đơn hàng',
