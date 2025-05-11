@@ -78,10 +78,6 @@ export const sidebarData: SidebarData = {
               title: 'Danh sách',
               url: '/categories/overview',
             },
-            {
-              title: 'Thêm mới',
-              url: '/categories/new',
-            },
           ],
           icon: IconCategory,
         },
