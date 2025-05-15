@@ -21,14 +21,15 @@ import {
   IconShoppingBag,
   IconCategory,
   IconDeviceDesktopAnalytics,
+  IconTicket,
 } from '@tabler/icons-react'
 import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react'
 import { type SidebarData } from '../types'
 
 export const sidebarData: SidebarData = {
   user: {
-    name: 'satnaing',
-    email: 'satnaingdev@gmail.com',
+    name: 'nqat0919',
+    email: 'nqat0919@gmail.com',
     avatar: '/avatars/shadcn.jpg',
   },
   teams: [
@@ -90,6 +91,16 @@ export const sidebarData: SidebarData = {
             },
           ],
           icon: IconShoppingBag,
+        },
+        {
+          title: 'Khuyến mãi',
+          items: [
+            {
+              title: 'Danh sách',
+              url: '/coupons/overview',
+            },
+          ],
+          icon: IconTicket,
         },
         {
           title: 'Nhiệm vụ',

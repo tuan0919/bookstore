@@ -38,6 +38,7 @@ import { Route as AuthenticatedProductsOverviewImport } from './routes/_authenti
 import { Route as AuthenticatedProductsNewImport } from './routes/_authenticated/products/new'
 import { Route as AuthenticatedOrdersOverviewImport } from './routes/_authenticated/orders/overview'
 import { Route as AuthenticatedOrdersDetailsImport } from './routes/_authenticated/orders/details'
+import { Route as AuthenticatedCouponsOverviewImport } from './routes/_authenticated/coupons/overview'
 import { Route as AuthenticatedCategoriesOverviewImport } from './routes/_authenticated/categories/overview'
 
 // Create/Update Routes
@@ -216,6 +217,13 @@ const AuthenticatedOrdersDetailsRoute = AuthenticatedOrdersDetailsImport.update(
   } as any,
 )
 
+const AuthenticatedCouponsOverviewRoute =
+  AuthenticatedCouponsOverviewImport.update({
+    id: '/coupons/overview',
+    path: '/coupons/overview',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+
 const AuthenticatedCategoriesOverviewRoute =
   AuthenticatedCategoriesOverviewImport.update({
     id: '/categories/overview',
@@ -323,6 +331,13 @@ declare module '@tanstack/react-router' {
       path: '/categories/overview'
       fullPath: '/categories/overview'
       preLoaderRoute: typeof AuthenticatedCategoriesOverviewImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/coupons/overview': {
+      id: '/_authenticated/coupons/overview'
+      path: '/coupons/overview'
+      fullPath: '/coupons/overview'
+      preLoaderRoute: typeof AuthenticatedCouponsOverviewImport
       parentRoute: typeof AuthenticatedRouteImport
     }
     '/_authenticated/orders/details': {
@@ -455,6 +470,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedCategoriesOverviewRoute: typeof AuthenticatedCategoriesOverviewRoute
+  AuthenticatedCouponsOverviewRoute: typeof AuthenticatedCouponsOverviewRoute
   AuthenticatedOrdersDetailsRoute: typeof AuthenticatedOrdersDetailsRoute
   AuthenticatedOrdersOverviewRoute: typeof AuthenticatedOrdersOverviewRoute
   AuthenticatedProductsNewRoute: typeof AuthenticatedProductsNewRoute
@@ -470,6 +486,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedCategoriesOverviewRoute: AuthenticatedCategoriesOverviewRoute,
+  AuthenticatedCouponsOverviewRoute: AuthenticatedCouponsOverviewRoute,
   AuthenticatedOrdersDetailsRoute: AuthenticatedOrdersDetailsRoute,
   AuthenticatedOrdersOverviewRoute: AuthenticatedOrdersOverviewRoute,
   AuthenticatedProductsNewRoute: AuthenticatedProductsNewRoute,
@@ -499,6 +516,7 @@ export interface FileRoutesByFullPath {
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
   '/categories/overview': typeof AuthenticatedCategoriesOverviewRoute
+  '/coupons/overview': typeof AuthenticatedCouponsOverviewRoute
   '/orders/details': typeof AuthenticatedOrdersDetailsRoute
   '/orders/overview': typeof AuthenticatedOrdersOverviewRoute
   '/products/new': typeof AuthenticatedProductsNewRoute
@@ -528,6 +546,7 @@ export interface FileRoutesByTo {
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
   '/categories/overview': typeof AuthenticatedCategoriesOverviewRoute
+  '/coupons/overview': typeof AuthenticatedCouponsOverviewRoute
   '/orders/details': typeof AuthenticatedOrdersDetailsRoute
   '/orders/overview': typeof AuthenticatedOrdersOverviewRoute
   '/products/new': typeof AuthenticatedProductsNewRoute
@@ -560,6 +579,7 @@ export interface FileRoutesById {
   '/(errors)/503': typeof errors503Route
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/categories/overview': typeof AuthenticatedCategoriesOverviewRoute
+  '/_authenticated/coupons/overview': typeof AuthenticatedCouponsOverviewRoute
   '/_authenticated/orders/details': typeof AuthenticatedOrdersDetailsRoute
   '/_authenticated/orders/overview': typeof AuthenticatedOrdersOverviewRoute
   '/_authenticated/products/new': typeof AuthenticatedProductsNewRoute
@@ -593,6 +613,7 @@ export interface FileRouteTypes {
     | '/503'
     | '/'
     | '/categories/overview'
+    | '/coupons/overview'
     | '/orders/details'
     | '/orders/overview'
     | '/products/new'
@@ -621,6 +642,7 @@ export interface FileRouteTypes {
     | '/503'
     | '/'
     | '/categories/overview'
+    | '/coupons/overview'
     | '/orders/details'
     | '/orders/overview'
     | '/products/new'
@@ -651,6 +673,7 @@ export interface FileRouteTypes {
     | '/(errors)/503'
     | '/_authenticated/'
     | '/_authenticated/categories/overview'
+    | '/_authenticated/coupons/overview'
     | '/_authenticated/orders/details'
     | '/_authenticated/orders/overview'
     | '/_authenticated/products/new'
@@ -725,6 +748,7 @@ export const routeTree = rootRoute
         "/_authenticated/settings",
         "/_authenticated/",
         "/_authenticated/categories/overview",
+        "/_authenticated/coupons/overview",
         "/_authenticated/orders/details",
         "/_authenticated/orders/overview",
         "/_authenticated/products/new",
@@ -783,6 +807,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/categories/overview": {
       "filePath": "_authenticated/categories/overview.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/coupons/overview": {
+      "filePath": "_authenticated/coupons/overview.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/orders/details": {
