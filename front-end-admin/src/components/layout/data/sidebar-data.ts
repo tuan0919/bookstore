@@ -99,6 +99,10 @@ export const sidebarData: SidebarData = {
               title: 'Danh sách',
               url: '/coupons/overview',
             },
+            {
+              title: 'Thêm mới',
+              url: '/coupons/new',
+            },
           ],
           icon: IconTicket,
         },

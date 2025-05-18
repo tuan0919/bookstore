@@ -35,6 +35,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DatePickerWithRange } from './date-picker'
+import { TargetPopOver } from './target-pop-over'
 
 export function CouponDataTable() {
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -102,32 +103,28 @@ export function CouponDataTable() {
       enableSorting: false,
       enableHiding: false,
     },
-    // Sản phẩm
+    // Áp dụng cho
     {
-      header: 'Sản phẩm & Loại',
+      header: 'Áp dụng cho',
       cell: ({ row }) => {
-        const { product } = row.original as Coupon
+        const { category } = row.original as Coupon
         return (
           <div className='flex items-center gap-2'>
-            <div className='flex w-[3rem] items-center justify-center'>
-              <img src={product?.thumbnail} width={'100%'} />
-            </div>
             <div className='flex flex-col gap-2'>
-              <div className='font-semibold'>{product?.name}</div>
-              <div className='text-xs font-light'>{product?.category}</div>
+              <TargetPopOver />
             </div>
           </div>
         )
       },
     },
-    // Giá bán
+    // Loại
     {
-      header: 'Giá bán',
+      header: 'Loại giảm giá',
       cell: ({ row }) => {
-        const { product } = row.original as Coupon
+        const { type } = row.original as Coupon
         return (
           <div className='flex justify-start'>
-            <span>{product?.price.toLocaleString('vi') + ' vnđ'}</span>
+            <span>{type}</span>
           </div>
         )
       },
