@@ -19,8 +19,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class GenreResponseDTO {
-
-  long id;
-  String name;
+public class CartItemResponseDTO {
+  Long productId;
+  int quantity;
 }

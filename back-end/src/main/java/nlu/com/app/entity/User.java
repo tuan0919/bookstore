@@ -36,7 +36,7 @@ public class User {
   private Long userId;
   @Column(name = "user_role")
   private String userRole;
-  @Column(name = "username")
+  @Column(name = "username", unique = true)
   private String username;
   @Column(name = "password")
   private String password;
