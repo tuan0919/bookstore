@@ -4,6 +4,8 @@ import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownR
 import shadows from "@mui/material/styles/shadows";
 import { grey, red } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
+import { Category } from "~/pages/Category/filter";
+import { getCategories } from "~/mapper/CategoryMapper";
 interface CategoryDrawerProps {
     open: boolean,
     setClose: () => void,
@@ -73,6 +75,7 @@ export function CategoryDrawer({ open, setClose }: CategoryDrawerProps) {
         navigate(`/category/${categoryPath}`);
         setClose(); // Đóng Drawer sau khi chọn
     };
+    const categories : Category[] = getCategories();
 
     return (
         <Drawer
@@ -111,56 +114,26 @@ export function CategoryDrawer({ open, setClose }: CategoryDrawerProps) {
                     display: 'none'
                 },
             }}>
-                <CustomizeAccordion>
-                    <CustomizeAccordionSummary
-                        expandIcon={<KeyboardArrowDownRoundedIcon />}
-                    >
-                        <Typography component="span">Sách tiếng việt</Typography>
-                    </CustomizeAccordionSummary>
-                    <CustomizeAccordionDetails>
-                        <CustomizeLink onClick={() => handleCategoryClick("sach-tieng-viet/manga")}>Manga</CustomizeLink>
-                        <CustomizeLink onClick={() => handleCategoryClick("sach-tieng-viet/comic")}>Comic</CustomizeLink>
-                        <CustomizeLink onClick={() => handleCategoryClick("sach-tieng-viet/manhua")}>Manhua</CustomizeLink>
-                        <CustomizeLink onClick={() => handleCategoryClick("sach-tieng-viet/manhwa")}>Manhwa</CustomizeLink>
-                        <CustomizeLink onClick={() => handleCategoryClick("sach-tieng-viet/light-novel")}>Light Novel</CustomizeLink>
-                    </CustomizeAccordionDetails>
-                </CustomizeAccordion>
-                <CustomizeAccordion>
-                    <CustomizeAccordionSummary
-                        expandIcon={<KeyboardArrowDownRoundedIcon />}
-                    >
-                        <Typography component="span">Sách ngoại văn</Typography>
-                    </CustomizeAccordionSummary>
-                    <CustomizeAccordionDetails>
-                        <CustomizeLink onClick={() => handleCategoryClick("sach-ngoai-van/manga")}>Manga</CustomizeLink>
-                        <CustomizeLink onClick={() => handleCategoryClick("sach-ngoai-van/comic")}>Comic</CustomizeLink>
-                        <CustomizeLink onClick={() => handleCategoryClick("sach-ngoai-van/manhua")}>Manhua</CustomizeLink>
-                        <CustomizeLink onClick={() => handleCategoryClick("sach-ngoai-van/manhwa")}>Manhwa</CustomizeLink>
-                        <CustomizeLink onClick={() => handleCategoryClick("sach-ngoai-van/light-novel")}>Light Novel</CustomizeLink>
-                    </CustomizeAccordionDetails>
-                </CustomizeAccordion>
-                <CustomizeAccordion>
-                    <CustomizeAccordionSummary
-                        expandIcon={<KeyboardArrowDownRoundedIcon />}
-                    >
-                        <Typography component="span">Sách tiếng nhật</Typography>
-                    </CustomizeAccordionSummary>
-                    <CustomizeAccordionDetails>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                        malesuada lacus ex, sit amet blandit leo lobortis eget.
-                    </CustomizeAccordionDetails>
-                </CustomizeAccordion>
-                <CustomizeAccordion>
-                    <CustomizeAccordionSummary
-                        expandIcon={<KeyboardArrowDownRoundedIcon />}
-                    >
-                        <Typography component="span">Sản phẩm giới hạn</Typography>
-                    </CustomizeAccordionSummary>
-                    <CustomizeAccordionDetails>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                        malesuada lacus ex, sit amet blandit leo lobortis eget.
-                    </CustomizeAccordionDetails>
-                </CustomizeAccordion>
+                {categories.map((category ) =>{
+                    return (
+                        <CustomizeAccordion key={category.id} >
+                            <CustomizeAccordionSummary
+                                expandIcon={<KeyboardArrowDownRoundedIcon />}
+                            >
+                                <Typography fontWeight={'bold'}>{category.name}</Typography>
+                            </CustomizeAccordionSummary>
+                            <CustomizeAccordionDetails>
+                                {category.subCategories.map((subCategory) => {
+                                    return (
+                                        <CustomizeLink key={subCategory.id} onClick={() => handleCategoryClick(category.slug + '/' + subCategory.slug)}>
+                                            {subCategory.name}
+                                        </CustomizeLink>
+                                    )
+                                })}
+                            </CustomizeAccordionDetails>
+                        </CustomizeAccordion>
+                    )
+                })}
             </Box>
         </Drawer>
     )
