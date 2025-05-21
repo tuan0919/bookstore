@@ -22,6 +22,7 @@ import {
   IconCategory,
   IconDeviceDesktopAnalytics,
   IconTicket,
+  IconAddressBook,
 } from '@tabler/icons-react'
 import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react'
 import { type SidebarData } from '../types'
@@ -74,22 +75,12 @@ export const sidebarData: SidebarData = {
         },
         {
           title: 'Danh mục',
-          items: [
-            {
-              title: 'Danh sách',
-              url: '/categories/overview',
-            },
-          ],
+          url: '/categories/overview',
           icon: IconCategory,
         },
         {
           title: 'Đơn hàng',
-          items: [
-            {
-              title: 'Danh sách',
-              url: '/orders/overview',
-            },
-          ],
+          url: '/orders/overview',
           icon: IconShoppingBag,
         },
         {
@@ -105,6 +96,16 @@ export const sidebarData: SidebarData = {
             },
           ],
           icon: IconTicket,
+        },
+        {
+          title: 'Khách hàng',
+          items: [
+            {
+              title: 'Chi tiết',
+              url: '/customers/details',
+            },
+          ],
+          icon: IconAddressBook,
         },
         {
           title: 'Nhiệm vụ',
