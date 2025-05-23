@@ -7,6 +7,7 @@ import {
   flexRender,
 } from '@tanstack/react-table'
 import { invoices, Invoice } from '@/resources/customer_invoices.ts'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -25,7 +26,10 @@ export function CustomersOrdersTable() {
     },
     {
       header: 'Trạng thái',
-      accessorKey: 'status',
+      cell: ({ row }) => {
+        const { status } = row.original as Invoice
+        return <Badge>{status}</Badge>
+      },
     },
     {
       header: 'Tổng tiền',
