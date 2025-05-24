@@ -105,7 +105,7 @@ public class CartService implements ICartService {
     Optional<Cart> cartOpt = getCart(userId);
     if (cartOpt.isPresent()) {
       Cart cart = cartOpt.get();
-      cart.getItems().removeIf(item -> item.getProductId().equals(productId));
+      cart.getItems().removeIf(item -> item.getProductId().equals(productId.toString()));
       saveCart(userId, cart);
     }
   }
