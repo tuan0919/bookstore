@@ -10,9 +10,9 @@ spring:
       ddl-auto: update
     show-sql: true
   datasource:
-    username: root  # Lấy từ biến môi trường, nếu không có thì mặc định là "admin"
-    password: 12345678
-    url: jdbc:mysql://localhost:3306/book-store
+    username: ${SPRING_DATASOURCE_USERNAME:admin}
+    password: ${SPRING_DATASOURCE_PASSWORD:admin}
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/bookstore}
   data:
     redis:
       port: 6379
@@ -20,13 +20,8 @@ spring:
   batch:
     jdbc:
       initialize-schema: always
-#  batch:
-#    datasource:
-#      url: jdbc:mysql://localhost:3306/batch_db
-#      username: root
-#      password: 12345678
-#      jdbc:
-#        initialize-schema: never
+    job:
+      enabled: false
 app:
   jwt-key: 1ytvns7A2HHo2GUQ2d82xS2I7dRyWWv1BTU51Ve+il0=
   aws:
