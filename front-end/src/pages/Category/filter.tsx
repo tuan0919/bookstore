@@ -4,52 +4,54 @@ import { grey, orange, red } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
-
-interface Category {
+import {getCategories} from "../../mapper/CategoryMapper";
+export interface Category {
+  id : number;
   name: string;
   slug: string;
-  subCategories?: Category[];
+  subCategories: Category[];
 }
 
-const categories: Category[] = [
-  {
-    name: "Sách tiếng Việt",
-    slug: "sach-tieng-viet",
-    subCategories: [
-      {
-        name: "Manga",
-        slug: "manga",
-        subCategories: [
-          { name: "Shounen", slug: "shounen" },
-          { name: "Shoujo", slug: "shoujo" },
-        ],
-      },
-      { name: "Comic", slug: "comic" },
-      { name: "Manhwa", slug: "manhwa" },
-      { name: "Manhua", slug: "manhua" },
-      { name: "Light Novel", slug: "light-novel" },
-    ],
-  },
-  {
-    name: "Sách ngoại văn",
-    slug: "sach-ngoai-van",
-    subCategories: [
-      { name: "Manga", slug: "manga" },
-      { name: "Comic", slug: "comic" },
-      { name: "Manhwa", slug: "manhwa" },
-      { name: "Manhua", slug: "manhua" },
-      { name: "Light Novel", slug: "light-novel" },
-    ],
-  },
-  {
-    name: "Sách tiếng Nhật",
-    slug: "sach-tieng-nhat",
-  },
-  {
-    name: "Sản phẩm giới hạn",
-    slug: "san-pham-gioi-han",
-  },
-];
+// const categories: Category[] = [
+//   {
+//     name: "Sách tiếng Việt",
+//     slug: "sach-tieng-viet",
+//     subCategories: [
+//       {
+//         name: "Manga",
+//         slug: "manga",
+//         subCategories: [
+//           { name: "Shounen", slug: "shounen" },
+//           { name: "Shoujo", slug: "shoujo" },
+//         ],
+//       },
+//       { name: "Comic", slug: "comic" },
+//       { name: "Manhwa", slug: "manhwa" },
+//       { name: "Manhua", slug: "manhua" },
+//       { name: "Light Novel", slug: "light-novel" },
+//     ],
+//   },
+//   {
+//     name: "Sách ngoại văn",
+//     slug: "sach-ngoai-van",
+//     subCategories: [
+//       { name: "Manga", slug: "manga" },
+//       { name: "Comic", slug: "comic" },
+//       { name: "Manhwa", slug: "manhwa" },
+//       { name: "Manhua", slug: "manhua" },
+//       { name: "Light Novel", slug: "light-novel" },
+//     ],
+//   },
+//   {
+//     name: "Sách tiếng Nhật",
+//     slug: "sach-tieng-nhat",
+//   },
+//   {
+//     name: "Sản phẩm giới hạn",
+//     slug: "san-pham-gioi-han",
+//   },
+// ];
+const categories: Category[] = getCategories();
 const ageGroups = ["Dưới 6 tuổi", "6-12 tuổi", "12-18 tuổi", "Trên 18 tuổi"];
 const priceRanges = ["Dưới 100K", "100K - 300K", "300K - 500K", "Trên 500K"];
 const genres = ["Hành động", "Phiêu lưu", "Tình cảm", "Hài hước", "Kinh dị"];

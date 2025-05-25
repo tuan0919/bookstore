@@ -34,6 +34,10 @@ const BOOK_SETS = [
         id: 3, title: "Thanh Gươm Diệt Quỷ - Kimetsu No Yaiba - Tập 3 - Khích Lệ Bản Thân",
         image: "https://cdn1.fahasa.com/media/catalog/product/t/h/thanh-guom-diet-quy-tap-3.jpg"
       },
+      {
+        id: 3, title: "Thanh Gươm Diệt Quỷ - Kimetsu No Yaiba - Tập 3 - Khích Lệ Bản Thân",
+        image: "https://cdn1.fahasa.com/media/catalog/product/t/h/thanh-guom-diet-quy-tap-3.jpg"
+      }
     ]
   },
   {

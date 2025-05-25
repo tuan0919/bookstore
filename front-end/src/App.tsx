@@ -2,7 +2,6 @@ import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { Box, Typography } from "@mui/material";
 import { BookDetails } from "./pages/BookDetails";
-import { MainLayout } from "./components/MainLayout";
 import { ProfileUser } from "./pages/ProfileUser";
 import CategoryPage from "./pages/Category";
 import { Checkout } from "./pages/Checkout";
@@ -11,6 +10,7 @@ import { NavBar } from "./components/NavBar";
 import Footer from "./components/Footer";
 import Cart from "./pages/Cart";
 import Search from "./pages/Search";
+import OrderDetail from "./components/Order/OrderDetail";
 function App() {
   const CheckoutLayout = useMemo(() => {
     return (
@@ -41,7 +41,8 @@ function App() {
           <Route path="/" element={<Navigate to="/home" />} />
           <Route path="/details" Component={BookDetails} />
           <Route path="/home" Component={Home} />
-          <Route path="/profileUser" Component={ProfileUser} />
+          <Route path="/profileUser/*" Component={ProfileUser} />
+          <Route path="/profileUser/orders/view/order_id/:orderId" Component={OrderDetail} />
           <Route
             path="*"
             element={
