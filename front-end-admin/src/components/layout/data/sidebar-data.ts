@@ -5,7 +5,6 @@ import {
   IconChecklist,
   IconError404,
   IconHelp,
-  IconLayoutDashboard,
   IconLock,
   IconLockAccess,
   IconMessages,
@@ -18,14 +17,20 @@ import {
   IconUserCog,
   IconUserOff,
   IconUsers,
+  IconBooks,
+  IconShoppingBag,
+  IconCategory,
+  IconDeviceDesktopAnalytics,
+  IconTicket,
+  IconAddressBook,
 } from '@tabler/icons-react'
 import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react'
 import { type SidebarData } from '../types'
 
 export const sidebarData: SidebarData = {
   user: {
-    name: 'satnaing',
-    email: 'satnaingdev@gmail.com',
+    name: 'nqat0919',
+    email: 'nqat0919@gmail.com',
     avatar: '/avatars/shadcn.jpg',
   },
   teams: [
@@ -47,15 +52,63 @@ export const sidebarData: SidebarData = {
   ],
   navGroups: [
     {
-      title: 'General',
+      title: 'Cơ bản',
       items: [
         {
           title: 'Dashboard',
           url: '/',
-          icon: IconLayoutDashboard,
+          icon: IconDeviceDesktopAnalytics,
         },
         {
-          title: 'Tasks',
+          title: 'Sản phẩm',
+          items: [
+            {
+              title: 'Danh sách',
+              url: '/products/overview',
+            },
+            {
+              title: 'Thêm mới',
+              url: '/products/new',
+            },
+          ],
+          icon: IconBooks,
+        },
+        {
+          title: 'Danh mục',
+          url: '/categories/overview',
+          icon: IconCategory,
+        },
+        {
+          title: 'Đơn hàng',
+          url: '/orders/overview',
+          icon: IconShoppingBag,
+        },
+        {
+          title: 'Khuyến mãi',
+          items: [
+            {
+              title: 'Danh sách',
+              url: '/coupons/overview',
+            },
+            {
+              title: 'Thêm mới',
+              url: '/coupons/new',
+            },
+          ],
+          icon: IconTicket,
+        },
+        {
+          title: 'Khách hàng',
+          items: [
+            {
+              title: 'Chi tiết',
+              url: '/customers/details',
+            },
+          ],
+          icon: IconAddressBook,
+        },
+        {
+          title: 'Nhiệm vụ',
           url: '/tasks',
           icon: IconChecklist,
         },
@@ -71,7 +124,7 @@ export const sidebarData: SidebarData = {
           icon: IconMessages,
         },
         {
-          title: 'Users',
+          title: 'Người dùng',
           url: '/users',
           icon: IconUsers,
         },

@@ -34,7 +34,7 @@ export default function Dashboard() {
         <div className='mb-2 flex items-center justify-between space-y-2'>
           <h1 className='text-2xl font-bold tracking-tight'>Dashboard</h1>
           <div className='flex items-center space-x-2'>
-            <Button>Download</Button>
+            <Button>Tải xuống</Button>
           </div>
         </div>
         <Tabs
@@ -44,15 +44,15 @@ export default function Dashboard() {
         >
           <div className='w-full overflow-x-auto pb-2'>
             <TabsList>
-              <TabsTrigger value='overview'>Overview</TabsTrigger>
+              <TabsTrigger value='overview'>Tổng quan</TabsTrigger>
               <TabsTrigger value='analytics' disabled>
-                Analytics
+                Phân tích
               </TabsTrigger>
               <TabsTrigger value='reports' disabled>
-                Reports
+                Báo cáo
               </TabsTrigger>
               <TabsTrigger value='notifications' disabled>
-                Notifications
+                Thông báo
               </TabsTrigger>
             </TabsList>
           </div>
@@ -61,7 +61,7 @@ export default function Dashboard() {
               <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-sm font-medium'>
-                    Total Revenue
+                    Tổng doanh thu
                   </CardTitle>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -77,7 +77,7 @@ export default function Dashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>$45,231.89</div>
+                  <div className='text-2xl font-bold'>45.590.000 vnđ</div>
                   <p className='text-muted-foreground text-xs'>
                     +20.1% from last month
                   </p>
@@ -86,7 +86,7 @@ export default function Dashboard() {
               <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-sm font-medium'>
-                    Subscriptions
+                    Khách hàng mới
                   </CardTitle>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -106,13 +106,15 @@ export default function Dashboard() {
                 <CardContent>
                   <div className='text-2xl font-bold'>+2350</div>
                   <p className='text-muted-foreground text-xs'>
-                    +180.1% from last month
+                    +180.1% kể từ tháng trước
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>Sales</CardTitle>
+                  <CardTitle className='text-sm font-medium'>
+                    Số lượng bán
+                  </CardTitle>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     viewBox='0 0 24 24'
@@ -130,14 +132,14 @@ export default function Dashboard() {
                 <CardContent>
                   <div className='text-2xl font-bold'>+12,234</div>
                   <p className='text-muted-foreground text-xs'>
-                    +19% from last month
+                    +19% kể từ tháng trước
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-sm font-medium'>
-                    Active Now
+                    Đang hoạt động
                   </CardTitle>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -155,7 +157,7 @@ export default function Dashboard() {
                 <CardContent>
                   <div className='text-2xl font-bold'>+573</div>
                   <p className='text-muted-foreground text-xs'>
-                    +201 since last hour
+                    +201 kể từ một giờ trước
                   </p>
                 </CardContent>
               </Card>
@@ -163,7 +165,7 @@ export default function Dashboard() {
             <div className='grid grid-cols-1 gap-4 lg:grid-cols-7'>
               <Card className='col-span-1 lg:col-span-4'>
                 <CardHeader>
-                  <CardTitle>Overview</CardTitle>
+                  <CardTitle>Tổng quan</CardTitle>
                 </CardHeader>
                 <CardContent className='pl-2'>
                   <Overview />
@@ -171,9 +173,9 @@ export default function Dashboard() {
               </Card>
               <Card className='col-span-1 lg:col-span-3'>
                 <CardHeader>
-                  <CardTitle>Recent Sales</CardTitle>
+                  <CardTitle>Đơn hàng gần đây</CardTitle>
                   <CardDescription>
-                    You made 265 sales this month.
+                    Cửa hàng của bạn đã bán được 256 đơn trong tháng này.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
