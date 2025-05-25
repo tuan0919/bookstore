@@ -210,7 +210,6 @@ public class BookService implements IBookService {
     Double originalPrice = book.getPrice() * 1000;
     Double discountedPrice = originalPrice * (1 - discount / 100) * 1000;
 
-//    return bookMapper.toBookDetailsDTO(book, imageUrls, reviews, originalPrice, discountedPrice);
-    return null;
+    return bookMapper.toBookDetailsDTO(book, imageUrls, reviews, originalPrice, discountedPrice);
   }
 }

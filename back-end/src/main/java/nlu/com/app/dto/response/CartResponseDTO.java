@@ -1,5 +1,7 @@
 package nlu.com.app.dto.response;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,8 +21,9 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class GenreResponseDTO {
+public class CartResponseDTO {
 
-  long id;
-  String name;
+  private String userId;
+  private List<CartItemResponseDTO> items;
+  private LocalDateTime lastModified;
 }

@@ -139,30 +139,30 @@ public interface BookMapper {
     return book.getPrice() * (1 - discountPercentage / 100) * 1000;
   }
 
-//  @Mapping(source = "book.bookId", target = "bookId")
-//  @Mapping(source = "title", target = "title")
-//  @Mapping(source = "publisher", target = "publisher")
-//  @Mapping(source = "publishYear", target = "publishYear")
-//  @Mapping(source = "weight", target = "weight")
-//  @Mapping(source = "productCode", target = "productCode")
-//  @Mapping(source = "supplier", target = "supplier")
-//  @Mapping(source = "author", target = "author")
-//  @Mapping(source = "language", target = "language")
-//  @Mapping(source = "pageCount", target = "pageCount")
-//  @Mapping(source = "translator", target = "translator")
-//  @Mapping(source = "size", target = "size")
-//  @Mapping(source = "format", target = "format")
-//  @Mapping(source = "age", target = "age")
-//  @Mapping(source = "description", target = "description")
-//  @Mapping(source = "qtyInStock", target = "qtyInStock")
-//  @Mapping(source = "price", target = "price")
-//  @Mapping(source = "discountedPrice", target = "discountedPrice")
-//  @Mapping(source = "imageUrls", target = "imageUrls")
-//  @Mapping(source = "reviews", target = "reviews")
-//  BookDetailsDTO toBookDetailsDTO(Book book,
-//      List<String> imageUrls,
-//      List<ReviewDTO> reviews,
-//      Double originalPrice,
-//      Double discountedPrice);
+  @Mapping(source = "book.bookId", target = "bookId")
+  @Mapping(source = "book.title", target = "title")
+  @Mapping(source = "book.publisher", target = "publisher")
+  @Mapping(source = "book.publishYear", target = "publishYear")
+  @Mapping(source = "book.weight", target = "weight")
+  @Mapping(source = "book.productCode", target = "productCode")
+  @Mapping(source = "book.supplier", target = "supplier")
+  @Mapping(source = "book.author", target = "author")
+  @Mapping(source = "book.language", target = "language")
+  @Mapping(source = "book.pageCount", target = "pageCount")
+  @Mapping(source = "book.translator", target = "translator")
+  @Mapping(source = "book.size", target = "size")
+  @Mapping(source = "book.format", target = "format")
+  @Mapping(source = "book.age", target = "age")
+  @Mapping(source = "book.description", target = "description")
+  @Mapping(source = "book.qtyInStock", target = "qtyInStock")
+  @Mapping(source = "book.price", target = "price")
+  @Mapping(source = "discountedPrice", target = "discountedPrice")
+  @Mapping(source = "imageUrls", target = "imageUrls")
+  @Mapping(source = "reviews", target = "reviews")
+  BookDetailsDTO toBookDetailsDTO(Book book,
+      List<String> imageUrls,
+      List<ReviewDTO> reviews,
+      Double originalPrice,
+      Double discountedPrice);
 }
 
