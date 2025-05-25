@@ -3,6 +3,7 @@ package nlu.com.app.service.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,10 +15,7 @@ import nlu.com.app.dto.json.BooksWrapper;
 import nlu.com.app.dto.request.BookDetailsDTO;
 import nlu.com.app.dto.request.BookDetailsDTO.ReviewDTO;
 import nlu.com.app.dto.request.BookSearchRequestDTO;
-import nlu.com.app.dto.response.CategoryResponseDTO;
-import nlu.com.app.dto.response.GenreResponseDTO;
-import nlu.com.app.dto.response.PageBookResponseDTO;
-import nlu.com.app.dto.response.ShopDataInitDTO;
+import nlu.com.app.dto.response.*;
 import nlu.com.app.entity.Book;
 import nlu.com.app.entity.BookImage;
 import nlu.com.app.entity.Category;
@@ -211,5 +209,46 @@ public class BookService implements IBookService {
     Double discountedPrice = originalPrice * (1 - discount / 100) * 1000;
 
     return bookMapper.toBookDetailsDTO(book, imageUrls, reviews, originalPrice, discountedPrice);
+  }
+
+  /**
+   * {{@inheritDoc}}
+   */
+  @Override
+  public ListBookDetailsDTO getBookDetailsOfTopWeekly() {
+    var topBooks = bookRepository.findTop5ByOrderByBookIdDesc();
+    var list = new ArrayList<BookDetailsDTO>();
+    for (var book : topBooks) {
+      List<String> imageUrls = book.getImages().stream()
+              .map(BookImage::getImageUrl)
+              .collect(Collectors.toList());
+
+      List<ReviewDTO> reviews = userReviewRepository.findAllByBook(book).stream()
+              .map(review -> ReviewDTO.builder()
+                      .userName(review.getUser().getUsername())
+                      .rating(review.getRating())
+                      .reviewText(review.getReviewText())
+                      .reviewDate(review.getReview_date().toString())
+                      .build())
+              .collect(Collectors.toList());
+
+      List<Promotion> promotions = promotionCategoriesRepository.findActivePromotionsByCategoryIds(
+              List.of(book.getCategory().getCategoryId()));
+
+      Double discount = promotions.stream()
+              .flatMap(promotion -> promotion.getPromotionCategories().stream()
+                      .filter(
+                              pc -> pc.getCategory().getCategoryId().equals(book.getCategory().getCategoryId()))
+                      .map(pc -> promotion.getDiscountPercentage()))
+              .max(Double::compare)
+              .orElse(0D);
+
+      Double originalPrice = book.getPrice() * 1000;
+      Double discountedPrice = originalPrice * (1 - discount / 100) * 1000;
+
+      var dto = bookMapper.toBookDetailsDTO(book, imageUrls, reviews, originalPrice, discountedPrice);
+      list.add(dto);
+    }
+    return ListBookDetailsDTO.builder().books(list).build();
   }
 }

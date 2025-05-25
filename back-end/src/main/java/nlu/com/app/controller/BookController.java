@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import nlu.com.app.dto.AppResponse;
 import nlu.com.app.dto.request.BookDetailsDTO;
 import nlu.com.app.dto.request.BookSearchRequestDTO;
+import nlu.com.app.dto.response.ListBookDetailsDTO;
 import nlu.com.app.dto.response.PageBookResponseDTO;
 import nlu.com.app.dto.response.ShopDataInitDTO;
 import nlu.com.app.service.impl.BookService;
@@ -42,4 +43,12 @@ public class BookController {
   public AppResponse<BookDetailsDTO> getBookDetail(@PathVariable Long id) {
     return AppResponse.<BookDetailsDTO>builder().result(bookService.getBookDetails(id)).build();
   }
+
+  @GetMapping("/top-weekly")
+  public AppResponse<ListBookDetailsDTO> getTopBookDetails() {
+    return AppResponse.<ListBookDetailsDTO>builder()
+            .result(bookService.getBookDetailsOfTopWeekly())
+            .build();
+  }
+
 }
