@@ -27,6 +27,7 @@ import { BookRelated } from "./BookRelated";
 import { useState } from "react";
 import { SaveBookDialog } from "./SaveBookDialog";
 import { NewBookCollectionDialog } from "./SaveBookDialog/NewBookCollectionDialog";
+import { BookDetailsProvider } from "~/context/BookDetailsContext";
 
 const CustomizeBox = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -62,7 +63,7 @@ export function BookDetails() {
     setOpen(false);
   };
   return (
-    <>
+    <BookDetailsProvider>
       <Container sx={{ paddingRight: "0 !important;" }}>
         <Breadcrumbs sx={{ marginY: 3 }} separator="›" aria-label="breadcrumb">
           {breadcrumbs}
@@ -132,6 +133,6 @@ export function BookDetails() {
         onClose={() => setOpenSubDialog(false)}
         open={openSubDialog}
       />
-    </>
+    </BookDetailsProvider>
   );
 }

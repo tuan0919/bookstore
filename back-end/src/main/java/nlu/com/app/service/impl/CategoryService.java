@@ -1,13 +1,20 @@
 package nlu.com.app.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nlu.com.app.constant.ECategory;
+import nlu.com.app.dto.response.CategoryChainDTO;
 import nlu.com.app.dto.response.CategoryResponseDTO;
+import nlu.com.app.entity.Book;
 import nlu.com.app.entity.Category;
 import nlu.com.app.mapper.CategoryMapper;
+import nlu.com.app.repository.BookRepository;
 import nlu.com.app.repository.CategoryRepository;
 import nlu.com.app.service.ICategoryService;
 import org.springframework.stereotype.Service;
@@ -21,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CategoryService implements ICategoryService {
-
+  BookRepository bookRepository;
   CategoryRepository categoryRepository;
   CategoryMapper categoryMapper;
 
@@ -55,4 +62,31 @@ public class CategoryService implements ICategoryService {
     List<Category> rootCategories = categoryRepository.findByParentCategoryIsNull();
     return categoryMapper.toCategoryResponseDTOList(rootCategories, categoryRepository);
   }
+
+  @Override
+  public CategoryChainDTO getBookCategoryTree(Long bookId) {
+    Book book = bookRepository.findById(bookId)
+            .orElseThrow(() -> new RuntimeException("Book not found"));
+    var category = book.getCategory();
+    List<CategoryChainDTO.SimpleCategoryDTO> chain = new ArrayList<>();
+    while (category != null) {
+      chain.add(
+              CategoryChainDTO.SimpleCategoryDTO.builder()
+                      .id(category.getCategoryId())
+                      .name(category.getCategoryName().name())
+                      .build()
+      );
+      category = category.getParentCategory();
+    }
+    Collections.reverse(chain);
+    String fullChain = chain.stream()
+            .map(CategoryChainDTO.SimpleCategoryDTO::getName)
+            .collect(Collectors.joining(" > "));
+    return CategoryChainDTO.builder()
+            .list(chain)
+            .fullChain(fullChain)
+            .build();
+  }
+
+
 }

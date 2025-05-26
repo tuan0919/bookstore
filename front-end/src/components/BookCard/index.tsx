@@ -35,6 +35,7 @@ export function BookCard({ card }: { card?: BookCard }) {
         gap: "4px",
         backgroundColor: "#fff",
       }}
+      onClick={() => navigate(`/details/${card?.bookId}`)}
     >
       {/* Ảnh sách + icon giỏ hàng overlay */}
       <Box

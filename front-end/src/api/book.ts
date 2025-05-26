@@ -1,6 +1,10 @@
 import { ApiResponse } from "~/types/api";
 import API_ENDPOINTS from "./endpoint";
-import { ListBookDetailsDTO, PageBookResponse } from "~/types/book";
+import {
+  BookDetailsDTO,
+  ListBookDetailsDTO,
+  PageBookResponse,
+} from "~/types/book";
 import axiosInstance from "./axios";
 
 interface SearchBookParams {
@@ -39,5 +43,13 @@ export const getTopWeeklyBooks = async (): Promise<
 > => {
   const url = `${API_ENDPOINTS.BOOK.TOP_WEEKLY}`;
   const res = await axiosInstance.get<ApiResponse<ListBookDetailsDTO>>(url);
+  return res.data;
+};
+
+export const getBookDetails = async (
+  bookId: number
+): Promise<ApiResponse<BookDetailsDTO>> => {
+  const url = `${API_ENDPOINTS.BOOK.DETAILS(bookId)}`;
+  const res = await axiosInstance.get<ApiResponse<BookDetailsDTO>>(url);
   return res.data;
 };

@@ -38,7 +38,8 @@ public class SecurityConfiguration {
                 "/api/v1/auth/register",
                 "/api/v1/auth/login",
                 "/api/v1/file/upload",
-                "/api/book/**"
+                "/api/book/**",
+                "/api/category/**"
             )
             .permitAll()
             .anyRequest().authenticated()
