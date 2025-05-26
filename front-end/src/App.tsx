@@ -20,7 +20,7 @@ function App() {
           <Outlet />
         </Box>
       </>
-    )
+    );
   }, []);
 
   const MainLayout = useMemo(() => {
@@ -32,17 +32,21 @@ function App() {
         </Box>
         <Footer />
       </>
-    )
+    );
   }, []);
   return (
     <>
       <Routes>
         <Route element={MainLayout}>
           <Route path="/" element={<Navigate to="/home" />} />
-          <Route path="/details" Component={BookDetails} />
+          <Route path="/details" element={<BookDetails />} />
+          <Route path="/details/*" element={<BookDetails />} />
           <Route path="/home" Component={Home} />
           <Route path="/profileUser/*" Component={ProfileUser} />
-          <Route path="/profileUser/orders/view/order_id/:orderId" Component={OrderDetail} />
+          <Route
+            path="/profileUser/orders/view/order_id/:orderId"
+            Component={OrderDetail}
+          />
           <Route
             path="*"
             element={
@@ -58,7 +62,7 @@ function App() {
         <Route element={CheckoutLayout}>
           <Route path="/checkout" Component={Checkout} />
         </Route>
-      </Routes >
+      </Routes>
     </>
   );
 }
