@@ -11,18 +11,17 @@ export const getCategoryChainOfBook = async (
   return res.data;
 };
 
-
-export async function getCategories(){
-    const response = await axiosInstance.get(API_ENDPOINTS.CATEGORY.CATEGORY);
-    if(response.status !== 200){
-        throw new Error("Failed to fetch categories");
-    }
-    return response.data.result.categoryResponseDTOs.children;
+export async function getCategories() {
+  const response = await axiosInstance.get(API_ENDPOINTS.CATEGORY.CATEGORY);
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch categories");
+  }
+  return response.data.result.categoryResponseDTOs.children;
 }
-export async function getGenre(){
-    const response = await axiosInstance.get(API_ENDPOINTS.CATEGORY.CATEGORY);
-    if(response.status !== 200){
-        throw new Error("Failed to fetch genres");
-    }
-    return response.data.result.genreResponseDTOs;
+export async function getGenre() {
+  const response = await axiosInstance.get(API_ENDPOINTS.CATEGORY.CATEGORY);
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch genres");
+  }
+  return response.data.result.genreResponseDTOs;
 }
