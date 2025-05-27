@@ -126,7 +126,7 @@ export function BookCard({ card }: { card?: BookCard }) {
         </Typography>
       </Tooltip>
 
-      {/* Giá bán & Giá gạch */}
+      {/* Giá bán & Giá bị gạch (giảm giá) */}
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography
           fontFamily={"Segoe UI"}

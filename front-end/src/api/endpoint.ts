@@ -8,6 +8,7 @@ const API_ENDPOINTS = {
   },
   CATEGORY: {
     CHAIN_FOR_BOOK: `/api/category/chain`,
+    CATEGORY : "api/book"
   },
 };
 

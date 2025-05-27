@@ -4,6 +4,7 @@ import App from '~/App.tsx'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import theme from '~/theme.ts'
 import { BrowserRouter } from 'react-router-dom'
+import { Providers } from './providers'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -13,7 +14,9 @@ createRoot(document.getElementById('root')!).render(
     }}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <App />
+        <Providers>
+          <App />
+        </Providers>
       </ThemeProvider>
     </BrowserRouter>
   </StrictMode>
