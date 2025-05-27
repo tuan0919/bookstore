@@ -151,4 +151,13 @@ public class CartService implements ICartService {
 
     return cartMapper.toCartResponseDTO(cart, bookRepository, productDiscountMap);
   }
+  @Override
+  public void removeItemsFromCart(Long userId, List<Long> productIds) {
+    Optional<Cart> cartOpt = getCart(userId);
+    if (cartOpt.isPresent()) {
+      Cart cart = cartOpt.get();
+      cart.getItems().removeIf(item -> productIds.contains(Long.parseLong(item.getProductId())));
+      saveCart(userId, cart);
+    }
+  }
 }

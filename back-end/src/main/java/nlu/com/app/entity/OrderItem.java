@@ -32,11 +32,13 @@ public class OrderItem {
   private int quantity;
   @Column(name = "price")
   private double price;
-
+  @Column(name = "discount_percentage")
+  Double discountPercentage;
+  @Column(name = "final_price")
+  Double finalPrice;
   @ManyToOne
   @JoinColumn(name = "order_id")
   private Order order;
-
   @ManyToOne
   @JoinColumn(name = "book_id")
   private Book book;

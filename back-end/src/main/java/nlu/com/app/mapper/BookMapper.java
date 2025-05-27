@@ -113,6 +113,7 @@ public interface BookMapper {
 
   @Mapping(target = "imageUrl", source = "book", qualifiedByName = "mapImage")
   @Mapping(target = "discountedPrice", source = "book", qualifiedByName = "calculateDiscountedPrice")
+  @Mapping(target = "price", source = "book", qualifiedByName = "caculatePrice")
   @Mapping(target = "averageRating", source = "averageRating")
   PageBookResponseDTO toPageDto(Book book, @Context double discountPercentage,
       double averageRating);
@@ -139,6 +140,14 @@ public interface BookMapper {
     return book.getPrice() * (1 - discountPercentage / 100) * 1000;
   }
 
+  @Named("caculatePrice")
+  default double caculatePrice(Book book) {
+    if (book.getPrice() <= 0) {
+      return 0;
+    }
+    return book.getPrice() * 1000;
+  }
+
   @Mapping(source = "book.bookId", target = "bookId")
   @Mapping(source = "book.title", target = "title")
   @Mapping(source = "book.publisher", target = "publisher")
@@ -155,7 +164,7 @@ public interface BookMapper {
   @Mapping(source = "book.age", target = "age")
   @Mapping(source = "book.description", target = "description")
   @Mapping(source = "book.qtyInStock", target = "qtyInStock")
-  @Mapping(source = "book.price", target = "price")
+  @Mapping(source = "originalPrice", target = "price")
   @Mapping(source = "discountedPrice", target = "discountedPrice")
   @Mapping(source = "imageUrls", target = "imageUrls")
   @Mapping(source = "reviews", target = "reviews")
