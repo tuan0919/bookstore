@@ -3,6 +3,7 @@ import { Box, MenuItem, Select, Pagination } from "@mui/material";
 import { BookCard } from "~/components/BookCard";
 import { SelectChangeEvent } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import {PageBookResponseDTO} from "~/types/book";
 const sortOptions = [
   { label: "Mới nhất", value: "latest" },
   { label: "Bán chạy", value: "best-seller" },
@@ -11,14 +12,7 @@ const sortOptions = [
 ];
 
 const perPageOptions = [12, 24, 48];
-
-const mockBooks = Array.from({ length: 30 }, (_, index) => ({
-  id: index + 1,
-  title: `Sách mẫu ${index + 1}`,
-  price: Math.floor(Math.random() * 500) + 50,
-}));
-
-export default function BookList() {
+export default function BookList({books,selectedPrices}: { books : PageBookResponseDTO [],selectedPrices?: string[];}) {
   const [sort, setSort] = useState("latest");
   const [perPage, setPerPage] = useState(12);
   const [page, setPage] = useState(1);
@@ -35,8 +29,31 @@ export default function BookList() {
   const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
+  const listBooks : PageBookResponseDTO[] = [...books]
+  const filterByPrice = (book: PageBookResponseDTO) => {
+  const price = book.discountedPrice ;
+  if (!selectedPrices || selectedPrices.length === 0) return true;
 
-  const paginatedBooks = mockBooks.slice((page - 1) * perPage, page * perPage);
+  return selectedPrices.some((range) => {
+    switch (range) {
+      case "Dưới 100K":
+        return price < 100000;
+      case "100K - 300K":
+        return price >= 100000 && price <= 300000;
+      case "300K - 500K":
+        return price > 300000 && price <= 500000;
+      case "Trên 500K":
+        return price > 500000;
+      default:
+        return true;
+    }
+  });
+};
+const filteredBooks = books.filter(filterByPrice);
+const paginatedBooks = filteredBooks.slice(
+  (page - 1) * perPage,
+  page * perPage
+);
 
   return (
     <Box
@@ -78,7 +95,15 @@ export default function BookList() {
       {/* Danh sách sách */}
       <Box display="grid" gridTemplateColumns="repeat(4, 1fr)" gap={2}>
         {paginatedBooks.map((book) => (
-          <BookCard key={book.id} />
+          <BookCard key={book.bookId} card={
+            {
+              thumbnail: book.imageUrl,
+              title: book.title,
+              discountPrice: book.discountedPrice,
+              originallPrice: book.price,
+              bookId: book.bookId,
+            }
+          } />
         ))}
       </Box>
 
@@ -86,7 +111,7 @@ export default function BookList() {
       <Box display="flex" justifyContent="center" mt={3}>
         <Pagination
           color={"primary"}
-          count={Math.ceil(mockBooks.length / perPage)}
+          count={Math.ceil(listBooks.length / perPage)}
           page={page}
           onChange={handlePageChange}
         />

@@ -1,11 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createContext, useContext, useState } from "react";
-
+import { PageBookResponseDTO } from "~/types/book";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 interface SearchContextType {
   searchKeyword: string;
   setSearchKeyword: React.Dispatch<React.SetStateAction<string>>;
-  searchResults: any[]; // Change this to the correct type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  searchResults: PageBookResponseDTO[];
   setSearchResults: React.Dispatch<React.SetStateAction<any[]>>;
   filters: {
     page: number;
@@ -25,19 +27,38 @@ interface SearchContextType {
       maxPrice: number;
     }>
   >;
+  isResetDefaultFilters: boolean;
+  resetDefaultFilters: () => void;
+  setIsResetDefaultFilters: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const SearchContext = createContext<SearchContextType | null>(null);
+
 export function SearchProvider({ children }: { children: React.ReactNode }) {
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [filters, setFilters] = useState({
+  const [searchResults, setSearchResults] = useState<PageBookResponseDTO[]>([]);
+  const defaultFilters = {
     page: 0,
     size: 12,
     context: "",
-    categoryId: 1,
+    categoryId: 5,
     minPrice: 0,
-    maxPrice: 0,
-  });
+    maxPrice: 200000000000,
+  };
+  const [isResetDefaultFilters, setIsResetDefaultFilters] = useState(true);
+  const location = useLocation();
+  function resetDefaultFilters() {
+    setFilters(defaultFilters);
+  }
+  const [filters, setFilters] = useState(defaultFilters);
+  // Khi rời khỏi /category, reset filter
+  useEffect(() => {
+    if (!location.pathname.startsWith("/category/")) {
+      resetDefaultFilters(); 
+      setIsResetDefaultFilters(true);
+    } else {
+      setIsResetDefaultFilters(false); 
+    }
+  }, [location.pathname]);
   return (
     <SearchContext.Provider
       value={{
@@ -47,6 +68,9 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
         setSearchResults,
         filters,
         setFilters,
+        isResetDefaultFilters,
+        setIsResetDefaultFilters,
+        resetDefaultFilters,
       }}
     >
       {children}

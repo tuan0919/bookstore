@@ -3,60 +3,40 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useSearchContext } from "~/providers/SearchProvider";
 import { useDebounce } from "~/custom_hook/useDebounce";
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
-
+import { searchBooks } from "~/api/book";
+interface SearchBookParams {
+  context?: string;
+  categoryId?: number;
+  minPrice?: number;
+  maxPrice?: number;
+  page?: number;
+  size?: number;
+}
 export function SearchField() {
   const inputRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoangding, setLoading] = useState(false);
   const {
     searchKeyword,
     setSearchKeyword,
-    searchResults,
     setSearchResults,
     filters,
-    setFilters,
+    setIsResetDefaultFilters,
   } = useSearchContext();
+  setIsResetDefaultFilters(true);
   // Xài kỹ thuật debounce để tránh việc gọi API liên tục khi người dùng gõ
-  const debounce = useDebounce(searchKeyword, 1000);
+  const debounce = useDebounce(searchKeyword, 500) ?? "";
   useEffect(() => {
-    async function fetchData() {
-      const bare_token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ5YXRvIiwiaWF0IjoxNzQ4MDc0MjkwLCJleHAiOjE3NTA2NjYyOTB9.ThI_l6-lTMjMT8BMWXTcXrRTwn6Jz06PdQ-AVeGbPvc";
-      const queryParams = new URLSearchParams({
-        page: filters.page.toString(),
-        size: filters.size.toString(),
-        context: debounce,
-        categoryId: filters.categoryId.toString(),
-        minPrice: filters.minPrice.toString(),
-        maxPrice: filters.maxPrice.toString(),
-      }).toString();
-      setLoading(true);
-      const response = await fetch(
-        `http://localhost:8080/api/book?${queryParams}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${bare_token}`,
-          },
-        }
-      );
-      const data = await response.json();
-      setLoading(false);
-      setSearchResults(data);
-    }
     if (debounce.trim() === "") {
-      setSearchResults([]);
       return;
-    } else {
-      fetchData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debounce]);
   const handleClearResult = () => {
-    setSearchResults([]); // Xóa kết quả tìm kiếm
     setSearchKeyword(""); // Xóa ô input
     if (inputRef.current) {
       (inputRef.current as HTMLInputElement).focus();
@@ -118,10 +98,18 @@ export function SearchField() {
             disableUnderline: true,
           },
         }}
+        onFocus={() => {
+          setTimeout(() => {
+            if (inputRef.current) {
+              const newValue = (inputRef.current as HTMLInputElement).value;
+              setSearchKeyword(newValue);
+            }
+          }, 100); // Delay nhẹ để đợi autofill xong
+        }}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           setSearchKeyword(e.target.value);
         }}
-        value={searchKeyword}
+        value={searchKeyword ?? ""}
       />
       <Button
         variant="contained"
@@ -138,10 +126,27 @@ export function SearchField() {
         }}
         onClick={() => {
           setLoading(true);
-          setTimeout(() => {
-            setLoading(false);
+          searchBooks({
+            context: debounce,
+            categoryId: filters.categoryId,
+            minPrice: filters.minPrice,
+            maxPrice: filters.maxPrice,
+            page: filters.page,
+            size: filters.size,
+          } as SearchBookParams)
+            .then((res) => {
+              setSearchResults(res.result.content);
+              setLoading(false);
+            })
+            .catch((error) => {
+              console.error("Error fetching search results:", error);
+              setLoading(false);
+            });
+          if (location.pathname.startsWith("/category")) {
+            navigate(location.pathname);
+          } else {
             navigate("/category");
-          }, 1000);
+          }
         }}
       >
         <SearchIcon fontSize="small" />
