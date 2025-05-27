@@ -26,8 +26,8 @@ export const searchBooks = async (
     queryParams.append("minPrice", minPrice.toString());
   if (maxPrice !== undefined)
     queryParams.append("maxPrice", maxPrice.toString());
-  if (page !== undefined) queryParams.append("maxPrice", page.toString());
-  if (size !== undefined) queryParams.append("maxPrice", size.toString());
+  if (page !== undefined) queryParams.append("page", page.toString());
+  if (size !== undefined) queryParams.append("size", size.toString());
 
   const url = `${API_ENDPOINTS.BOOK.SEARCH}?${queryParams.toString()}`;
   const res = await axiosInstance.get<ApiResponse<PageBookResponse>>(url);
