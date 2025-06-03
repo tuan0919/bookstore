@@ -1,17 +1,10 @@
 import { Box, Divider, Typography, Checkbox } from "@mui/material";
-
+import { useCart } from "~/providers/CartProvider";
 import CartItem from "../CartItem/";
-export interface Book {
-  id: number;
-  title: string;
-  price: number;
-  quantity: number;
-  img: string;
-  salePrice: number;
-}
+import { CartItemPropertyResponseDTO } from "~/types/cart";
 
 interface ListCartItemProps {
-  listBook: Book[];
+  listBook: CartItemPropertyResponseDTO[];
   onQuantityChange: (bookId: number, newQuantity: number) => void;
   onToggleCheckbox: (bookId: number) => void;
   onToggleAll: () => void;
@@ -25,6 +18,8 @@ function ListCartItem({
   checkedItems,
   onToggleAll,
 }: ListCartItemProps) {
+  const {   increaseItem, decreaseItem } = useCart();
+
   return (
     <Box bgcolor={"#f5f5f5"}>
       {/* Header */}
@@ -76,18 +71,20 @@ function ListCartItem({
         bgcolor={"#fff"}
         borderRadius={2}
       >
-        {listBook.map((book, index) => (
-          <Box key={book.id}>
+        {listBook.length > 0 &&  listBook.map((item) => (
+          <Box key={item.productId}>
             <CartItem
-              key={book.id}
-              book={book}
+             book={item}
               onQuantityChange={onQuantityChange}
               onToggleCheckbox={onToggleCheckbox}
-              isChecked={checkedItems.includes(book.id)}
+              isChecked={checkedItems.includes(item.productId)}
+              increaseItem={increaseItem}
+              decreaseItem={decreaseItem}
             />
-            {index !== listBook.length - 1 && <Divider sx={{ my: 2 }} />}
+            {item.productId !== listBook.length - 1 && <Divider sx={{ my: 2 }} />}
           </Box>
         ))}
+     
       </Box>
     </Box>
   );

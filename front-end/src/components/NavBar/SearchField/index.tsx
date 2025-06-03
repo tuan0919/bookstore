@@ -27,9 +27,11 @@ export function SearchField() {
     filters,
     setIsResetDefaultFilters,
   } = useSearchContext();
+
   setIsResetDefaultFilters(true);
+
   // Xài kỹ thuật debounce để tránh việc gọi API liên tục khi người dùng gõ
-  const debounce = useDebounce(searchKeyword, 500) ?? "";
+  const debounce = useDebounce(searchKeyword, 100) ?? "";
   useEffect(() => {
     if (debounce.trim() === "") {
       return;
@@ -40,6 +42,30 @@ export function SearchField() {
     setSearchKeyword(""); // Xóa ô input
     if (inputRef.current) {
       (inputRef.current as HTMLInputElement).focus();
+    }
+  };
+  const searchingBook = () => {
+    setLoading(true);
+    searchBooks({
+      context: debounce,
+      categoryId: filters.categoryId,
+      minPrice: filters.minPrice,
+      maxPrice: filters.maxPrice,
+      page: filters.page,
+      size: filters.size,
+    } as SearchBookParams)
+      .then((res) => {
+        setSearchResults(res.result.content);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching search results:", error);
+        setLoading(false);
+      });
+    if (location.pathname.startsWith("/category")) {
+      navigate(location.pathname);
+    } else {
+      navigate("/category");
     }
   };
   return (
@@ -101,14 +127,26 @@ export function SearchField() {
         onFocus={() => {
           setTimeout(() => {
             if (inputRef.current) {
-              const newValue = (inputRef.current as HTMLInputElement).value;
-              setSearchKeyword(newValue);
+              const newValue =
+                (inputRef.current as HTMLInputElement).value ?? "";
+              if (newValue.trim() !== "" && newValue !== searchKeyword) {
+                setSearchKeyword(newValue);
+              }
             }
           }, 100); // Delay nhẹ để đợi autofill xong
         }}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          
           setSearchKeyword(e.target.value);
         }}
+      onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+      const inputValue = (e.target as HTMLInputElement).value;
+      setSearchKeyword(inputValue.trim());
+      searchingBook();
+    }
+  }}
+
         value={searchKeyword ?? ""}
       />
       <Button
@@ -124,30 +162,7 @@ export function SearchField() {
           },
           alignItems: "center",
         }}
-        onClick={() => {
-          setLoading(true);
-          searchBooks({
-            context: debounce,
-            categoryId: filters.categoryId,
-            minPrice: filters.minPrice,
-            maxPrice: filters.maxPrice,
-            page: filters.page,
-            size: filters.size,
-          } as SearchBookParams)
-            .then((res) => {
-              setSearchResults(res.result.content);
-              setLoading(false);
-            })
-            .catch((error) => {
-              console.error("Error fetching search results:", error);
-              setLoading(false);
-            });
-          if (location.pathname.startsWith("/category")) {
-            navigate(location.pathname);
-          } else {
-            navigate("/category");
-          }
-        }}
+        onClick={searchingBook}
       >
         <SearchIcon fontSize="small" />
       </Button>

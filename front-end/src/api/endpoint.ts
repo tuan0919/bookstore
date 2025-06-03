@@ -10,6 +10,14 @@ const API_ENDPOINTS = {
     CHAIN_FOR_BOOK: `/api/category/chain`,
     CATEGORY : "api/book"
   },
+  USER: {
+    LOGIN: "/api/v1/auth/login",
+  },
+  CART: {
+    ADD: "/api/cart/add",
+    REMOVE: "/api/cart/delete/{productId}",
+    GET: "/api/cart",
+  }
 };
 
 export default API_ENDPOINTS;
