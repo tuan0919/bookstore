@@ -13,7 +13,9 @@ import nlu.com.app.service.IPaymentMethodService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,5 +54,11 @@ public class OrderController {
   public AppResponse<List<PaymentMethodDTO>> getAllPaymentMethods() {
     return AppResponse.<List<PaymentMethodDTO>>builder()
         .result(paymentMethodService.getAllPaymentMethods()).build();
+  }
+
+  @DeleteMapping("/{orderId}/cancel")
+  public AppResponse<String> cancelOrder(@PathVariable Long orderId) {
+    orderService.cancelOrder(orderId);
+    return AppResponse.<String>builder().result("Order cancelled successfully").build();
   }
 }

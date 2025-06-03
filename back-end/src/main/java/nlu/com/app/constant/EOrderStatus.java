@@ -7,7 +7,8 @@ public enum EOrderStatus {
   PENDING_CONFIRMATION("Chờ xác nhận"),
   CONFIRMED("Đã xác nhận"),
   SHIPPING("Đang vận chuyển"),
-  DELIVERED("Đã chuyển đến");
+  DELIVERED("Đã chuyển đến"),
+  CANCELED("Đã hủy");
 
   private String description;
 

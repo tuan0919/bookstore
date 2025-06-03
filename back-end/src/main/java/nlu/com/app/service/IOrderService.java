@@ -13,4 +13,5 @@ public interface IOrderService {
   OrderResponseDTO createOrderFromCart(List<Long> selectedProductIds, Long paymentMethodId);
 
   Page<OrderResponseDTO> getOrdersWithPagination(Pageable pageable);
+  void cancelOrder(Long orderId);
 }
