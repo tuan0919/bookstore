@@ -3,6 +3,8 @@ import { grey, red } from "@mui/material/colors";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import bookImage from "~/assets/product/mockup_1.png";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "~/providers/CartProvider";
+
 export interface BookCard {
   thumbnail: string;
   title: string;
@@ -12,6 +14,8 @@ export interface BookCard {
 }
 export function BookCard({ card }: { card?: BookCard }) {
   const navigate = useNavigate();
+  const { increaseItem } = useCart();
+ 
   return (
     <Box
       sx={{
@@ -93,7 +97,9 @@ export function BookCard({ card }: { card?: BookCard }) {
                 backgroundColor: red[800],
               },
             }}
-            onClick={() => {
+            onClick={(event) => {
+               event.stopPropagation();
+               increaseItem(card?.bookId.toString() || "", 1);
               navigate("/cart");
             }}
           >

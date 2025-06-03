@@ -1,13 +1,15 @@
 import { Box, Checkbox, IconButton, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import QuantityInput from "../../../components/NumberInput";
-import { Book } from "../ListCartItem";
+import { CartItemPropertyResponseDTO } from "~/types/cart";
 
 interface CartItemProps {
-  book: Book;
+  book: CartItemPropertyResponseDTO;
   onQuantityChange: (bookId: number, newQuantity: number) => void;
   onToggleCheckbox: (bookId: number) => void;
   isChecked: boolean;
+  increaseItem: (bookId: string, quantity: number) => void;
+  decreaseItem: (bookId: string, quantity: number) => void;
 }
 
 function CartItem({
@@ -15,6 +17,8 @@ function CartItem({
   onQuantityChange,
   onToggleCheckbox,
   isChecked,
+  increaseItem,
+decreaseItem
 }: CartItemProps) {
   return (
     <Box
@@ -29,13 +33,13 @@ function CartItem({
         color="error"
         defaultChecked
         checked={isChecked}
-        onChange={() => onToggleCheckbox(book.id)}
+        onChange={() => onToggleCheckbox(book.productId)}
       />
 
       {/* Hình ảnh sách */}
       <Box width={80} height={80} flexShrink={0}>
         <img
-          src={book.img}
+          src={book.imageUrl}
           alt={book.title}
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
@@ -65,10 +69,13 @@ function CartItem({
         borderRadius={1}
       >
         <QuantityInput
+         bookId={book.productId.toString()}
           value={book.quantity}
+          onIncrease={(id, val) => increaseItem(id, val)}
+          onDecrease={(id, val) => decreaseItem(id, val)}
           onChange={(e, val) => {
             if (val !== null) {
-              onQuantityChange(book.id, val); // Gọi hàm truyền lên từ cha
+              onQuantityChange(book.productId, val); // Gọi hàm truyền lên từ cha
             }
           }}
         ></QuantityInput>
