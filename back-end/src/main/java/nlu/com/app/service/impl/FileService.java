@@ -7,6 +7,8 @@ import nlu.com.app.exception.ErrorCode;
 import nlu.com.app.service.IFileService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -14,6 +16,8 @@ import software.amazon.awssdk.services.s3.model.S3Exception;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 
 @Service
@@ -23,6 +27,8 @@ public class FileService implements IFileService {
     private String bucketName;
     @Value("${app.aws.bucket.request-timeout}")
     private int requestTimeout;
+    @Value("${app.temp-folder}")
+    private String tmp;
     private final S3Presigner s3Presigner;
     private final S3Client s3Client;
 
@@ -41,6 +47,58 @@ public class FileService implements IFileService {
                 .signatureDuration(Duration.ofSeconds(requestTimeout))
                 .build();
         return s3Presigner.presignPutObject(presignRequest).url().toString();
+    }
+
+    @Override
+    public String uploadFile(MultipartFile file) {
+        try {
+            String key = file.getResource().getFilename();
+            if (doesObjectExist(key)) {
+                throw new ApplicationException(ErrorCode.S3_KEY_OBJECT_DUPLICATED);
+            }
+            // write this to temp folder
+            var tempFile = writeToTempFolder(file);
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .contentType(file.getContentType())
+                    .build();
+            s3Client.putObject(putObjectRequest, RequestBody.fromFile(tempFile));
+            return "https://cnd1.anhtuan.online/"+key;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ApplicationException(ErrorCode.UNEXPECTED_BEHAVIOR);
+        }
+    }
+
+    public String uploadFile(MultipartFile file, String key) {
+        try {
+            if (doesObjectExist(key)) {
+                throw new ApplicationException(ErrorCode.S3_KEY_OBJECT_DUPLICATED);
+            }
+            // write this to temp folder
+            var tempFile = writeToTempFolder(file);
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .contentType(file.getContentType())
+                    .build();
+            s3Client.putObject(putObjectRequest, RequestBody.fromFile(tempFile));
+            return "https://cnd1.anhtuan.online/"+key;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ApplicationException(ErrorCode.UNEXPECTED_BEHAVIOR);
+        }
+    }
+
+    private File writeToTempFolder(MultipartFile file) throws IOException {
+        File tempDir = new File(tmp);
+        if (!tempDir.exists()) {
+            tempDir.mkdirs(); // create the directory if not exists
+        }
+        File tempFile = new File(tmp + "/" + file.getResource().getFilename());
+        file.transferTo(tempFile);
+        return tempFile;
     }
 
     private boolean doesObjectExist(String key) {

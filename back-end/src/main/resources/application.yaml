@@ -25,9 +25,10 @@ spring:
 app:
   jwt-key: 1ytvns7A2HHo2GUQ2d82xS2I7dRyWWv1BTU51Ve+il0=
   aws:
-    access-key-id: ${SPRING_AWS_ACCESS_KEY_ID:<Nhập Key ID vào đây>}
-    secret-access-key: ${SPRING_AWS_SECRET_ACCESS_KEY:<Nhập Secret Key Id vào đây>}
+    access-key-id: ${SPRING_AWS_ACCESS_KEY_ID:_}
+    secret-access-key: ${SPRING_AWS_SECRET_ACCESS_KEY:_}
     bucket:
       name: nqat.bookstore.bucket
       request-timeout: 3600 # in seconds
+  temp-folder: D:\tmp
 

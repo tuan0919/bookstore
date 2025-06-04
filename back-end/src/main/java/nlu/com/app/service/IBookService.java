@@ -2,10 +2,13 @@ package nlu.com.app.service;
 
 import nlu.com.app.dto.request.BookDetailsDTO;
 import nlu.com.app.dto.request.BookSearchRequestDTO;
+import nlu.com.app.dto.request.CreateBookRequest;
+import nlu.com.app.dto.response.CreateBookResponse;
 import nlu.com.app.dto.response.ListBookDetailsDTO;
 import nlu.com.app.dto.response.PageBookResponseDTO;
 import nlu.com.app.dto.response.ShopDataInitDTO;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -30,4 +33,19 @@ public interface IBookService {
    * @return List of BookDetailsDTO containing detailed information of the book
    */
   ListBookDetailsDTO getBookDetailsOfTopWeekly();
+
+  /**
+   * create new book
+   * @param metadata metadata for this book
+   * @param thumbnail thumbnail for book
+   * @param description description file for book
+   * @param gallery gallery images for book
+   * @param userId request's user id
+   * @return new book details
+   */
+  CreateBookResponse createBook(CreateBookRequest metadata,
+                                MultipartFile thumbnail,
+                                MultipartFile description,
+                                MultipartFile[] gallery,
+                                String userId);
 }

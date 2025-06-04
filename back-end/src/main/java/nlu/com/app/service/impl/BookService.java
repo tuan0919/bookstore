@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -15,6 +17,7 @@ import nlu.com.app.dto.json.BooksWrapper;
 import nlu.com.app.dto.request.BookDetailsDTO;
 import nlu.com.app.dto.request.BookDetailsDTO.ReviewDTO;
 import nlu.com.app.dto.request.BookSearchRequestDTO;
+import nlu.com.app.dto.request.CreateBookRequest;
 import nlu.com.app.dto.response.*;
 import nlu.com.app.entity.Book;
 import nlu.com.app.entity.BookImage;
@@ -37,6 +40,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author VuLuu
@@ -58,6 +62,7 @@ public class BookService implements IBookService {
   BookImageRepository bookImageRepository;
   CategoryService categoryService;
   GenreService genreService;
+  FileService fileService;
 
   public void initData() throws IOException {
     for (String file : initJsonFile) {
@@ -251,4 +256,25 @@ public class BookService implements IBookService {
     }
     return ListBookDetailsDTO.builder().books(list).build();
   }
+
+  @Override
+  public CreateBookResponse createBook(CreateBookRequest metadata,
+                                       MultipartFile thumbnail,
+                                       MultipartFile description,
+                                       MultipartFile[] gallery,
+                                       String userId) {
+    String key_thumbnail = String.format("%s/%s", userId, thumbnail.getOriginalFilename());
+    String link_thumbnail = fileService.uploadFile(thumbnail, key_thumbnail);
+    String key_description = String.format("%s/%s", userId, description.getOriginalFilename());
+    String link_description = fileService.uploadFile(description, key_description);
+    List<String> link_gallery = new ArrayList<>();
+    for (MultipartFile image: gallery) {
+      String key = String.format("%s/%s", userId, image.getOriginalFilename());
+      String link = fileService.uploadFile(image, key);
+      link_gallery.add(link);
+    }
+    return null;
+  }
+
+
 }
