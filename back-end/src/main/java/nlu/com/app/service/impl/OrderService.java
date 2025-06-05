@@ -157,4 +157,17 @@ public class OrderService implements IOrderService {
     Page<Order> ordersPage = orderRepository.findAllByUser(user, pageable);
     return ordersPage.map(orderMapper::toOrderResponseDTO);
   }
+
+  @Override
+  public void cancelOrder(Long orderId) {
+    Order order = orderRepository.findById(orderId)
+        .orElseThrow(() -> new ApplicationException(ErrorCode.UNKNOWN_EXCEPTION));
+
+    if (order.getStatus() != EOrderStatus.PENDING_CONFIRMATION) {
+      throw new ApplicationException(ErrorCode.CANT_CANCEL_ORDER);
+    }
+
+    order.setStatus(EOrderStatus.CANCELED);
+    orderRepository.save(order);
+  }
 }

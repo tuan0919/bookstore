@@ -18,6 +18,7 @@ public enum ErrorCode {
     UNEXPECTED_BEHAVIOR(1008, "Something went wrong, this action shouldn't perform", HttpStatus.BAD_REQUEST),
     JWT_EXPIRED(1009, "Your session is out of date, please re-login", HttpStatus.FORBIDDEN),
     S3_KEY_OBJECT_DUPLICATED(1010, "Object with same key existed on server", HttpStatus.BAD_REQUEST),
+    CANT_CANCEL_ORDER(1010, "Only pending orders can be cancelled", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

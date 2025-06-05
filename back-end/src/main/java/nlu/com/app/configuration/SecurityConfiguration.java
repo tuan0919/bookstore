@@ -32,7 +32,9 @@ public class SecurityConfiguration {
 
   @Bean
   public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-    return http.csrf(customizer -> customizer.disable())
+    return http
+        .cors(cors -> {})
+        .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(
                 "/api/v1/auth/register",
@@ -44,12 +46,12 @@ public class SecurityConfiguration {
             .permitAll()
             .anyRequest().authenticated()
         )
-        .sessionManagement(
-            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(globalExceptionFilter, jwtFilter.getClass())
         .build();
   }
+
 
   @Bean
   public AuthenticationManager customizer(AuthenticationConfiguration configuration)
