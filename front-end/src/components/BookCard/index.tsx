@@ -4,7 +4,8 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import bookImage from "~/assets/product/mockup_1.png";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "~/providers/CartProvider";
-
+import CustomSnackbar from "~/components/Popup/Snackbar";
+import { useState } from "react";
 export interface BookCard {
   thumbnail: string;
   title: string;
@@ -15,7 +16,12 @@ export interface BookCard {
 export function BookCard({ card }: { card?: BookCard }) {
   const navigate = useNavigate();
   const { increaseItem } = useCart();
- 
+  const [initStateSnackbar, setStateSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+    duration: 800,
+  });
   return (
     <Box
       sx={{
@@ -39,8 +45,17 @@ export function BookCard({ card }: { card?: BookCard }) {
         gap: "4px",
         backgroundColor: "#fff",
       }}
-      onClick={() => navigate(`/details/${card?.bookId}`)}
+      onClick={() => {
+        navigate(`/details/${card?.bookId}`);
+      }}
     >
+      <CustomSnackbar
+        open={initStateSnackbar.open}
+        onClose={() => setStateSnackbar({ ...initStateSnackbar, open: false })}
+        message={initStateSnackbar.message}
+        severity="success"
+        duration={initStateSnackbar.duration}
+      />
       {/* Ảnh sách + icon giỏ hàng overlay */}
       <Box
         sx={{
@@ -98,9 +113,13 @@ export function BookCard({ card }: { card?: BookCard }) {
               },
             }}
             onClick={(event) => {
-               event.stopPropagation();
-               increaseItem(card?.bookId.toString() || "", 1);
-              navigate("/cart");
+              event.stopPropagation();
+              increaseItem(card?.bookId.toString() || "", 1);
+              setStateSnackbar({
+                ...initStateSnackbar,
+                open: true,
+                message: "Đã thêm vào giỏ hàng",
+              });
             }}
           >
             <ShoppingCartIcon fontSize="small" />

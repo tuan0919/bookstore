@@ -2,23 +2,23 @@ import { Box, Checkbox, IconButton, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import QuantityInput from "../../../components/NumberInput";
 import { CartItemPropertyResponseDTO } from "~/types/cart";
-
+import {CartResult} from "~/providers/CartProvider";
 interface CartItemProps {
   book: CartItemPropertyResponseDTO;
-  onQuantityChange: (bookId: number, newQuantity: number) => void;
   onToggleCheckbox: (bookId: number) => void;
   isChecked: boolean;
-  increaseItem: (bookId: string, quantity: number) => void;
-  decreaseItem: (bookId: string, quantity: number) => void;
+  increaseItem: (bookId: string, quantity: number) => Promise<CartResult>;
+  decreaseItem: (bookId: string, quantity: number) => Promise<CartResult>;
+  removeItem?: (bookId: string) => Promise<CartResult>;  
 }
 
 function CartItem({
   book,
-  onQuantityChange,
   onToggleCheckbox,
   isChecked,
   increaseItem,
-decreaseItem
+decreaseItem,
+  removeItem
 }: CartItemProps) {
   return (
     <Box
@@ -73,11 +73,6 @@ decreaseItem
           value={book.quantity}
           onIncrease={(id, val) => increaseItem(id, val)}
           onDecrease={(id, val) => decreaseItem(id, val)}
-          onChange={(e, val) => {
-            if (val !== null) {
-              onQuantityChange(book.productId, val); // Gọi hàm truyền lên từ cha
-            }
-          }}
         ></QuantityInput>
       </Box>
 
@@ -87,7 +82,7 @@ decreaseItem
       </Typography>
 
       {/* Nút xoá */}
-      <IconButton color="error">
+      <IconButton color="error" onClick={() => removeItem?.(book.productId.toString())}>
         <DeleteIcon />
       </IconButton>
     </Box>

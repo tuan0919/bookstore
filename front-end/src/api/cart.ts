@@ -29,7 +29,7 @@ export const removeFromCart = async (
   productId: string
 ): Promise<CartItemResponseDTO> => {
   try {
-    const response = await axiosInstance.delete(`${API_ENDPOINTS.CART}/${productId}`);
+    const response = await axiosInstance.delete(`${API_ENDPOINTS.CART.REMOVE}/${productId}`);
     return response.data
   } catch (error) {
     throw new Error(`Lỗi xóa sản phẩm ra giỏ hàng: ${error}`)

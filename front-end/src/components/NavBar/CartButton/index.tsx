@@ -6,7 +6,7 @@ import { useCart } from "~/providers/CartProvider";
 export function CartButton() {
   const naviagation = useNavigate();
   const { cart } = useCart();
-   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+   const totalItems = cart.length;
   return (
     <Stack
       component="div"
@@ -18,7 +18,8 @@ export function CartButton() {
         cursor: "pointer",
       }}
     >
-      <Badge badgeContent={totalItems} color="error">
+      {localStorage.getItem("access_token") ?(
+        <Badge badgeContent={totalItems} color="error">
       <AddShoppingCartRoundedIcon
         sx={{
           fontSize: 30,
@@ -29,6 +30,17 @@ export function CartButton() {
         }}
       />
       </Badge>
+      ) :(
+         <AddShoppingCartRoundedIcon
+        sx={{
+          fontSize: 30,
+          color: {
+            xs: grey[200],
+            md: grey[600],
+          },
+        }}
+      />
+      )}
       <Typography
         sx={{
           color: {

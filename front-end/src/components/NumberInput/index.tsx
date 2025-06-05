@@ -6,10 +6,12 @@ import {
 import { styled } from "@mui/system";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
+import { CartResult } from "~/providers/CartProvider";
+import { FocusEvent, PointerEvent, KeyboardEvent } from "react";
 interface QuantityInputProps extends Omit<NumberInputProps, "onChange"> {
   bookId: string;
-  onIncrease?: (bookId: string, newQuantity: number) => void;
-  onDecrease?: (bookId: string, newQuantity: number) => void;
+  onIncrease?: (bookId: string, newQuantity: number) => Promise<CartResult>;
+  onDecrease?: (bookId: string, newQuantity: number) => Promise<CartResult>;
   onChange?: (
     event: React.ChangeEvent<HTMLInputElement>,
     value: number | null
@@ -26,16 +28,40 @@ const NumberInput = React.forwardRef(function CustomNumberInput(
   }: QuantityInputProps,
   ref: React.ForwardedRef<HTMLDivElement>
 ) {
-  const handleIncrease = () => {
-    if (onIncrease) onIncrease(bookId, +1);
-  };
+  const handleValueChange = (
+    e: FocusEvent<HTMLInputElement, Element> | PointerEvent<Element> | KeyboardEvent<Element>,
+    val: number | null
+  ) => {
+    const event = e as React.ChangeEvent<HTMLInputElement>;
+    const newQuantity = val ?? 1;
 
-  const handleDecrease = () => {
-    if (onDecrease) onDecrease(bookId, -1);
+    if (newQuantity > (value as number)) {
+      // tăng
+      if (onIncrease) {
+        onIncrease(bookId, +1).then((result) => {
+          if (result.code === 1000) onChange?.(event, newQuantity);
+          else {
+            console.error("Error increasing quantity:", result.result);
+            
+          }
+        });
+      }
+    } else if (newQuantity < (value as number)) {
+      // giảm
+      if (onDecrease) {
+        onDecrease(bookId, -1).then((result) => {
+          if (result.code === 1000) onChange?.(event, newQuantity);
+          else {
+           console.error("Error decreasing quantity:", result.result);
+          }
+        });
+      }
+    }
   };
-  return (
+   return (
     <BaseNumberInput
       value={value}
+      onChange={handleValueChange}
       slots={{
         root: StyledInputRoot,
         input: StyledInput,
@@ -43,33 +69,15 @@ const NumberInput = React.forwardRef(function CustomNumberInput(
         decrementButton: StyledButton,
       }}
       slotProps={{
-        incrementButton: {
-          children: <AddIcon fontSize="small" />,
+        incrementButton: { children: <AddIcon fontSize="small" />,
           className: "increment",
-          onClick: handleIncrease,
-        },
-        decrementButton: {
-          children: <RemoveIcon fontSize="small" />,
-          onClick: handleDecrease,
-        },
+         },
+        decrementButton: { children: <RemoveIcon fontSize="small" /> },
         input: {
-          onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-            const parsed = parseInt(e.target.value, 10);
-            const val = isNaN(parsed) ? null : parsed;
-
-            // Nếu value (từ props) là giới hạn tối đa:
-            const maxQuantity = typeof value === "number" ? value : Infinity;
-
-            if (val !== null && val > maxQuantity) {
-              // Nếu vượt quá giới hạn, reset về max (hoặc không gọi gì cả)
-              e.target.value = String(maxQuantity);
-              if (onChange) onChange(e, maxQuantity);
-            } else {
-              if (onChange) onChange(e, val);
-            }
-          },
-        },
+        readOnly: true,
+      }
       }}
+      
       {...rest}
       ref={ref}
     />
