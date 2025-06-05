@@ -2,7 +2,7 @@ import { Box, Divider, Typography, Checkbox } from "@mui/material";
 import { useCart } from "~/providers/CartProvider";
 import CartItem from "../CartItem/";
 import { CartItemPropertyResponseDTO } from "~/types/cart";
-
+import { useEffect, useState } from "react";
 interface ListCartItemProps {
   listBook: CartItemPropertyResponseDTO[];
   onQuantityChange: (bookId: number, newQuantity: number) => void;
@@ -13,13 +13,15 @@ interface ListCartItemProps {
 
 function ListCartItem({
   listBook,
-  onQuantityChange,
   onToggleCheckbox,
   checkedItems,
   onToggleAll,
 }: ListCartItemProps) {
-  const {   increaseItem, decreaseItem } = useCart();
-
+  const {  cart, increaseItem, decreaseItem, removeItem } = useCart();
+ const [listBookData, setListBook] = useState(listBook);
+ useEffect(() => {
+    setListBook(cart); 
+  }, [cart]);
   return (
     <Box bgcolor={"#f5f5f5"}>
       {/* Header */}
@@ -70,18 +72,23 @@ function ListCartItem({
         p={2}
         bgcolor={"#fff"}
         borderRadius={2}
+       sx={{
+         overflowY:"auto",
+        maxHeight:"calc(100vh - 200px)"
+       }}
       >
-        {listBook.length > 0 &&  listBook.map((item) => (
+        {listBookData.length > 0 &&  listBookData.map((item) => (
           <Box key={item.productId}>
             <CartItem
              book={item}
-              onQuantityChange={onQuantityChange}
+             
               onToggleCheckbox={onToggleCheckbox}
               isChecked={checkedItems.includes(item.productId)}
               increaseItem={increaseItem}
               decreaseItem={decreaseItem}
+              removeItem={removeItem}
             />
-            {item.productId !== listBook.length - 1 && <Divider sx={{ my: 2 }} />}
+            {item.productId !== listBookData.length - 1 && <Divider sx={{ my: 2 }} />}
           </Box>
         ))}
      

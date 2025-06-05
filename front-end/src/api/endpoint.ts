@@ -15,7 +15,7 @@ const API_ENDPOINTS = {
   },
   CART: {
     ADD: "/api/cart/add",
-    REMOVE: "/api/cart/delete/{productId}",
+    REMOVE: "/api/cart/delete",
     GET: "/api/cart",
   }
 };
