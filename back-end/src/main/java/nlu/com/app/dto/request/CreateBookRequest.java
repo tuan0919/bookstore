@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class CreateBookRequest {
-    private String name;
     private String age;
     private String author;
     private String format;
@@ -13,8 +12,10 @@ public class CreateBookRequest {
     private double price;
     private int product_code;
     private String publisher;
+    private int publish_year;
     private int qty_in_stock;
     private String size;
+    private String description;
     private String supplier;
     private String title;
     private String translator;

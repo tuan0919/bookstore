@@ -2,6 +2,8 @@ package nlu.com.app.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.stream.Stream;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import nlu.com.app.dto.json.BooksJson;
 import nlu.com.app.dto.json.BooksWrapper;
 import nlu.com.app.dto.request.BookDetailsDTO;
@@ -34,12 +37,14 @@ import nlu.com.app.repository.GenreRepository;
 import nlu.com.app.repository.PromotionCategoriesRepository;
 import nlu.com.app.repository.UserReviewRepository;
 import nlu.com.app.service.IBookService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -63,6 +68,9 @@ public class BookService implements IBookService {
   CategoryService categoryService;
   GenreService genreService;
   FileService fileService;
+  @Value("${app.temp-folder}")
+  @NonFinal
+  String tmp;
 
   public void initData() throws IOException {
     for (String file : initJsonFile) {
@@ -258,22 +266,50 @@ public class BookService implements IBookService {
   }
 
   @Override
+  @Transactional
   public CreateBookResponse createBook(CreateBookRequest metadata,
                                        MultipartFile thumbnail,
-                                       MultipartFile description,
-                                       MultipartFile[] gallery,
-                                       String userId) {
-    String key_thumbnail = String.format("%s/%s", userId, thumbnail.getOriginalFilename());
-    String link_thumbnail = fileService.uploadFile(thumbnail, key_thumbnail);
-    String key_description = String.format("%s/%s", userId, description.getOriginalFilename());
-    String link_description = fileService.uploadFile(description, key_description);
-    List<String> link_gallery = new ArrayList<>();
-    for (MultipartFile image: gallery) {
-      String key = String.format("%s/%s", userId, image.getOriginalFilename());
-      String link = fileService.uploadFile(image, key);
-      link_gallery.add(link);
+                                       MultipartFile[] gallery) {
+    try {
+      String key_thumbnail = String.format("%s/%s", metadata.getProduct_code(), thumbnail.getOriginalFilename());
+      // write to temp folder first
+      fileService.writeToTempFolder(thumbnail, tmp+"/"+metadata.getProduct_code());
+      // only upload which file was sucessfully cached
+      String link_thumbnail = fileService.uploadFile(new File(tmp+"/"+key_thumbnail), key_thumbnail);
+      List<String> link_gallery = new ArrayList<>();
+      for (MultipartFile image: gallery) {
+        String key_image = String.format("%s/%s", metadata.getProduct_code(), image.getOriginalFilename());
+        fileService.writeToTempFolder(image, tmp+"/"+metadata.getProduct_code());
+        String link = fileService.uploadFile(new File(tmp+"/"+key_image), key_image);
+        link_gallery.add(link);
+      }
+      // vailidate if metadata is valid
+      Long categoryId = metadata.getCategory_id();
+      var category = categoryRepository.findById(categoryId)
+              .orElseThrow(() -> new ApplicationException(ErrorCode.RESOURCE_NOT_FOUND));
+      var genre = genreRepository.findById(metadata.getGenre_id())
+              .orElseThrow(() -> new ApplicationException(ErrorCode.RESOURCE_NOT_FOUND));
+      var book = bookMapper.metadataToEntity(metadata);
+      book.setGenre(genre);
+      book.setCategory(category);
+      // add thumbnail
+      var bookImages = new ArrayList<>(List.of(BookImage.builder()
+              .book(book)
+              .isThumbnail(true)
+              .build()
+      ));
+      // add gallery
+      link_gallery.forEach(link -> {
+        bookImages.add(BookImage.builder().book(book)
+                .imageUrl(link).isThumbnail(false).build());
+      });
+      book.setImages(bookImages);
+      // save book
+      bookRepository.save(book);
+      return bookMapper.toCreateBookResponse(book, link_thumbnail, link_gallery);
+    } catch (IOException e) {
+      throw new ApplicationException(ErrorCode.UNKNOWN_EXCEPTION);
     }
-    return null;
   }
 
 

@@ -6,7 +6,6 @@ import java.util.List;
 
 @Data
 public class CreateBookResponse {
-    private String name;
     private String age;
     private String author;
     private String format;
@@ -16,6 +15,7 @@ public class CreateBookResponse {
     private int product_code;
     private String publisher;
     private int qty_in_stock;
+    private int publish_year;
     private String size;
     private String supplier;
     private String title;

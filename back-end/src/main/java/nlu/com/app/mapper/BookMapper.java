@@ -10,6 +10,8 @@ import nlu.com.app.constant.EGenre;
 import nlu.com.app.dto.json.BooksJson;
 import nlu.com.app.dto.request.BookDetailsDTO;
 import nlu.com.app.dto.request.BookDetailsDTO.ReviewDTO;
+import nlu.com.app.dto.request.CreateBookRequest;
+import nlu.com.app.dto.response.CreateBookResponse;
 import nlu.com.app.dto.response.PageBookResponseDTO;
 import nlu.com.app.entity.Book;
 import nlu.com.app.entity.BookImage;
@@ -42,6 +44,13 @@ public interface BookMapper {
   List<Book> jsonToEntityList(List<BooksJson> booksJsonList,
       @Context CategoryRepository categoryRepository,
       @Context GenreRepository genreRepository);
+
+
+  @Mapping(target = "pageCount", source = "page_count")
+  @Mapping(target = "qtyInStock", source = "qty_in_stock")
+  @Mapping(target = "productCode", source = "product_code")
+  @Mapping(target = "publishYear", source = "publish_year")
+  Book metadataToEntity(CreateBookRequest createBookRequest);
 
   @Named("stringToCategory")
   default Category stringToCategory(String value, @Context CategoryRepository categoryRepository) {
@@ -117,6 +126,15 @@ public interface BookMapper {
   @Mapping(target = "averageRating", source = "averageRating")
   PageBookResponseDTO toPageDto(Book book, @Context double discountPercentage,
       double averageRating);
+
+
+  @Mapping(target = "page_count", source = "book.pageCount")
+  @Mapping(target = "qty_in_stock", source = "book.qtyInStock")
+  @Mapping(target = "product_code", source = "book.productCode")
+  @Mapping(target = "publish_year", source = "book.publishYear")
+  @Mapping(target = "thumbnail", source = "thumbnail")
+  @Mapping(target = "gallery", source = "gallery")
+  CreateBookResponse toCreateBookResponse(Book book, String thumbnail, List<String> gallery);
 
   @Named("mapImage")
   default String mapImage(Book book) {

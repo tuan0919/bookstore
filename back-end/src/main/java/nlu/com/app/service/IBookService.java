@@ -38,14 +38,10 @@ public interface IBookService {
    * create new book
    * @param metadata metadata for this book
    * @param thumbnail thumbnail for book
-   * @param description description file for book
    * @param gallery gallery images for book
-   * @param userId request's user id
    * @return new book details
    */
   CreateBookResponse createBook(CreateBookRequest metadata,
                                 MultipartFile thumbnail,
-                                MultipartFile description,
-                                MultipartFile[] gallery,
-                                String userId);
+                                MultipartFile[] gallery);
 }

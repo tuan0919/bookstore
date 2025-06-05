@@ -27,8 +27,6 @@ public class FileService implements IFileService {
     private String bucketName;
     @Value("${app.aws.bucket.request-timeout}")
     private int requestTimeout;
-    @Value("${app.temp-folder}")
-    private String tmp;
     private final S3Presigner s3Presigner;
     private final S3Client s3Client;
 
@@ -57,7 +55,7 @@ public class FileService implements IFileService {
                 throw new ApplicationException(ErrorCode.S3_KEY_OBJECT_DUPLICATED);
             }
             // write this to temp folder
-            var tempFile = writeToTempFolder(file);
+            var tempFile = writeToTempFolder(file, "");
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                     .bucket(bucketName)
                     .key(key)
@@ -71,32 +69,25 @@ public class FileService implements IFileService {
         }
     }
 
-    public String uploadFile(MultipartFile file, String key) {
-        try {
-            if (doesObjectExist(key)) {
-                throw new ApplicationException(ErrorCode.S3_KEY_OBJECT_DUPLICATED);
-            }
-            // write this to temp folder
-            var tempFile = writeToTempFolder(file);
-            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key(key)
-                    .contentType(file.getContentType())
-                    .build();
-            s3Client.putObject(putObjectRequest, RequestBody.fromFile(tempFile));
-            return "https://cnd1.anhtuan.online/"+key;
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new ApplicationException(ErrorCode.UNEXPECTED_BEHAVIOR);
+    public String uploadFile(File file, String key) {
+        if (doesObjectExist(key)) {
+            throw new ApplicationException(ErrorCode.S3_KEY_OBJECT_DUPLICATED);
         }
+        // write this to temp folder
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .build();
+        s3Client.putObject(putObjectRequest, RequestBody.fromFile(file));
+        return "https://cnd1.anhtuan.online/"+key;
     }
 
-    private File writeToTempFolder(MultipartFile file) throws IOException {
-        File tempDir = new File(tmp);
+    public File writeToTempFolder(MultipartFile file, String folder) throws IOException {
+        File tempDir = new File(folder);
         if (!tempDir.exists()) {
             tempDir.mkdirs(); // create the directory if not exists
         }
-        File tempFile = new File(tmp + "/" + file.getResource().getFilename());
+        File tempFile = new File(folder +"/"+ file.getResource().getFilename());
         file.transferTo(tempFile);
         return tempFile;
     }
