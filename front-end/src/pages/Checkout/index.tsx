@@ -32,6 +32,7 @@ import cashWithVNPay from "~/assets/ico_vnpay.svg";
 import discountIcon from "~/assets/ico_promotion.svg";
 import React from "react";
 import { CartItemPropertyResponseDTO } from "~/types/cart";
+import { useState } from "react";
 const Section = styled(Box)(({ theme }) => ({
   backgroundColor: "white",
   padding: `0 ${theme.spacing(2)}`,
@@ -73,7 +74,7 @@ export function Checkout() {
   const [open, setOpen] = React.useState(false);
   const [openDiscount, setOpenDiscount] = React.useState(false);
   const selectBooks = JSON.parse(localStorage.getItem("selectedBooks") || "[]");
-  console.log("Selected books:", selectBooks);
+  const [paymentMethod, setPaymentMethod] = useState("");
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -175,6 +176,7 @@ export function Checkout() {
             <RadioGroup name="payment-method" sx={{ py: 1 }}>
               <FormControlLabel
                 value="pay-with-paypal"
+                onClick={() => setPaymentMethod("pay-with-paypal")}
                 control={<SmallRadio />}
                 label={
                   <Box display={"flex"} alignItems={"center"} gap={1}>
@@ -194,6 +196,7 @@ export function Checkout() {
               />
               <FormControlLabel
                 value="pay-with-vnpay"
+                onClick={() => setPaymentMethod("pay-with-vnpay")}
                 control={<SmallRadio />}
                 label={
                   <Box display={"flex"} alignItems={"center"} gap={1}>
@@ -213,6 +216,7 @@ export function Checkout() {
               />
               <FormControlLabel
                 value="pay-on-delivery"
+                onClick={() => setPaymentMethod("pay-on-delivery")}
                 control={<SmallRadio />}
                 label={
                   <Box display={"flex"} alignItems={"center"} gap={1}>
@@ -281,9 +285,7 @@ export function Checkout() {
                           </Typography>
                         </TableCell>
                       </TableRow>
-                 )) :{
-                
-                 }}
+                 )) : null}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -325,7 +327,7 @@ export function Checkout() {
             </Box>
           </Section>
         </Container>
-        <BottomDrawer sx={{ position: "fixed", bottom: 0 }} totalPrice={totalPrice} />
+        <BottomDrawer sx={{ position: "fixed", bottom: 0 }} totalPrice={totalPrice} paymentMethod={paymentMethod} />
       </Box>
       <Dialog
         open={open}

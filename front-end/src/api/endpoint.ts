@@ -17,6 +17,10 @@ const API_ENDPOINTS = {
     ADD: "/api/cart/add",
     REMOVE: "/api/cart/delete",
     GET: "/api/cart",
+  },
+  PAYPAL: {
+    CREATE_ORDER: "/paypal/api/orders",
+    CAPTURE_ORDER: (orderId: string) => `/paypal/api/orders/${orderId}/capture`,
   }
 };
 
