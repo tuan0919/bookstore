@@ -32,4 +32,4 @@ app:
       request-timeout: 3600 # in seconds
   paypal:
     client-id: ${SPRING_PAYPAL_CLIENT_ID:AXjNIAvmyN7nqjWNdYrdjoX94D4vcaJ2LWHdXqz8qular76_jCvfH-uOSdCojCK-fgpo920v7bFA3Hm1}
-    client-secret: ${SPRING_PAYPAL_CLIENT_SECRET:EIVotgOAxlAu80qDQnGxTWjKb_MsI0hxy-LsqlAzPWoQepxn_DmODeEDxVjYDIhyP_zmqOBye41xrXS-}
+    client-secret: ${SPRING_PAYPAL_CLIENT_SECRET:AXjNIAvmyN7nqjWNdYrdjoX94D4vcaJ2LWHdXqz8qular76_jCvfH-uOSdCojCK-fgpo920v7bFA3Hm1}
