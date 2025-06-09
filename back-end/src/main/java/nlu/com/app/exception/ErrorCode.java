@@ -18,6 +18,9 @@ public enum ErrorCode {
     UNEXPECTED_BEHAVIOR(1008, "Something went wrong, this action shouldn't perform", HttpStatus.BAD_REQUEST),
     JWT_EXPIRED(1009, "Your session is out of date, please re-login", HttpStatus.FORBIDDEN),
     S3_KEY_OBJECT_DUPLICATED(1010, "Object with same key existed on server", HttpStatus.BAD_REQUEST),
+    CATEGORY_NOT_FOUND(1011, "Category not found, please check again!", HttpStatus.NOT_FOUND),
+    BOOK_NOT_FOUND(1012, "Book not found, please check again!", HttpStatus.NOT_FOUND),
+    GENRE_NOT_FOUND(1013, "Genre not found", HttpStatus.NOT_FOUND),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

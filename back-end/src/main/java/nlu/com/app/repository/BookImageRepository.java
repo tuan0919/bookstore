@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface BookImageRepository extends JpaRepository<BookImage, Long> {
-
+    long deleteAllByBookBookId(Long bookId);
 }

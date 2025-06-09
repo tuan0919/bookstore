@@ -1,12 +1,9 @@
-package nlu.com.app.dto.response;
+package nlu.com.app.dto.request;
 
 import lombok.Data;
 
-import java.util.List;
-
 @Data
-public class CreateBookResponse {
-    private Long bookId;
+public class UpdateBookRequest {
     private String age;
     private String author;
     private String format;
@@ -15,16 +12,14 @@ public class CreateBookResponse {
     private double price;
     private int product_code;
     private String publisher;
-    private int qty_in_stock;
     private int publish_year;
+    private int qty_in_stock;
     private String size;
+    private String description;
     private String supplier;
     private String title;
     private String translator;
     private double weight;
     private long category_id;
     private long genre_id;
-    private String thumbnail;
-    private String description;
-    private List<String> gallery;
 }

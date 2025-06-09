@@ -13,12 +13,14 @@ import nlu.com.app.dto.request.BookDetailsDTO.ReviewDTO;
 import nlu.com.app.dto.request.CreateBookRequest;
 import nlu.com.app.dto.response.CreateBookResponse;
 import nlu.com.app.dto.response.PageBookResponseDTO;
+import nlu.com.app.dto.response.UpdateBookResponse;
 import nlu.com.app.entity.Book;
 import nlu.com.app.entity.BookImage;
 import nlu.com.app.entity.Category;
 import nlu.com.app.entity.Genre;
 import nlu.com.app.exception.ApplicationException;
 import nlu.com.app.exception.ErrorCode;
+import nlu.com.app.repository.BookImageRepository;
 import nlu.com.app.repository.CategoryRepository;
 import nlu.com.app.repository.GenreRepository;
 import org.mapstruct.Builder;
@@ -135,6 +137,29 @@ public interface BookMapper {
   @Mapping(target = "thumbnail", source = "thumbnail")
   @Mapping(target = "gallery", source = "gallery")
   CreateBookResponse toCreateBookResponse(Book book, String thumbnail, List<String> gallery);
+
+  @Mapping(target = "page_count", source = "book.pageCount")
+  @Mapping(target = "qty_in_stock", source = "book.qtyInStock")
+  @Mapping(target = "product_code", source = "book.productCode")
+  @Mapping(target = "publish_year", source = "book.publishYear")
+  @Mapping(target = "thumbnail", source = "book.images", qualifiedByName = "bookImagesToThumbnailURL")
+  @Mapping(target = "gallery", source = "book.images", qualifiedByName = "bookImagesToGalleryURLs")
+  UpdateBookResponse toUpdateBookResponse(Book book);
+
+  @Named("bookImagesToThumbnailURL")
+  default String bookImagesToThumbnailURL(List<BookImage> images) {
+    return images.stream()
+            .filter(BookImage::isThumbnail)
+            .findFirst().get()
+            .getImageUrl();
+  }
+
+  @Named("bookImagesToGalleryURLs")
+  default List<String> bookImagesToGalleryURLs(List<BookImage> images) {
+    return images.stream()
+            .filter(bi -> !bi.isThumbnail())
+            .map(BookImage::getImageUrl).toList();
+  }
 
   @Named("mapImage")
   default String mapImage(Book book) {

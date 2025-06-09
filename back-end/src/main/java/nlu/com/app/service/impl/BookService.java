@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,6 +22,7 @@ import nlu.com.app.dto.request.BookDetailsDTO;
 import nlu.com.app.dto.request.BookDetailsDTO.ReviewDTO;
 import nlu.com.app.dto.request.BookSearchRequestDTO;
 import nlu.com.app.dto.request.CreateBookRequest;
+import nlu.com.app.dto.request.UpdateBookRequest;
 import nlu.com.app.dto.response.*;
 import nlu.com.app.entity.Book;
 import nlu.com.app.entity.BookImage;
@@ -286,9 +288,9 @@ public class BookService implements IBookService {
       // vailidate if metadata is valid
       Long categoryId = metadata.getCategory_id();
       var category = categoryRepository.findById(categoryId)
-              .orElseThrow(() -> new ApplicationException(ErrorCode.RESOURCE_NOT_FOUND));
+              .orElseThrow(() -> new ApplicationException(ErrorCode.CATEGORY_NOT_FOUND));
       var genre = genreRepository.findById(metadata.getGenre_id())
-              .orElseThrow(() -> new ApplicationException(ErrorCode.RESOURCE_NOT_FOUND));
+              .orElseThrow(() -> new ApplicationException(ErrorCode.GENRE_NOT_FOUND));
       var book = bookMapper.metadataToEntity(metadata);
       book.setGenre(genre);
       book.setCategory(category);
@@ -305,8 +307,105 @@ public class BookService implements IBookService {
       });
       book.setImages(bookImages);
       // save book
+      var savedBook = bookRepository.save(book);
+      return bookMapper.toCreateBookResponse(savedBook, link_thumbnail, link_gallery);
+    } catch (IOException e) {
+      throw new ApplicationException(ErrorCode.UNKNOWN_EXCEPTION);
+    }
+  }
+
+  @Transactional
+  @Override
+  public UpdateBookResponse updateBook(Long bookId,
+          UpdateBookRequest metadata,
+                            MultipartFile newThumbnail,
+                            String oldThumbnail,
+                            MultipartFile[] newGallery, String[] oldGallery
+  ) {
+    try {
+      var book = bookRepository.findById(bookId)
+              .orElseThrow(() -> new ApplicationException(ErrorCode.BOOK_NOT_FOUND));
+
+      // Cập nhật metadata
+      book.setTitle(metadata.getTitle());
+      book.setFormat(metadata.getFormat());
+      book.setLanguage(metadata.getLanguage());
+      book.setAuthor(metadata.getAuthor());
+      book.setDescription(metadata.getDescription());
+      book.setPrice(metadata.getPrice());
+      book.setAge(metadata.getAge());
+      book.setQtyInStock(metadata.getQty_in_stock());
+      book.setPublishYear(metadata.getPublish_year()+"");
+      book.setWeight(metadata.getWeight());
+
+      var category = categoryRepository.findById(metadata.getCategory_id())
+              .orElseThrow(() -> new ApplicationException(ErrorCode.CATEGORY_NOT_FOUND));
+      var genre = genreRepository.findById(metadata.getGenre_id())
+              .orElseThrow(() -> new ApplicationException(ErrorCode.GENRE_NOT_FOUND));
+      book.setCategory(category);
+      book.setGenre(genre);
+
+      // Danh sách ảnh mới sẽ ghi đè lại toàn bộ
+      List<BookImage> updatedImages = new ArrayList<>();
+
+      // Xử lý thumbnail mới
+      if (newThumbnail != null && !newThumbnail.isEmpty()) {
+        String keyThumbnail = String.format("%s/%s", metadata.getProduct_code(), newThumbnail.getOriginalFilename());
+        fileService.writeToTempFolder(newThumbnail, tmp + "/" + metadata.getProduct_code());
+        String uploadedThumbnail = fileService.uploadFile(new File(tmp + "/" + keyThumbnail), keyThumbnail);
+
+        updatedImages.add(BookImage.builder()
+                .book(book)
+                .imageUrl(uploadedThumbnail)
+                .isThumbnail(true)
+                .build());
+      } else if (oldThumbnail != null && !oldThumbnail.isBlank()) {
+        updatedImages.add(BookImage.builder()
+                .book(book)
+                .imageUrl(oldThumbnail)
+                .isThumbnail(true)
+                .build());
+      }
+
+      // Xử lý gallery cũ
+      if (oldGallery != null) {
+        for (String oldUrl : oldGallery) {
+          updatedImages.add(BookImage.builder()
+                  .book(book)
+                  .imageUrl(oldUrl)
+                  .isThumbnail(false)
+                  .build());
+        }
+      }
+
+      if (newGallery != null) {
+        for (MultipartFile image : newGallery) {
+          if (image != null && !image.isEmpty()) {
+            String key = String.format("%s/%s", metadata.getProduct_code(), image.getOriginalFilename());
+            fileService.writeToTempFolder(image, tmp + "/" + metadata.getProduct_code());
+            String link = fileService.uploadFile(new File(tmp + "/" + key), key);
+
+            updatedImages.add(BookImage.builder()
+                    .book(book)
+                    .imageUrl(link)
+                    .isThumbnail(false)
+                    .build());
+          }
+        }
+      }
+
+      // Xóa tất cả image hiện tại trước khi cập nhật
+      bookImageRepository.deleteAllByBookBookId(bookId);
+
+      book.getImages().clear();
+      for (BookImage newImage : updatedImages) {
+        newImage.setBook(book); // set lại quan hệ
+        book.getImages().add(newImage);
+      }
+      // Lưu lại
       bookRepository.save(book);
-      return bookMapper.toCreateBookResponse(book, link_thumbnail, link_gallery);
+
+      return bookMapper.toUpdateBookResponse(book);
     } catch (IOException e) {
       throw new ApplicationException(ErrorCode.UNKNOWN_EXCEPTION);
     }

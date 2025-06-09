@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class CreateBookResponse {
+public class UpdateBookResponse {
     private Long bookId;
     private String age;
     private String author;
