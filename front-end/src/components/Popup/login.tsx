@@ -16,7 +16,7 @@ import {getUserDetails} from "~/api/user/userDetails";
 import { login } from "~/api/login";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-
+import { getUserDetails } from "~/api/user/userDetails";
 interface LoginPopupProps {
   open: boolean;
   onClose: () => void;
@@ -116,9 +116,6 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
   };
   // Xử lý đăng nhập thành công
   const handleProccessLogin = async () => {
-      
-   
-  
     try {
       const response = await login(accountInfo, password);
       
@@ -134,8 +131,10 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
           localStorage.setItem("userDetails", JSON.stringify(userDetails.result));
           navigate("/");
         }
-
-        onClose(); 
+        // Lưu thông tin chi tiết người dùng vào localStorage
+        const userDetails = await getUserDetails();
+        localStorage.setItem("userDetails", JSON.stringify(userDetails));
+        onClose();
       } else {
         setError(
           "Đăng nhập không thành công. Vui lòng kiểm tra lại thông tin."
