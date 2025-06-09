@@ -3,6 +3,7 @@ package nlu.com.app.dto.response;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.Data;
+import nlu.com.app.dto.request.AddressDto;
 
 /**
  * @author VuLuu
@@ -16,7 +17,7 @@ public class OrderResponseDTO {
   private String paymentMethodName;
   private List<OrderItemDTO> items;
   String status;
-
+  private AddressDto shippingAddress;
   @Data
   public static class OrderItemDTO {
 

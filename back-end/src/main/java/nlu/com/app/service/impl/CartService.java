@@ -113,6 +113,7 @@ public class CartService implements ICartService {
   @Override
   public CartResponseDTO getCartByUserId(Long userId) {
     Cart cart = getCart(userId).orElse(new Cart());
+    if (cart.getItems() == null) return new CartResponseDTO();
     List<Long> productIds = cart.getItems().stream()
         .map(item -> {
           try {

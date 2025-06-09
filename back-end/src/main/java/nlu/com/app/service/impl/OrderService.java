@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import nlu.com.app.entity.OrderItem;
 import nlu.com.app.entity.PaymentMethod;
 import nlu.com.app.entity.Promotion;
 import nlu.com.app.entity.User;
+import nlu.com.app.entity.UserAddress;
 import nlu.com.app.exception.ApplicationException;
 import nlu.com.app.exception.ErrorCode;
 import nlu.com.app.mapper.OrderMapper;
@@ -26,6 +28,7 @@ import nlu.com.app.repository.OrderItemRepository;
 import nlu.com.app.repository.OrderRepository;
 import nlu.com.app.repository.PaymentMethodRepository;
 import nlu.com.app.repository.PromotionCategoriesRepository;
+import nlu.com.app.repository.UserAddressRepository;
 import nlu.com.app.repository.UserRepository;
 import nlu.com.app.service.IOrderService;
 import nlu.com.app.util.SecurityUtils;
@@ -51,6 +54,7 @@ public class OrderService implements IOrderService {
   OrderItemRepository orderItemRepository;
   UserRepository userRepository;
   OrderMapper orderMapper;
+  UserAddressRepository userAddressRepository;
 
   @Override
   public OrderResponseDTO createOrderFromCart(List<Long> selectedProductIds, Long paymentMethodId) {
@@ -62,6 +66,12 @@ public class OrderService implements IOrderService {
 
     Cart cart = cartService.getCart(user.getUserId())
         .orElseThrow(() -> new RuntimeException("Cart is empty"));
+
+    Optional<UserAddress> defaultAddressOpt = userAddressRepository.findByUserAndIsDefaultTrue(
+        user);
+    if (defaultAddressOpt.isEmpty()) {
+      throw new ApplicationException(ErrorCode.NO_DEFAULT_ADDRESS);
+    }
 
     List<CartItem> selectedItems = cart.getItems().stream()
         .filter(item -> selectedProductIds.contains(Long.parseLong(item.getProductId())))
@@ -132,6 +142,7 @@ public class OrderService implements IOrderService {
 
     order.setOrderItems(orderItems);
     order.setTotalAmount(totalAmount);
+    order.setAddress(defaultAddressOpt.get().getAddress());
 
     // Set payment method
     PaymentMethod paymentMethod = paymentMethodRepository.findById(paymentMethodId)
