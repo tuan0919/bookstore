@@ -19,7 +19,7 @@ public enum ErrorCode {
     JWT_EXPIRED(1009, "Your session is out of date, please re-login", HttpStatus.FORBIDDEN),
     S3_KEY_OBJECT_DUPLICATED(1010, "Object with same key existed on server", HttpStatus.BAD_REQUEST),
     CANT_CANCEL_ORDER(1010, "Only pending orders can be cancelled", HttpStatus.BAD_REQUEST),
-    ;
+    NO_DEFAULT_ADDRESS(1011, "No default address found for user.",HttpStatus.BAD_REQUEST);
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;

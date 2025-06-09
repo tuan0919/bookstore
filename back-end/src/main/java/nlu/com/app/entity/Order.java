@@ -50,7 +50,9 @@ public class Order {
 
   @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<OrderItem> orderItems = new ArrayList<>();
-
+  @ManyToOne
+  @JoinColumn(name = "address_id")
+  private Address address;
   @ManyToOne
   @JoinColumn(name = "payment_method_id")
   private PaymentMethod paymentMethod;
