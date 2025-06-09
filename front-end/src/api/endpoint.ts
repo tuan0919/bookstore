@@ -8,10 +8,24 @@ const API_ENDPOINTS = {
   },
   CATEGORY: {
     CHAIN_FOR_BOOK: `/api/category/chain`,
-    CATEGORY : "api/book"
+    CATEGORY: "api/book",
   },
   USER: {
     LOGIN: "/api/v1/auth/login",
+    DETAILS: {
+      GET: "/api/user-details",
+    },
+    ADDRESS: {
+      ADD: "/api/user/addresses",
+      UPDATE: (userAddressId: number, makeDefault?: boolean) => {
+        let url = `/api/user/addresses/${userAddressId}`;
+        if (makeDefault !== undefined) {
+          url += `?makeDefault=${makeDefault}`;
+        }
+        return url;
+      },
+      GET: "/api/user/addresses",
+    },
   },
   CART: {
     ADD: "/api/cart/add",
@@ -21,7 +35,7 @@ const API_ENDPOINTS = {
   PAYPAL: {
     CREATE_ORDER: "/paypal/api/orders",
     CAPTURE_ORDER: (orderId: string) => `/paypal/api/orders/${orderId}/capture`,
-  }
+  },
 };
 
 export default API_ENDPOINTS;

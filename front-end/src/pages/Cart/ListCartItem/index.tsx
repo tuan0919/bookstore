@@ -12,7 +12,7 @@ interface ListCartItemProps {
 }
 
 function ListCartItem({
-  listBook,
+  listBook ,
   onToggleCheckbox,
   checkedItems,
   onToggleAll,

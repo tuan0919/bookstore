@@ -14,13 +14,13 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { login } from "~/api/login";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { getUserDetails } from "~/api/user/userDetails";
 interface LoginPopupProps {
   open: boolean;
   onClose: () => void;
 }
 
 const phoneRegex = /^(0|\+84)(3[2-9]|5[2689]|7[0-9]|8[1-9]|9[0-9])\d{7}$/;
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
   const [mode, setMode] = useState<"login" | "forgotPassword">("login");
@@ -34,6 +34,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
   const loginButtonRef = useRef<HTMLButtonElement | null>(null);
   const forgotPasswordButtonRef = useRef<HTMLButtonElement | null>(null);
   const navigate = useNavigate();
+
   // Cập nhập lại data account khi người dùng nhập và reset lỗi
   const handleChangeAccount = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAccountInfo(event.target.value);
@@ -46,14 +47,18 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
       setError("Trường này không được để trống!");
       setIsValidAccount(false);
       return;
-    }
-    if (phoneRegex.test(accountInfo) || emailRegex.test(accountInfo)) {
+    } else {
       setError("");
       setIsValidAccount(true);
-    } else {
-      setError("Vui lòng nhập số điện thoại hoặc email hợp lệ!");
-      setIsValidAccount(false);
     }
+    // if (phoneRegex.test(accountInfo) ) {
+    //   setError("");
+    //   setIsValidAccount(true);
+    // }
+    //   else {
+    //   setError("Vui lòng nhập số điện thoại hoặc email hợp lệ!");
+    //   setIsValidAccount(false);
+    // }
   };
   //  Kiểm tra password khi rời khỏi input
   const handleBlurPassword = () => {
@@ -120,8 +125,10 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
           localStorage.setItem("access_token", response.result);
           navigate("/");
         }
-
-        onClose(); 
+        // Lưu thông tin chi tiết người dùng vào localStorage
+        const userDetails = await getUserDetails();
+        localStorage.setItem("userDetails", JSON.stringify(userDetails));
+        onClose();
       } else {
         setError(
           "Đăng nhập không thành công. Vui lòng kiểm tra lại thông tin."
@@ -135,7 +142,6 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
   // Xử lý lấy lại mật khẩu
   const handleProccessGetPassword = () => {};
   return (
-    
     <Dialog open={open} onClose={onClose}>
       <DialogTitle
         textAlign={"center"}
