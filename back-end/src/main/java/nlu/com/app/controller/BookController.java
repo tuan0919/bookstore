@@ -11,7 +11,9 @@ import nlu.com.app.dto.request.CreateBookRequest;
 import nlu.com.app.dto.request.UpdateBookRequest;
 import nlu.com.app.dto.response.*;
 import nlu.com.app.service.impl.BookService;
+import nlu.com.app.service.impl.UserReviewService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +28,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BookController {
-
+  UserReviewService userReviewService;
   BookService bookService;
 
   @GetMapping("")
@@ -39,6 +41,17 @@ public class BookController {
       BookSearchRequestDTO bookSearchRequestDTO) {
     return AppResponse.<Page<PageBookResponseDTO>>builder()
         .result(bookService.getBooksByCategory(bookSearchRequestDTO)).build();
+  }
+
+  @GetMapping("/{bookId}/reviews")
+  public AppResponse<Page<CreateReviewResponse>> getBookReviews(
+          @PathVariable long bookId,
+          @RequestParam int page,
+          @RequestParam int size) {
+    var pageable = PageRequest.of(page, size);
+    return AppResponse.<Page<CreateReviewResponse>>builder()
+            .result(userReviewService.getReviewsOfBook(bookId, pageable))
+            .build();
   }
 
   @GetMapping("/{id}")
@@ -63,6 +76,15 @@ public class BookController {
             .result(bookService.createBook(metadata, thumbnail, gallery))
             .build();
   }
+
+  @GetMapping("/{bookId}/review-overall")
+  public AppResponse<ReviewOverallDTO> getReviewOverall(@PathVariable Long bookId) {
+    return AppResponse.<ReviewOverallDTO>builder()
+            .result(userReviewService.getReviewOverall(bookId))
+            .build();
+  }
+
+
 
   @PostMapping(value = "/{bookId}/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public AppResponse<UpdateBookResponse> updateProduct(
