@@ -2,40 +2,13 @@ import { useState } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  IconCheckbox,
-  IconCirclePlus,
-  IconFileDescription,
-  IconSquare,
-  IconUpload,
-} from '@tabler/icons-react'
-import { FilePondFile } from 'filepond'
-import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
-// Import the Image EXIF Orientation and Image Preview plugins
-// Note: These need to be installed separately
-// `npm i filepond-plugin-image-preview filepond-plugin-image-exif-orientation --save`
-import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
-// Import FilePond styles
-import 'filepond/dist/filepond.min.css'
-import { FilePond, registerPlugin } from 'react-filepond'
+import { IconFileDescription } from '@tabler/icons-react'
+import { Category } from '@/resources/categories'
+import SunEditor from 'suneditor-react'
+import 'suneditor/dist/css/suneditor.min.css'
 // Import React FilePond
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from '@/components/ui/carousel'
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-} from '@/components/ui/command'
 import {
   Form,
   FormControl,
@@ -58,13 +31,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { TopNav } from '@/components/layout/top-nav'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { CategorySelector } from './components/category-select'
+import { FileUploader } from './components/file-uploader'
 
 const formSchema = z.object({
   name: z.string({
@@ -73,30 +47,101 @@ const formSchema = z.object({
   description: z.string({
     message: 'Mô tả sản phẩm không được phép để trống!',
   }),
-  provider: z.number().nonnegative({
-    message: 'Phải chọn nhà cung cấp cho sản phẩm!',
+  provider: z.string({
+    message: 'Nhà cung cấp không được phép để trống!',
   }),
-  language: z.string(),
+  language: z.string({
+    message: 'Ngôn ngữ không được phép để trống!',
+  }),
+  author: z.string(),
   age: z.number(),
   genres: z.string().array(),
   discount: z.number(),
   price: z.number(),
 })
-registerPlugin(FilePondPluginImagePreview)
 
 export default function New() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      provider: -1,
-      language: 'vn',
+      provider: 'Không rõ',
+      author: 'Không rõ',
+      language: 'Tiếng Anh',
       discount: 30,
     },
   })
-  function onSubmit() {}
+
   const formatter = new Intl.NumberFormat('vi-VN')
   const [displayValue, setDisplayValue] = useState('')
-  const [files, setFiles] = useState<FilePondFile[]>([])
+
+  const onSubmit = () => {
+    const formData = new FormData()
+
+    if (thumbnail) {
+      formData.append('thumbnail', thumbnail)
+    }
+
+    formData.append('title', title)
+    formData.append('description', description)
+
+    gallery.forEach((file, index) => {
+      formData.append('gallery', file)
+    })
+
+    if (category !== null) {
+      formData.append('categoryId', category.id.toString())
+    }
+
+    formData.append('genre', genre)
+    formData.append('author', author)
+    formData.append('age', age.toString())
+    formData.append('price', price.toString())
+    formData.append('format', format)
+    formData.append('language', language)
+    formData.append('pageCount', pageCount.toString())
+    formData.append('weight', weight.toString())
+    formData.append('size', size)
+    formData.append('publishYear', publishYear)
+    formData.append('translator', translator)
+    formData.append('publisher', publisher)
+    formData.append('qtyInStock', qtyInStock.toString())
+    formData.append('supplier', supplier)
+    formData.append('productCode', productCode)
+    gallery
+      .filter((f): f is File => !!f)
+      .forEach((file) => {
+        formData.append('gallery', file)
+      })
+    if (thumbnail) {
+      formData.append('thumbnail', thumbnail)
+    }
+
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}:`, value)
+    }
+  }
+
+  /* State variables for product details */
+  const [thumbnail, setThumbnail] = useState<File | null>(null)
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [gallery, setGallery] = useState<(File | null)[]>([])
+  const [category, setCategory] = useState<Category | null>(null)
+  const [genre, setGenre] = useState<string>('shounen')
+  const [author, setAuthor] = useState('')
+  const [age, setAge] = useState<number>(0)
+  const [price, setPrice] = useState<number>(0)
+  const [format, setFormat] = useState<string>('')
+  const [language, setLanguage] = useState<string>('')
+  const [pageCount, setPageCount] = useState<number>(0)
+  const [weight, setWeight] = useState<number>(0)
+  const [size, setSize] = useState<string>('')
+  const [publishYear, setPublishYear] = useState<string>('')
+  const [translator, setTranslator] = useState<string>('')
+  const [publisher, setPublisher] = useState<string>('')
+  const [qtyInStock, setQtyInStock] = useState<number>(0)
+  const [supplier, setSupplier] = useState<string>('')
+  const [productCode, setProductCode] = useState('')
   return (
     <>
       {/* ===== Top Heading ===== */}
@@ -122,190 +167,76 @@ export default function New() {
               <CardContent className='grid grid-cols-2 items-start gap-3'>
                 <Card className='rounded-none'>
                   <CardContent className='flex flex-col gap-6'>
-                    <FormField
-                      control={form.control}
-                      name='name'
-                      render={() => (
-                        <>
-                          <FormLabel>Hình ảnh sản phẩm</FormLabel>
-                          <FilePond
-                            files={files.map((file) => file.file)}
-                            onupdatefiles={setFiles}
-                            allowReplace={true}
-                            allowReorder={true}
-                            instantUpload={false}
-                            server='/api'
-                            name='files'
-                            labelIdle='Kéo & thả file hoặc <span class="filepond--label-action">chọn từ máy</span>'
-                          />
-                        </>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name='name'
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Tên sản phẩm</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder='Nhập tên sản phẩm...'
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name='description'
-                      render={() => (
-                        <FormItem>
-                          <FormLabel>Mô tả sản phẩm</FormLabel>
-                          <FormControl>
-                            <Textarea placeholder='Nhập mô tả sản phẩm tại đây.' />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <div className='flex justify-between'>
-                      <FormField
-                        control={form.control}
-                        name='provider'
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Nhà cung cấp</FormLabel>
-                            <Select
-                              onValueChange={(val) =>
-                                field.onChange(Number(val))
-                              }
-                              defaultValue='0'
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value='0'>
-                                  Nhà cung cấp 1
-                                </SelectItem>
-                                <SelectItem value='1'>
-                                  Nhà cung cấp 2
-                                </SelectItem>
-                                <SelectItem value='2'>
-                                  Nhà cung cấp 3
-                                </SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name='language'
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Ngôn ngữ truyện</FormLabel>
-                            <Select
-                              onValueChange={(val) =>
-                                field.onChange(Number(val))
-                              }
-                              defaultValue='vi'
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value='vi'>
-                                  Truyện tiếng việt
-                                </SelectItem>
-                                <SelectItem value='other'>
-                                  Truyện ngoại văn
-                                </SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name='age'
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Độ tuổi</FormLabel>
-                            <Select
-                              onValueChange={(val) =>
-                                field.onChange(Number(val))
-                              }
-                              defaultValue='0'
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value='0'>
-                                  Bất kỳ độ tuổi nào
-                                </SelectItem>
-                                <SelectItem value='1'>
-                                  13 tuổi trở lên
-                                </SelectItem>
-                                <SelectItem value='2'>
-                                  16 tuổi trở lên
-                                </SelectItem>
-                                <SelectItem value='3'>
-                                  18 tuổi trở lên
-                                </SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                    <FormLabel>Hình ảnh sản phẩm</FormLabel>
+                    <div className='mx-auto'>
+                      <div className='h-[300px] w-[300px]'>
+                        <FileUploader
+                          onChange={setThumbnail}
+                          value={thumbnail}
+                        />
+                      </div>
                     </div>
+                    <FormItem>
+                      <FormLabel>Tên sản phẩm</FormLabel>
+                      <FormControl>
+                        <Input
+                          value={title}
+                          onChange={(val) => setTitle(val.target.value)}
+                          placeholder='Nhập tên sản phẩm...'
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                    <FormItem>
+                      <FormLabel>Mô tả sản phẩm</FormLabel>
+                      <SunEditor
+                        setContents={description}
+                        onChange={(content: string) => setDescription(content)}
+                        setOptions={{
+                          font: [
+                            'Arial',
+                            'Courier New',
+                            'Georgia',
+                            'Impact',
+                            'Tahoma',
+                            'Times New Roman',
+                            'Verdana',
+                          ],
+                          fontSize: [8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 30],
+                          buttonList: [
+                            ['undo', 'redo'],
+                            ['font'],
+                            ['fontSize'],
+                            ['formatBlock'],
+                            ['bold', 'underline', 'italic', 'strike'],
+                            ['table'],
+                            ['fullScreen', 'showBlocks', 'codeView'],
+                          ],
+                        }}
+                      />
+                      <FormMessage />
+                    </FormItem>
                   </CardContent>
                 </Card>
                 <Card className='rounded-none'>
                   <CardContent className='flex flex-col gap-6'>
-                    <FormField
-                      control={form.control}
-                      name='name'
-                      render={() => (
-                        <FormItem>
-                          <FormLabel>Thư viện hình ảnh</FormLabel>
-                          <FormControl>
-                            <Carousel>
-                              <CarouselContent>
-                                {Array.from({ length: 5 }).map((_, index) => (
-                                  <CarouselItem
-                                    key={index}
-                                    className='md:basis-1/2 lg:basis-1/6'
-                                  >
-                                    <div className='p-1'>
-                                      <Card className='rounded-none border-2 border-dashed p-0'>
-                                        <CardContent className='flex aspect-square cursor-pointer items-center justify-center'>
-                                          <IconUpload />
-                                        </CardContent>
-                                      </Card>
-                                    </div>
-                                  </CarouselItem>
-                                ))}
-                              </CarouselContent>
-                            </Carousel>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
+                    <FormLabel>Thư viện hình ảnh</FormLabel>
+                    <div className='flex gap-2'>
+                      {Array.from({ length: 5 }).map((_, index) => (
+                        <div className='h-[100px] w-[100px]' key={index}>
+                          <FileUploader
+                            key={index}
+                            onChange={(file: File | null) => {
+                              const updated = [...gallery]
+                              updated[index] = file
+                              setGallery(updated)
+                            }}
+                            value={gallery[index] || null}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    {/* <FormField
                       control={form.control}
                       name='genres'
                       render={() => (
@@ -365,52 +296,132 @@ export default function New() {
                           <FormMessage />
                         </FormItem>
                       )}
-                    />
-                    <div className='flex gap-5'>
-                      <FormField
-                        control={form.control}
-                        name='price'
-                        render={({ field }) => {
-                          return (
-                            <FormItem>
-                              <FormLabel>Giá sản phẩm</FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder='VD: 1.000.000'
-                                  value={displayValue}
-                                  onChange={(e) => {
-                                    const raw = e.target.value.replace(
-                                      /[^\d]/g,
-                                      ''
-                                    ) // chỉ giữ số
-                                    const number = Number(raw)
-                                    setDisplayValue(formatter.format(number)) // hiện 1.000.000
-                                    field.onChange(number) // lưu vào form là số
-                                  }}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )
-                        }}
-                      />
-                      <FormField
-                        control={form.control}
-                        name='discount'
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Giảm giá</FormLabel>
+                    /> */}
+                    <div className='flex gap-3'>
+                      <FormItem>
+                        <FormLabel>Danh mục</FormLabel>
+                        <FormControl>
+                          <CategorySelector
+                            value={category}
+                            onChange={setCategory}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                      <FormItem>
+                        <FormLabel>Thể loại</FormLabel>
+                        <FormControl>
+                          <Select
+                            defaultValue='shounen'
+                            value={genre}
+                            onValueChange={setGenre}
+                          >
                             <FormControl>
-                              <Input
-                                className='w-[5rem]'
-                                type='number'
-                                {...field}
-                              />
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
                             </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                            <SelectContent>
+                              <SelectItem value='shounen'>Shounen</SelectItem>
+                              <SelectItem value='action'>Hành động</SelectItem>
+                              <SelectItem value='romance'>Tình cảm</SelectItem>
+                              <SelectItem value='horror'>Kinh dị</SelectItem>
+                              <SelectItem value='adventure'>
+                                Phiêu lưu
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                      <FormItem>
+                        <FormLabel>Số lượng</FormLabel>
+                        <FormControl>
+                          <Input
+                            type='number'
+                            className='w-20'
+                            value={qtyInStock}
+                            onChange={(e) =>
+                              setQtyInStock(Number(e.target.value))
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                      <FormItem>
+                        <FormLabel>Mã sản phẩm</FormLabel>
+                        <FormControl>
+                          <Input
+                            className='w-40'
+                            value={productCode}
+                            onChange={(e) => setProductCode(e.target.value)}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    </div>
+                    <div className='flex justify-between gap-4'>
+                      <FormItem>
+                        <FormLabel>Nhà cung cấp</FormLabel>
+                        <FormControl>
+                          <Input
+                            value={supplier}
+                            onChange={(e) => setSupplier(e.target.value)}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                      <FormItem>
+                        <FormLabel>Tác giả</FormLabel>
+                        <FormControl>
+                          <Input
+                            value={author}
+                            onChange={(e) => setAuthor(e.target.value)}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                      <FormItem>
+                        <FormLabel>Độ tuổi</FormLabel>
+                        <Select
+                          value={Number(age).toString()}
+                          onValueChange={(val) => setAge(Number(val))}
+                          defaultValue='0'
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value='0'>
+                              Bất kỳ độ tuổi nào
+                            </SelectItem>
+                            <SelectItem value='12'>12 tuổi trở lên</SelectItem>
+                            <SelectItem value='16'>16 tuổi trở lên</SelectItem>
+                            <SelectItem value='18'>18 tuổi trở lên</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    </div>
+                    <div className='flex gap-5'>
+                      <FormItem>
+                        <FormLabel>Giá sản phẩm</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder='VD: 1.000.000'
+                            value={displayValue}
+                            onChange={(e) => {
+                              const raw = e.target.value.replace(/[^\d]/g, '') // chỉ giữ số
+                              const number = Number(raw)
+                              setDisplayValue(formatter.format(number)) // hiện 1.000.000
+                              setPrice(number) // lưu giá trị số
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
                       <FormField
                         control={form.control}
                         name='discount'
@@ -440,6 +451,11 @@ export default function New() {
                                     <div className='grid grid-cols-2 items-center gap-4'>
                                       <Label htmlFor='pages'>Số trang</Label>
                                       <Input
+                                        type='number'
+                                        value={pageCount}
+                                        onChange={(e) =>
+                                          setPageCount(Number(e.target.value))
+                                        }
                                         id='pages'
                                         defaultValue='230'
                                         className='h-8'
@@ -450,8 +466,38 @@ export default function New() {
                                         Kích thước bao bì
                                       </Label>
                                       <Input
+                                        value={size}
+                                        onChange={(e) =>
+                                          setSize(e.target.value)
+                                        }
                                         id='maxWidth'
                                         defaultValue='17.4 x 11.2 x 2 cm'
+                                        className='h-8'
+                                      />
+                                    </div>
+                                    <div className='grid grid-cols-2 items-center gap-4'>
+                                      <Label htmlFor='language'>Ngôn ngữ</Label>
+                                      <Input
+                                        value={language}
+                                        onChange={(e) =>
+                                          setLanguage(e.target.value)
+                                        }
+                                        id='language'
+                                        defaultValue='Tiếng Việt'
+                                        className='h-8'
+                                      />
+                                    </div>
+                                    <div className='grid grid-cols-2 items-center gap-4'>
+                                      <Label htmlFor='translator'>
+                                        Dịch giả
+                                      </Label>
+                                      <Input
+                                        id='translator'
+                                        value={translator}
+                                        onChange={(e) =>
+                                          setTranslator(e.target.value)
+                                        }
+                                        defaultValue='Nguyễn Văn A'
                                         className='h-8'
                                       />
                                     </div>
@@ -459,6 +505,10 @@ export default function New() {
                                       <Label htmlFor='year'>Năm xuất bản</Label>
                                       <Input
                                         id='year'
+                                        value={publishYear}
+                                        onChange={(e) =>
+                                          setPublishYear(e.target.value)
+                                        }
                                         defaultValue='1995'
                                         className='h-8'
                                       />
@@ -469,6 +519,10 @@ export default function New() {
                                       </Label>
                                       <Input
                                         id='weight'
+                                        value={weight}
+                                        onChange={(e) =>
+                                          setWeight(Number(e.target.value))
+                                        }
                                         defaultValue='141'
                                         className='h-8'
                                       />
@@ -477,17 +531,21 @@ export default function New() {
                                       <Label htmlFor='cover'>
                                         Hình thức bìa
                                       </Label>
-                                      <Select defaultValue='soft'>
+                                      <Select
+                                        defaultValue='Bìa mềm'
+                                        value={format}
+                                        onValueChange={setFormat}
+                                      >
                                         <FormControl>
                                           <SelectTrigger>
                                             <SelectValue />
                                           </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                          <SelectItem value='soft'>
+                                          <SelectItem value='Bìa mềm'>
                                             Bìa mềm
                                           </SelectItem>
-                                          <SelectItem value='hard'>
+                                          <SelectItem value='Bìa cứng'>
                                             Bìa cứng
                                           </SelectItem>
                                         </SelectContent>
@@ -505,7 +563,9 @@ export default function New() {
                 </Card>
               </CardContent>
               <CardFooter>
-                <Button type='submit'>Thêm sản phẩm mới</Button>
+                <Button type='button' onClick={onSubmit}>
+                  Thêm sản phẩm mới
+                </Button>
               </CardFooter>
             </form>
           </Form>
