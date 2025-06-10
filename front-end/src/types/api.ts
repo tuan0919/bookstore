@@ -1,6 +1,7 @@
 export interface ApiResponse<T> {
   code: number;
   result: T;
+  message: string;
 }
 
 export interface Pageable {
