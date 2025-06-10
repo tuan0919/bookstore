@@ -221,7 +221,7 @@ public class BookService implements IBookService {
         .orElse(0D);
 
     Double originalPrice = book.getPrice() * 1000;
-    Double discountedPrice = originalPrice * (1 - discount / 100) * 1000;
+    Double discountedPrice = originalPrice * (1 - discount / 100);
 
     return bookMapper.toBookDetailsDTO(book, imageUrls, reviews, originalPrice, discountedPrice);
   }
@@ -259,7 +259,7 @@ public class BookService implements IBookService {
               .orElse(0D);
 
       Double originalPrice = book.getPrice() * 1000;
-      Double discountedPrice = originalPrice * (1 - discount / 100) * 1000;
+      Double discountedPrice = originalPrice * (1 - discount / 100);
 
       var dto = bookMapper.toBookDetailsDTO(book, imageUrls, reviews, originalPrice, discountedPrice);
       list.add(dto);

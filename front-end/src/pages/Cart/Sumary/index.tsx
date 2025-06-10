@@ -1,8 +1,12 @@
 import { Box, Button, Typography } from "@mui/material";
+import { CartItemPropertyResponseDTO } from "~/types/cart";
+import { useNavigate } from "react-router-dom";
 interface SumaryProps {
   totalPrice: number;
+  selectedBooks?: CartItemPropertyResponseDTO[];
 }
-function Sumary({ totalPrice }: SumaryProps) {
+function Sumary({ totalPrice,selectedBooks = []  }: SumaryProps) {
+  const navigate = useNavigate();
   return (
     <Box p={2} borderRadius={2} boxShadow={2} bgcolor="#fff">
         {/* Header */}
@@ -17,7 +21,7 @@ function Sumary({ totalPrice }: SumaryProps) {
             Thành tiền
           </Typography>
         </Box>
-        <Typography>1.000.200 đ</Typography>
+        <Typography>{totalPrice.toLocaleString()} đ</Typography>
       </Box>
       {/* Mã giảm giá nếu có */}
       <Box
@@ -32,7 +36,7 @@ function Sumary({ totalPrice }: SumaryProps) {
           130K)
         </Typography>
         </Box>
-       <Typography>-10.000 đ</Typography>
+       <Typography>0 đ</Typography>
       </Box>
       {/* Sumary */}
       <hr />
@@ -40,7 +44,16 @@ function Sumary({ totalPrice }: SumaryProps) {
         <Typography>Tổng Số Tiền (gồm VAT)</Typography>
         <Typography>{totalPrice.toLocaleString()} đ</Typography>
       </Box>
-      <Button sx={{backgroundColor:'#d32f2f',color:'white', width:'100%'}}>Thanh toán</Button>
+      <Button sx={{backgroundColor:'#d32f2f',color:'white', width:'100%'}}
+      onClick={() => {
+        if (selectedBooks.length !== 0) {
+          console.log("Bạn đã chọn các sản phẩm để thanh toán:", selectedBooks);
+          localStorage.setItem("selectedBooks", JSON.stringify(selectedBooks));
+          navigate("/checkout");
+        }
+        
+      }}
+      >Thanh toán</Button>
     </Box>
   );
 }

@@ -67,7 +67,7 @@ public interface CartMapper {
 
   @Named("mapPrice")
   default double mapPrice(CartItem cartItem, @Context BookRepository bookRepository) {
-    return getBook(cartItem, bookRepository).map(Book::getPrice).orElse(0.0);
+    return getBook(cartItem, bookRepository).map(book -> book.getPrice() * 1000).orElse(0.0);
   }
 
   @Named("mapDiscountedPrice")
