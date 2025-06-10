@@ -22,7 +22,8 @@ public enum ErrorCode {
     BOOK_NOT_FOUND(1012, "Book not found, please check again!", HttpStatus.NOT_FOUND),
     GENRE_NOT_FOUND(1013, "Genre not found", HttpStatus.NOT_FOUND),
     BOOK_COLLECTION_NOT_FOUND(1014, "BookCollection not found", HttpStatus.NOT_FOUND),
-    ;
+    CANT_CANCEL_ORDER(1010, "Only pending orders can be cancelled", HttpStatus.BAD_REQUEST),
+    NO_DEFAULT_ADDRESS(1011, "No default address found for user.",HttpStatus.BAD_REQUEST);
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;

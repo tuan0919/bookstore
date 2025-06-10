@@ -13,6 +13,9 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useAuthContext } from "~/context/AuthContext";
 import { login } from "~/api/auth";
+import { login } from "~/api/login";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 interface LoginPopupProps {
   open: boolean;
@@ -34,6 +37,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
   const loginButtonRef = useRef<HTMLButtonElement | null>(null);
   const forgotPasswordButtonRef = useRef<HTMLButtonElement | null>(null);
   const { setJwtToken } = useAuthContext();
+  const navigate = useNavigate();
   // Cập nhập lại data account khi người dùng nhập và reset lỗi
   const handleChangeAccount = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAccountInfo(event.target.value);
@@ -112,16 +116,38 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
   };
   // Xử lý đăng nhập thành công
   const handleProccessLogin = async () => {
-    const result = await login({
+            const result = await login({
       username: accountInfo,
       password: password,
     });
     setJwtToken(result.result);
     console.log("my jwt token now: ", result.result);
+    try {
+      const response = await login(accountInfo, password);
+      if (response.code === 1000) {
+        setError("");
+        const userName = jwtDecode(JSON.stringify(response.result)).sub;
+        if (userName !== undefined && userName !== "") {
+          localStorage.setItem("userName", userName);
+          localStorage.setItem("access_token", response.result);
+          navigate("/");
+        }
+
+        onClose(); 
+      } else {
+        setError(
+          "Đăng nhập không thành công. Vui lòng kiểm tra lại thông tin."
+        );
+      }
+    } catch (error) {
+      console.error("Đăng nhập thất bại:", error);
+      setError("Lỗi đăng nhập.");
+    }
   };
   // Xử lý lấy lại mật khẩu
   const handleProccessGetPassword = () => {};
   return (
+    
     <Dialog open={open} onClose={onClose}>
       <DialogTitle
         textAlign={"center"}

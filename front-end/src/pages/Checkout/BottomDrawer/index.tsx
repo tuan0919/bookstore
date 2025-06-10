@@ -2,7 +2,7 @@ import { Box, Button, Checkbox, Container, Divider, FormControlLabel, Stack, SxP
 import { red } from "@mui/material/colors";
 import shadows from "@mui/material/styles/shadows";
 
-export function BottomDrawer({ sx = undefined }: { sx?: SxProps<Theme> }) {
+export function BottomDrawer({ sx = undefined, totalPrice =0 }: { sx?: SxProps<Theme>, totalPrice?: number }) {
     return (
         <Box sx={{ ...sx, backgroundColor: 'white', width: '100%', boxShadow: shadows['20'], paddingY: 2 }}>
             <Container>
@@ -12,7 +12,7 @@ export function BottomDrawer({ sx = undefined }: { sx?: SxProps<Theme> }) {
                             <Typography sx={{ fontSize: 14 }}>Thành tiền</Typography>
                         </Box>
                         <Box width={200} textAlign={'right'}>
-                            <Typography sx={{ fontSize: 14 }}>{(375800).toLocaleString('vi-VN') + ' đ'}</Typography>
+                            <Typography sx={{ fontSize: 14 }}>{(totalPrice).toLocaleString('vi-VN') + ' đ'}</Typography>
                         </Box>
                     </Box>
                     <Box display={'flex'} justifyContent={'flex-end'}>
@@ -28,7 +28,7 @@ export function BottomDrawer({ sx = undefined }: { sx?: SxProps<Theme> }) {
                             <Typography sx={{ fontWeight: 700 }}>Tổng tiền</Typography>
                         </Box>
                         <Box width={200} textAlign={'right'}>
-                            <Typography sx={{ fontWeight: 700, fontSize: 18, color: red['900'] }}>{(32000).toLocaleString('vi-VN') + ' đ'}</Typography>
+                            <Typography sx={{ fontWeight: 700, fontSize: 18, color: red['900'] }}>{(totalPrice+32000).toLocaleString('vi-VN') + ' đ'}</Typography>
                         </Box>
                     </Box>
                 </Stack>
