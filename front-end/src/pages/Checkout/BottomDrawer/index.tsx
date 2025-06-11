@@ -12,8 +12,8 @@ import {
 } from "@mui/material";
 import { red } from "@mui/material/colors";
 import shadows from "@mui/material/styles/shadows";
-import PaypalButton from "../../../components/Paypal";
-import {createOrder} from "../../../api/order";
+import PaypalButton from "~/components/Paypal";
+import {createOrder} from "~/api/order";
 import { useNavigate } from "react-router-dom";
 import {useCart} from "~/providers/CartProvider";
 import {  CartItemPropertyResponseDTO } from "~/types/cart";

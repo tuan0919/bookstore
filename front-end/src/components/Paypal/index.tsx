@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+
 import { createPaypalOrder, capturePaypalOrder } from "~/api/paypal";
+
 import {useCart} from "~/providers/CartProvider";
 import {  CartItemPropertyResponseDTO } from "~/types/cart";
 import { useNavigate } from "react-router-dom";
@@ -83,6 +85,7 @@ function PaypalButton() {
                   removeItem?.(book.productId.toString());
                 });
                 localStorage.removeItem("selectedBooks");
+
                 navigate("/profileUser/orders")
               }
             } catch (error) {
@@ -98,6 +101,7 @@ function PaypalButton() {
     </div>
   );
 }
+
 
 
 export default PaypalButton;
