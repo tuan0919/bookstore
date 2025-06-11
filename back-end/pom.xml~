@@ -147,12 +147,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!--		Paypal-->
-		<dependency>
-			<groupId>com.paypal.sdk</groupId>
-			<artifactId>paypal-server-sdk</artifactId>
-			<version>1.0.0</version>
-		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

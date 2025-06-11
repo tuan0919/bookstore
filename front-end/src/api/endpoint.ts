@@ -1,7 +1,6 @@
+// src/constants/endpoint.ts
+
 const API_ENDPOINTS = {
-  AUTH: {
-    LOGIN: "/api/v1/auth/login",
-  },
   BOOK: {
     SEARCH: "/api/book/category",
     TOP_WEEKLY: "/api/book/top-weekly",
@@ -9,16 +8,47 @@ const API_ENDPOINTS = {
   },
   CATEGORY: {
     CHAIN_FOR_BOOK: `/api/category/chain`,
-    CATEGORY: "api/book",
+    CATEGORY : "api/book"
   },
   USER: {
     LOGIN: "/api/v1/auth/login",
+    DETAILS: {
+      GET: "/api/user-details",
+    },
+    ADDRESS: {
+      ADD: "/api/user/addresses",
+      UPDATE: (userAddressId: number, makeDefault?: boolean) => {
+        let url = `/api/user/addresses/${userAddressId}`;
+        if (makeDefault !== undefined) {
+          url += `?makeDefault=${makeDefault}`;
+        }
+        return url;
+      },
+      GET: "/api/user/addresses",
+    },
   },
   CART: {
     ADD: "/api/cart/add",
     REMOVE: "/api/cart/delete",
     GET: "/api/cart",
-  }
+  },
+  PAYPAL: {
+    CREATE_ORDER: "/paypal/api/orders",
+    CAPTURE_ORDER: (orderId: string) => `/paypal/api/orders/${orderId}/capture`,
+
+  },
+  ORDER: {
+    CREATE: "/api/orders",
+    GET: (page: number, size: number) => {
+      if(page !== undefined && size !== undefined) {
+        return `/api/orders?page=${page}&size=${size}`;
+      } else{
+        return `/api/orders`;
+      }
+    },
+   CANCEL : (orderId: string) => `/api/orders/${orderId}/cancel`,
+  },
+
 };
 
 export default API_ENDPOINTS;

@@ -5,9 +5,11 @@ import nlu.com.app.constant.UserRole;
 import nlu.com.app.dto.request.LoginUserDTO;
 import nlu.com.app.dto.request.RegisterUserDTO;
 import nlu.com.app.entity.User;
+import nlu.com.app.entity.UserDetails;
 import nlu.com.app.exception.ApplicationException;
 import nlu.com.app.exception.ErrorCode;
 import nlu.com.app.mapper.UserMapper;
+import nlu.com.app.repository.UserDetailsRepository;
 import nlu.com.app.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -54,4 +56,5 @@ public class UserService {
         .orElseThrow(() -> new ApplicationException(ErrorCode.UNAUTHENTICATED));
     return user;
   }
+
 }

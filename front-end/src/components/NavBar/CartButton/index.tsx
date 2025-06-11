@@ -6,7 +6,10 @@ import { useCart } from "~/providers/CartProvider";
 export function CartButton() {
   const naviagation = useNavigate();
   const { cart } = useCart();
-   const totalItems = cart.length;
+  let totalItems = 0;
+  if (cart) {
+    totalItems = cart.length;
+  }
   return (
     <Stack
       component="div"

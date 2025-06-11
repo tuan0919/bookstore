@@ -16,7 +16,8 @@ function Cart() {
 
 // Cập nhật listBook mỗi khi cart thay đổi
 useEffect(() => {
-  const updatedBooks: CartItemPropertyResponseDTO[] = cart.map((item) => ({
+ if(cart && cart.length > 0) {
+      const updatedBooks: CartItemPropertyResponseDTO[] = cart.map((item) => ({
     productId: item.productId,
     title: item.title,
     price: item.price,
@@ -26,6 +27,7 @@ useEffect(() => {
     discountPercentage: item.discountPercentage,
   }));
   setListBook(updatedBooks);
+    }
    
 }, [cart]);
   //  Khi số lượng thay đổi từ CartItem

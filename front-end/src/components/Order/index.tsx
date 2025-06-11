@@ -14,50 +14,55 @@ import { useNavigate } from "react-router-dom";
 function onBuyAgain() {
   console.log("Buy again clicked");
 }
-
+export interface BookBought {
+  bookTitle: string;
+  quantity: number;
+  price: number;
+  discount: number;
+  imgBook?: string; // Optional property
+}
 export default function Order({
   orderId,
   status,
   orderDateTime,
   imgBook,
   titleBook,
-  amount,
   price,
   feeShip,
   nameUser,
-    phoneNumber,
-    address,
-    paymentMethod,
-    shipmentMethod,
-    note
+  phoneNumber,
+  address,
+  paymentMethod,
+  shipmentMethod,
+  note,
+  items,
 }: OrderDetailsProps) {
   const navigate = useNavigate();
   function handleClick() {
-      const orderData = {
-        orderId,
-        status,
-        orderDateTime,
-        imgBook,
-        titleBook,
-        amount,
-        price,
-        feeShip,
-        nameUser,
-        phoneNumber,
-          address,
-          paymentMethod,
-          shipmentMethod,
-          note
-        // thêm các thông tin khác nếu cần
-      };
-    
-      // Lưu vào localStorage
-      localStorage.setItem("selectedOrder", JSON.stringify(orderData));
-    
-      // Điều hướng sang trang chi tiết
-      navigate(`view/order_id/${orderId}`);
-    }
+    const orderData = {
+      orderId,
+      status,
+      orderDateTime,
+      imgBook,
+      titleBook,
+      feeShip,
+      price,
+      nameUser,
+      phoneNumber,
+      address,
+      paymentMethod,
+      shipmentMethod,
+      note,
+      items,
+    };
 
+    // Lưu vào localStorage
+    localStorage.setItem("selectedOrder", JSON.stringify(orderData));
+
+    // Điều hướng sang trang chi tiết
+    navigate(`view/order_id/${orderId}`);
+  }
+  const amount = items.reduce((total, item) => total + item.quantity, 0);
   return (
     <Card
       variant="outlined"
@@ -109,15 +114,16 @@ export default function Order({
         <Grid2 sx={{ width: 64 }}>
           <Box
             sx={{
-              width: 64,
+              width: 64 ,
               height: 80,
               borderRadius: 1,
-              overflow: "hidden",
+              overflow: "visible",
               flexShrink: 0,
+              objectFit: "contain",
             }}
           >
             <img
-              src={imgBook}
+              src={items[0]?.imgBook}
               alt={titleBook}
               style={{
                 width: "100%",
@@ -136,9 +142,13 @@ export default function Order({
               fontWeight={500}
               sx={{
                 wordBreak: "break-word",
+                maxWidth: 300,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
               }}
             >
-              {titleBook}
+              {items.map((item) => item.bookTitle).join(", ")}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
               {amount} sản phẩm
@@ -159,7 +169,7 @@ export default function Order({
           <Typography variant="body2" color="text.secondary">
             Tổng tiền:{" "}
             <span style={{ color: "red", fontWeight: "bold", fontSize: 16 }}>
-              {(price * amount + feeShip).toLocaleString()} ₫
+              {price.toLocaleString()} ₫
             </span>
           </Typography>
         </Grid2>

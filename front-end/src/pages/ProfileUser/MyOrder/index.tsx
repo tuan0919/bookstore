@@ -1,51 +1,83 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Paper, Typography, Tabs, Tab } from "@mui/material";
-
+import { getOrder } from "~/api/order";
 import Order from "~/components/Order"; // Import component Order
-
-const orders = [
-  {
-    orderId: "102688946",
-    orderDateTime: "23/09/2022 - 10:42",
-    nameUser: "Trần Anh Tú",
-    phoneNumber: "0589330263",
-    address: "18/3B Khu Phố 1, P. Long Bình Tân, Đồng Nai",
-    paymentMethod: "Thanh toán khi nhận hàng",
-    shipmentMethod: "Giao hàng tận nơi",
-    note: "",
-    price: 95000,
-    feeShip: 30000,
-    status: "new",
-    imgBook:
-      "https://cdn1.fahasa.com/media/catalog/product/t/h/thien-su-nha-ben---tap-4---ban-gioi-han.jpg",
-    titleBook: "Thiên Sứ Nhà Bên - Tập 4 - Bản Giới Hạn",
-    amount: 1,
-  },
-  {
-    orderId: "102688947",
-    orderDateTime: "23/09/2022 - 10:42",
-    nameUser: "Trần Anh Tú",
-    phoneNumber: "0589330263",
-    address: "18/3B Khu Phố 1, P. Long Bình Tân, Đồng Nai",
-    paymentMethod: "Thanh toán khi nhận hàng",
-    shipmentMethod: "Giao hàng tận nơi",
-    note: "",
-    price: 95000,
-    feeShip: 30000,
-    status: "completed",
-    imgBook:
-      "https://cdn1.fahasa.com/media/catalog/product/t/h/thien-su-nha-ben---tap-4---ban-gioi-han.jpg",
-    titleBook: "Thiên Sứ Nhà Bên - Tập 4 - Bản Giới Hạn",
-    amount: 1,
-  },
-];
-
+import Pagination from "@mui/material/Pagination";
+import { Box } from "@mui/system";
 const OrderList = () => {
-  const [tab, setTab] = useState(0);
- 
+  const [tab, setTab] = useState<string>("ALL");
+  const [orders, setOrders] = useState<any[]>([]);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const userDetails = JSON.parse(
+    localStorage.getItem("userDetails") || "{}"
+  );
+  const fetchOrders = async (page: number, status?: string) => {
+    try {
+      const data = await getOrder(page);
 
-  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+      console.log("Fetched orders:", data);
+      const mappedOrders = data.content.map((order: any) => ({
+        orderId: order.orderId.toString(),
+        orderDateTime: order.orderDate,
+        nameUser: userDetails.fullName,
+        phoneNumber: userDetails.phoneNum,
+        address: order.shippingAddress.addressLine1,
+        paymentMethod: order.paymentMethodName,
+        shipmentMethod: "Giao hàng tận nơi",
+        note: "",
+        price: order.totalAmount,
+        feeShip: 32000,
+        status: convertStatus(order.status),
+        items: order.items, 
+        
+      }
+    ));
+      console.log("Mapped orders:", mappedOrders);
+
+      if (status) {
+        const filteredOrders = mappedOrders.filter(
+          (order) => order.status === status
+        );
+        setOrders(filteredOrders);
+      } else {
+        setOrders(mappedOrders);
+      }
+      setTotalPages(data.totalPages);
+    } catch (error) {
+      console.error("Lỗi khi fetch đơn hàng", error);
+    }
+  };
+
+  const convertStatus = (status: string) => {
+    switch (status) {
+      case "Chờ xác nhận":
+        return "PENDING_CONFIRMATION";
+      case "Đã xác nhận":
+        return "CONFIRMED";
+      case "Đang vận chuyển":
+        return "SHIPPING";
+      case "Đã chuyển đến":
+        return "DELIVERED";
+      case "Đã hủy":
+        return "CANCELED";
+      default:
+        return "PENDING_CONFIRMATION";
+    }
+  };
+
+  // Call API khi page hoặc tab thay đổi
+  useEffect(() => {
+    if (tab === "ALL") {
+      fetchOrders(page);
+    } else {
+      fetchOrders(page, tab);
+    }
+  }, [page, tab]);
+
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
     setTab(newValue);
+    setPage(0); // Reset về trang đầu khi đổi tab
   };
 
   return (
@@ -58,38 +90,45 @@ const OrderList = () => {
         onChange={handleTabChange}
         variant="scrollable"
         scrollButtons="auto"
-        sx={{marginBottom:"10px"}}
+        sx={{ marginBottom: "10px" }}
       >
-        <Tab label="Tất cả" />
-        <Tab label="Chờ thanh toán" />
-        <Tab label="Đang xử lý" />
-        <Tab label="Đang giao" />
-        <Tab label="Hoàn tất" />
-        <Tab label="Bị hủy" />
-        <Tab label="Đổi trả" />
+        <Tab value="ALL" label="Tất cả" />
+        <Tab value="PENDING_CONFIRMATION" label="Chờ xác nhận" />
+        <Tab value="CONFIRMED" label="Đã xác nhận" />
+        <Tab value="SHIPPING" label="Đang vận chuyển" />
+        <Tab value="DELIVERED" label="Đã chuyển đến" />
+        <Tab value="CANCELED" label="Đã hủy" />
       </Tabs>
-      
 
       {/* Danh sách hóa đơn */}
+       <Box sx={{ maxHeight: "500px", overflowY: "auto", pr: 1 }}>
       {orders.map((order) => (
         <Order
-        key={order.orderId}
+          key={order.orderId}
           orderId={order.orderId || ""}
           orderDateTime={order.orderDateTime}
           status={order.status}
           titleBook={order.titleBook}
-          amount={order.amount}
-          imgBook={order.imgBook}
+          items={order.items}
           price={order.price}
+          imgBook={order.imgBook}
           feeShip={order.feeShip}
           nameUser={order.nameUser}
           phoneNumber={order.phoneNumber}
-            address={order.address}
-            paymentMethod={order.paymentMethod}
-            shipmentMethod={order.shipmentMethod}
-            note={order.note}
-         />
-    ))}
+          address={order.address}
+          paymentMethod={order.paymentMethod}
+          shipmentMethod={order.shipmentMethod}
+          note={order.note}
+        />
+      ))}
+      </Box>
+      <Pagination
+        count={totalPages}
+        page={page + 1}
+        onChange={(_event, value) => setPage(value - 1)}
+        color="primary"
+        sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}
+      />
     </Paper>
   );
 };
