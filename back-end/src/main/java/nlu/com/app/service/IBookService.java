@@ -6,6 +6,7 @@ import nlu.com.app.dto.request.CreateBookRequest;
 import nlu.com.app.dto.request.UpdateBookRequest;
 import nlu.com.app.dto.response.*;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -59,4 +60,10 @@ public interface IBookService {
                                 MultipartFile[] newGallery,
                                 String[] oldGallery);
 
+  /**
+   * get book's overview information to display on admin product dashboard
+   * @param pageable paging object
+   * @return current page
+   */
+  Page<BookOverviewDTO> getBookOverviews(Pageable pageable);
 }

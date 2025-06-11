@@ -77,6 +77,14 @@ public class BookController {
             .build();
   }
 
+  @GetMapping("/overview")
+  public AppResponse<Page<BookOverviewDTO>> getBookOverview(@RequestParam int page, @RequestParam int size) {
+    var pageable = PageRequest.of(page, size);
+    return AppResponse.<Page<BookOverviewDTO>>builder()
+            .result(bookService.getBookOverviews(pageable))
+            .build();
+  }
+
   @GetMapping("/{bookId}/review-overall")
   public AppResponse<ReviewOverallDTO> getReviewOverall(@PathVariable Long bookId) {
     return AppResponse.<ReviewOverallDTO>builder()
@@ -84,11 +92,8 @@ public class BookController {
             .build();
   }
 
-
-
   @PostMapping(value = "/{bookId}/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public AppResponse<UpdateBookResponse> updateProduct(
-          HttpServletRequest request,
           @PathVariable("bookId") Long bookId,
           @ModelAttribute UpdateBookRequest metadata,
           @RequestParam(value = "old_thumbnail", required = false) String oldThumbnail,
@@ -96,11 +101,6 @@ public class BookController {
           @RequestParam(value = "old_gallery", required = false) String[] oldGallery,
           @RequestParam(value = "new_gallery", required = false) MultipartFile[] newGallery
   ) {
-    System.out.println("oldThumbnail: "+oldThumbnail);
-    System.out.println("new_thumbnail: "+newThumbnail);
-    System.out.println("old_gallery: "+ Arrays.toString(oldGallery));
-    System.out.println("new_gallery: "+ Arrays.toString(newGallery));
-    System.out.println("Content-Type = " + request.getContentType());
     return AppResponse.<UpdateBookResponse>builder()
             .result(bookService.updateBook(bookId, metadata, newThumbnail, oldThumbnail, newGallery, oldGallery))
             .build();

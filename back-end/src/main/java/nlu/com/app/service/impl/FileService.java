@@ -51,9 +51,9 @@ public class FileService implements IFileService {
     public String uploadFile(MultipartFile file) {
         try {
             String key = file.getResource().getFilename();
-            if (doesObjectExist(key)) {
-                throw new ApplicationException(ErrorCode.S3_KEY_OBJECT_DUPLICATED);
-            }
+//            if (doesObjectExist(key)) {
+//                throw new ApplicationException(ErrorCode.S3_KEY_OBJECT_DUPLICATED);
+//            }
             // write this to temp folder
             var tempFile = writeToTempFolder(file, "");
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
@@ -70,9 +70,9 @@ public class FileService implements IFileService {
     }
 
     public String uploadFile(File file, String key) {
-        if (doesObjectExist(key)) {
-            throw new ApplicationException(ErrorCode.S3_KEY_OBJECT_DUPLICATED);
-        }
+//        if (doesObjectExist(key)) {
+//            throw new ApplicationException(ErrorCode.S3_KEY_OBJECT_DUPLICATED);
+//        }
         // write this to temp folder
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)

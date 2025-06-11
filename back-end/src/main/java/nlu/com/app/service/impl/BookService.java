@@ -70,6 +70,7 @@ public class BookService implements IBookService {
   CategoryService categoryService;
   GenreService genreService;
   FileService fileService;
+  UserReviewService userReviewService;
   @Value("${app.temp-folder}")
   @NonFinal
   String tmp;
@@ -409,6 +410,16 @@ public class BookService implements IBookService {
     } catch (IOException e) {
       throw new ApplicationException(ErrorCode.UNKNOWN_EXCEPTION);
     }
+  }
+
+  @Override
+  public Page<BookOverviewDTO> getBookOverviews(Pageable pageable) {
+    var pageResult = bookRepository.findAllBy(pageable);
+    var result = pageResult
+            .stream().map(b -> bookMapper.toBookOverviewDTO(b, userReviewService, bookImageRepository))
+            .toList();
+
+    return new PageImpl<>(result, pageable, pageResult.getTotalElements());
   }
 
 

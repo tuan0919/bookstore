@@ -4,8 +4,10 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconFileDescription } from '@tabler/icons-react'
 import { Category } from '@/resources/categories'
+import { toast } from 'sonner'
 import SunEditor from 'suneditor-react'
 import 'suneditor/dist/css/suneditor.min.css'
+import { createNewBook } from '@/api/book'
 // Import React FilePond
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
@@ -74,7 +76,7 @@ export default function New() {
   const formatter = new Intl.NumberFormat('vi-VN')
   const [displayValue, setDisplayValue] = useState('')
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const formData = new FormData()
 
     if (thumbnail) {
@@ -84,29 +86,25 @@ export default function New() {
     formData.append('title', title)
     formData.append('description', description)
 
-    gallery.forEach((file, index) => {
-      formData.append('gallery', file)
-    })
-
     if (category !== null) {
-      formData.append('categoryId', category.id.toString())
+      formData.append('category_id', category.id.toString())
     }
 
-    formData.append('genre', genre)
+    formData.append('genre_id', genre.toString())
     formData.append('author', author)
     formData.append('age', age.toString())
     formData.append('price', price.toString())
     formData.append('format', format)
     formData.append('language', language)
-    formData.append('pageCount', pageCount.toString())
+    formData.append('page_count', pageCount.toString())
     formData.append('weight', weight.toString())
     formData.append('size', size)
-    formData.append('publishYear', publishYear)
+    formData.append('publish_year', publishYear)
     formData.append('translator', translator)
     formData.append('publisher', publisher)
-    formData.append('qtyInStock', qtyInStock.toString())
+    formData.append('qty_in_stock', qtyInStock.toString())
     formData.append('supplier', supplier)
-    formData.append('productCode', productCode)
+    formData.append('product_code', productCode)
     gallery
       .filter((f): f is File => !!f)
       .forEach((file) => {
@@ -119,6 +117,15 @@ export default function New() {
     for (const [key, value] of formData.entries()) {
       console.log(`${key}:`, value)
     }
+
+    const result = await createNewBook(formData)
+    toast('Thao tác thành công!', {
+      description: 'Sách mới đã được tạo thành công.',
+      action: {
+        label: 'Xác nhận',
+        onClick: () => console.log('Xác nhận'),
+      },
+    })
   }
 
   /* State variables for product details */
@@ -127,7 +134,7 @@ export default function New() {
   const [description, setDescription] = useState('')
   const [gallery, setGallery] = useState<(File | null)[]>([])
   const [category, setCategory] = useState<Category | null>(null)
-  const [genre, setGenre] = useState<string>('shounen')
+  const [genre, setGenre] = useState<number>(1)
   const [author, setAuthor] = useState('')
   const [age, setAge] = useState<number>(0)
   const [price, setPrice] = useState<number>(0)
@@ -146,7 +153,6 @@ export default function New() {
     <>
       {/* ===== Top Heading ===== */}
       <Header>
-        <TopNav links={topNav} />
         <div className='ml-auto flex items-center space-x-4'>
           <Search />
           <ThemeSwitch />
@@ -236,67 +242,6 @@ export default function New() {
                         </div>
                       ))}
                     </div>
-                    {/* <FormField
-                      control={form.control}
-                      name='genres'
-                      render={() => (
-                        <FormItem>
-                          <FormLabel>Thể loại</FormLabel>
-                          <FormControl>
-                            <div className='flex gap-2'>
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <div className='flex gap-1'>
-                                    <Button variant='outline' type='button'>
-                                      <IconCirclePlus />
-                                      Chọn thể loại
-                                    </Button>
-                                  </div>
-                                </PopoverTrigger>
-                                <PopoverContent className='w-80'>
-                                  <Command>
-                                    <CommandInput placeholder='Nhập thể loại...' />
-                                    <CommandList>
-                                      <CommandEmpty>
-                                        No results found.
-                                      </CommandEmpty>
-                                      <CommandGroup heading='Đề xuất'>
-                                        <CommandItem>
-                                          <IconSquare />
-                                          <span>Phiêu lưu</span>
-                                        </CommandItem>
-                                        <CommandItem>
-                                          <IconSquare />
-                                          <span>Tình cảm</span>
-                                        </CommandItem>
-                                        <CommandItem>
-                                          <IconCheckbox />
-                                          <span>Trinh khám</span>
-                                        </CommandItem>
-                                        <CommandItem>
-                                          <IconSquare />
-                                          <span>Kinh dị</span>
-                                        </CommandItem>
-                                      </CommandGroup>
-                                      <CommandSeparator />
-                                      <CommandGroup>
-                                        <CommandItem className='justify-center text-center'>
-                                          Thêm thể loại mới
-                                        </CommandItem>
-                                      </CommandGroup>
-                                    </CommandList>
-                                  </Command>
-                                </PopoverContent>
-                              </Popover>
-                              <div className='flex flex-wrap gap-1 border border-dashed p-2'>
-                                <Badge variant='outline'>Trinh khám</Badge>
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    /> */}
                     <div className='flex gap-3'>
                       <FormItem>
                         <FormLabel>Danh mục</FormLabel>
@@ -312,9 +257,9 @@ export default function New() {
                         <FormLabel>Thể loại</FormLabel>
                         <FormControl>
                           <Select
-                            defaultValue='shounen'
-                            value={genre}
-                            onValueChange={setGenre}
+                            defaultValue='1'
+                            value={Number(genre).toString()}
+                            onValueChange={(val) => setGenre(Number(val))}
                           >
                             <FormControl>
                               <SelectTrigger>
@@ -322,13 +267,11 @@ export default function New() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value='shounen'>Shounen</SelectItem>
-                              <SelectItem value='action'>Hành động</SelectItem>
-                              <SelectItem value='romance'>Tình cảm</SelectItem>
-                              <SelectItem value='horror'>Kinh dị</SelectItem>
-                              <SelectItem value='adventure'>
-                                Phiêu lưu
-                              </SelectItem>
+                              <SelectItem value='1'>Comedy</SelectItem>
+                              <SelectItem value='2'>Fantasy</SelectItem>
+                              <SelectItem value='3'>Shounen</SelectItem>
+                              <SelectItem value='4'>Action</SelectItem>
+                              <SelectItem value='5'>Adventure</SelectItem>
                             </SelectContent>
                           </Select>
                         </FormControl>
@@ -574,30 +517,3 @@ export default function New() {
     </>
   )
 }
-
-const topNav = [
-  {
-    title: 'Overview',
-    href: 'dashboard/overview',
-    isActive: true,
-    disabled: false,
-  },
-  {
-    title: 'Customers',
-    href: 'dashboard/customers',
-    isActive: false,
-    disabled: true,
-  },
-  {
-    title: 'Products',
-    href: 'dashboard/products',
-    isActive: false,
-    disabled: true,
-  },
-  {
-    title: 'Settings',
-    href: 'dashboard/settings',
-    isActive: false,
-    disabled: true,
-  },
-]

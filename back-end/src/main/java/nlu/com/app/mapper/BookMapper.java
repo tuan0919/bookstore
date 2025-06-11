@@ -11,6 +11,7 @@ import nlu.com.app.dto.json.BooksJson;
 import nlu.com.app.dto.request.BookDetailsDTO;
 import nlu.com.app.dto.request.BookDetailsDTO.ReviewDTO;
 import nlu.com.app.dto.request.CreateBookRequest;
+import nlu.com.app.dto.response.BookOverviewDTO;
 import nlu.com.app.dto.response.CreateBookResponse;
 import nlu.com.app.dto.response.PageBookResponseDTO;
 import nlu.com.app.dto.response.UpdateBookResponse;
@@ -23,6 +24,7 @@ import nlu.com.app.exception.ErrorCode;
 import nlu.com.app.repository.BookImageRepository;
 import nlu.com.app.repository.CategoryRepository;
 import nlu.com.app.repository.GenreRepository;
+import nlu.com.app.service.impl.UserReviewService;
 import org.mapstruct.Builder;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
@@ -145,6 +147,23 @@ public interface BookMapper {
   @Mapping(target = "thumbnail", source = "book.images", qualifiedByName = "bookImagesToThumbnailURL")
   @Mapping(target = "gallery", source = "book.images", qualifiedByName = "bookImagesToGalleryURLs")
   UpdateBookResponse toUpdateBookResponse(Book book);
+
+
+  default BookOverviewDTO toBookOverviewDTO(Book book,
+                                            UserReviewService userReviewService,
+                                            BookImageRepository imageRepository) {
+    var rvStats = userReviewService.getReviewOverall(book.getBookId());
+    var thumbnail = imageRepository.findByBookBookIdAndIsThumbnailIsTrue(book.getBookId());
+    return BookOverviewDTO.builder()
+            .title(book.getTitle())
+            .price((int)book.getPrice())
+            .quantityInStock(book.getQtyInStock())
+            .avgRate(rvStats.getAvgScore())
+            .rvCounts(Math.toIntExact(rvStats.getTotal()))
+            .thumbnail(thumbnail.getImageUrl())
+            .bookId(book.getBookId())
+            .build();
+  }
 
   @Named("bookImagesToThumbnailURL")
   default String bookImagesToThumbnailURL(List<BookImage> images) {
