@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-
-import { createPaypalOrder, capturePaypalOrder } from "~/api/paypal";
-
+import { createPaypalOrder, capturePaypalOrder } from "../../api/paypal";
 import {useCart} from "~/providers/CartProvider";
 import {  CartItemPropertyResponseDTO } from "~/types/cart";
 import { useNavigate } from "react-router-dom";
@@ -102,7 +100,4 @@ function PaypalButton() {
   );
 }
 
-
-
 export default PaypalButton;
-
