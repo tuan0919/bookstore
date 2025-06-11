@@ -13,6 +13,10 @@ import {
 import { red } from "@mui/material/colors";
 import shadows from "@mui/material/styles/shadows";
 import PaypalButton from "../../../components/Paypal";
+import {createOrder} from "../../../api/order";
+import { useNavigate } from "react-router-dom";
+import {useCart} from "~/providers/CartProvider";
+import {  CartItemPropertyResponseDTO } from "~/types/cart";
 export function BottomDrawer({
   sx = undefined,
   totalPrice = 0,
@@ -22,6 +26,24 @@ export function BottomDrawer({
   totalPrice?: number;
   paymentMethod?: string;
 }) {
+  const selectedBooksId = JSON.parse(localStorage.getItem("selectedBooksId") || "[]" );
+  const selectBooks = JSON.parse(localStorage.getItem("selectedBooks") || "[]");
+  const navigate = useNavigate();
+ const { removeItem } = useCart();
+  function handelCreateOrder() {
+      createOrder({
+        paymentMethodId: 1,
+        selectedProductIds: selectedBooksId
+      }).then(() =>{
+        selectBooks.forEach((book: CartItemPropertyResponseDTO) => {
+                          removeItem?.(book.productId.toString());
+                        });
+        localStorage.removeItem("selectedBooks");
+        navigate("/profileUser/orders");
+      }).catch((error) => {
+        console.error("Lỗi khi tạo đơn hàng:", error);    
+      });
+    }
   return (
     <Box
       sx={{
@@ -92,6 +114,10 @@ export function BottomDrawer({
                     disableFocusRipple
                     disableRipple
                     disableTouchRipple
+                    onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
+                      event.preventDefault();
+                      handelCreateOrder();
+                    }}
                   >
                     Xác nhận thanh toán
                   </Button>

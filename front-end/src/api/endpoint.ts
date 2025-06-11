@@ -36,6 +36,17 @@ const API_ENDPOINTS = {
     CREATE_ORDER: "/paypal/api/orders",
     CAPTURE_ORDER: (orderId: string) => `/paypal/api/orders/${orderId}/capture`,
   },
+  ORDER: {
+    CREATE: "/api/orders",
+    GET: (page: number, size: number) => {
+      if(page !== undefined && size !== undefined) {
+        return `/api/orders?page=${page}&size=${size}`;
+      } else{
+        return `/api/orders`;
+      }
+    },
+   CANCEL : (orderId: string) => `/api/orders/${orderId}/cancel`,
+  },
 };
 
 export default API_ENDPOINTS;

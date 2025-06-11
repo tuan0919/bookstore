@@ -221,7 +221,7 @@ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
             </Box>
           </Box>
           <Typography variant="body2" color="text.secondary" mb={1}>
-            {addr.address.addressLine1}, {addr.address.addressLine2},{" "}
+            {addr.address.addressLine1}
           </Typography>
           <Typography
             variant="caption"

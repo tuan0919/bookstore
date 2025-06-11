@@ -32,7 +32,9 @@ import cashWithVNPay from "~/assets/ico_vnpay.svg";
 import discountIcon from "~/assets/ico_promotion.svg";
 import React from "react";
 import { CartItemPropertyResponseDTO } from "~/types/cart";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { addUserAddress, getUserAddresses } from "~/api/user/userAddress";
+import { AddressResponseDTO } from "~/types/user";
 const Section = styled(Box)(({ theme }) => ({
   backgroundColor: "white",
   padding: `0 ${theme.spacing(2)}`,
@@ -69,12 +71,14 @@ const SpecialRadio = styled((props) => (
     {...props}
   />
 ))(() => ({}));
+const userDetails = JSON.parse(localStorage.getItem("userDetails") || "{}");
 
 export function Checkout() {
   const [open, setOpen] = React.useState(false);
   const [openDiscount, setOpenDiscount] = React.useState(false);
   const selectBooks = JSON.parse(localStorage.getItem("selectedBooks") || "[]");
   const [paymentMethod, setPaymentMethod] = useState("");
+  const [listAddress, setListAddress] = useState<AddressResponseDTO[]>([]);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -83,8 +87,55 @@ export function Checkout() {
     setOpen(false);
   };
   const totalPrice = selectBooks.reduce(
-    (sum: number, book: CartItemPropertyResponseDTO) => sum + book.discountedPrice * book.quantity,
+    (sum: number, book: CartItemPropertyResponseDTO) =>
+      sum + book.discountedPrice * book.quantity,
     0
+  );
+  const fetchAddresses = async () => {
+    try {
+      const addresses = await getUserAddresses();
+      setListAddress(addresses.result);
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách địa chỉ:", error);
+    }
+  };
+  // Lấy danh sách địa chỉ giao hàng
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
+  // Xử lý thêm mới địa chỉ giao hàng
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const formData = new FormData(event.currentTarget);
+    const address = {
+      unitNumber: formData.get("unitNumber") as string,
+      streetNumber: formData.get("streetNumber") as string,
+      addressLine1: formData.get("addressLine1") as string,
+      addressLine2: formData.get("addressLine2") as string,
+      city: formData.get("city") as string,
+      region: formData.get("region") as string,
+      postalCode: formData.get("postalCode") as string,
+    };
+
+    console.log("Data sắp gửi lên API:", address);
+
+    addUserAddress(address)
+      .then(() => {
+        return fetchAddresses();
+      })
+      .then(() => {
+        handleClose();
+      })
+      .catch((error) => {
+        console.error("Lỗi khi thêm địa chỉ:", error);
+      });
+  };
+  // Lưu id của các book được mua vào localStorage
+  const selectedBooksId= selectBooks.map(
+    (book: CartItemPropertyResponseDTO) => book.productId
+  );
+  localStorage.setItem(
+    "selectedBooksId",
+    JSON.stringify(selectedBooksId)
   );
   return (
     <>
@@ -96,67 +147,34 @@ export function Checkout() {
                 Địa chỉ giao hàng
               </Typography>
             </UnderlineBox>
-            <RadioGroup defaultValue="address_1" name="radio-buttons-group">
-              <Box
-                display={"flex"}
-                alignItems={"center"}
-                justifyContent={"space-between"}
-              >
-                <FormControlLabel
-                  value="address_1"
-                  sx={{
-                    width: "fit-content",
-                  }}
-                  control={<SmallRadio />}
-                  label={
-                    <RadioLabel>
-                      Nguyễn Tuấn | 31/8B, Khu Phố 4, Xã Tân Bình, Tân Binh, Tây
-                      Ninh, Việt Nam | 0936565257
-                    </RadioLabel>
-                  }
-                />
-                <Link marginRight={5} sx={{ cursor: "pointer" }}>
-                  Sửa
-                </Link>
-              </Box>
-              <Box
-                display={"flex"}
-                alignItems={"center"}
-                justifyContent={"space-between"}
-              >
-                <FormControlLabel
-                  value="address_2"
-                  control={<SmallRadio />}
-                  label={
-                    <RadioLabel>
-                      Hùng Phạm | Chợ nhỏ Nông Lâm, Linh Trung, Thủ Đức, Hồ Chí
-                      Minh, Việt Nam | 0919169464
-                    </RadioLabel>
-                  }
-                />
-                <Link marginRight={5} sx={{ cursor: "pointer" }}>
-                  Sửa
-                </Link>
-              </Box>
-              <Box
-                display={"flex"}
-                alignItems={"center"}
-                justifyContent={"space-between"}
-              >
-                <FormControlLabel
-                  value="address_3"
-                  control={<SmallRadio />}
-                  label={
-                    <RadioLabel>
-                      Hoàng Khang | Tòa nhà Số 28, Mai Chí Thọ, Thủ Đức, Hồ Chí
-                      Minh, Việt Nam | 0168237814
-                    </RadioLabel>
-                  }
-                />
-                <Link marginRight={5} sx={{ cursor: "pointer" }}>
-                  Sửa
-                </Link>
-              </Box>
+            <RadioGroup  name="radio-buttons-group">
+              {listAddress.length > 0
+                ? listAddress.map((address) => (
+                    <Box
+                      display={"flex"}
+                      alignItems={"center"}
+                      justifyContent={"space-between"}
+                    >
+                      <FormControlLabel
+                        value={address.address.addressLine1}
+                        sx={{
+                          width: "fit-content",
+                        }}
+                        control={<SmallRadio />}
+                        label={
+                          <RadioLabel>
+                            {userDetails.fullName} |{" "}
+                            {address.address.addressLine1} |{" "}
+                            {userDetails.phoneNum}
+                          </RadioLabel>
+                        }
+                      />
+                      <Link marginRight={5} sx={{ cursor: "pointer" }}>
+                        Sửa
+                      </Link>
+                    </Box>
+                  ))
+                : null}
             </RadioGroup>
             <FormControlLabel
               onClick={handleClickOpen}
@@ -247,45 +265,48 @@ export function Checkout() {
             <TableContainer>
               <Table sx={{}} aria-label="simple table">
                 <TableBody>
-                 {selectBooks.length > 0 ? selectBooks.map((book : CartItemPropertyResponseDTO) =>(
-                  <TableRow
-                        key={book.productId}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          <Box sx={{ width: 150 }}>
-                            <img width={"100%"} src={book.imageUrl} alt="" />
-                          </Box>
-                        </TableCell>
-                        <TableCell align="left">{book.title}</TableCell>
-                        <TableCell align="left">
-                          <Stack>
-                            <Typography>
-                              {book.discountedPrice.toLocaleString("vi-VN") + "đ"}
+                  {selectBooks.length > 0
+                    ? selectBooks.map((book: CartItemPropertyResponseDTO) => (
+                        <TableRow
+                          key={book.productId}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            <Box sx={{ width: 150 }}>
+                              <img width={"100%"} src={book.imageUrl} alt="" />
+                            </Box>
+                          </TableCell>
+                          <TableCell align="left">{book.title}</TableCell>
+                          <TableCell align="left">
+                            <Stack>
+                              <Typography>
+                                {book.discountedPrice.toLocaleString("vi-VN") +
+                                  "đ"}
+                              </Typography>
+                              <Typography
+                                sx={{
+                                  textDecoration: "line-through",
+                                  fontSize: 14,
+                                  color: grey["500"],
+                                }}
+                              >
+                                {book.price.toLocaleString("vi-VN") + "đ"}
+                              </Typography>
+                            </Stack>
+                          </TableCell>
+                          <TableCell align="left">{book.quantity}</TableCell>
+                          <TableCell align="left">
+                            <Typography fontWeight={"bold"} color="error">
+                              {(
+                                book.discountedPrice * book.quantity
+                              ).toLocaleString("vi-Vn") + "đ"}
                             </Typography>
-                            <Typography
-                              sx={{
-                                textDecoration: "line-through",
-                                fontSize: 14,
-                                color: grey["500"],
-                              }}
-                            >
-                              {book.price.toLocaleString("vi-VN") + "đ"}
-                            </Typography>
-                          </Stack>
-                        </TableCell>
-                        <TableCell align="left">{book.quantity}</TableCell>
-                        <TableCell align="left">
-                          <Typography fontWeight={"bold"} color="error">
-                            {(book.discountedPrice * book.quantity).toLocaleString(
-                              "vi-Vn"
-                            ) + "đ"}
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                 )) : null}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    : null}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -327,8 +348,13 @@ export function Checkout() {
             </Box>
           </Section>
         </Container>
-        <BottomDrawer sx={{ position: "fixed", bottom: 0 }} totalPrice={totalPrice} paymentMethod={paymentMethod} />
+        <BottomDrawer
+          sx={{ position: "fixed", bottom: 0 }}
+          totalPrice={totalPrice}
+          paymentMethod={paymentMethod}
+        />
       </Box>
+
       <Dialog
         open={open}
         onClose={handleClose}
@@ -337,12 +363,17 @@ export function Checkout() {
             component: "form",
             onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
               event.preventDefault();
+              handleSubmit(event);
               handleClose();
             },
           },
         }}
       >
-        <DialogTitle textAlign={"center"}>
+        <DialogTitle
+          textAlign={"center"}
+          component={"button"}
+          onClick={handleClickOpen}
+        >
           Thêm mới địa chỉ giao hàng
         </DialogTitle>
         <DialogContent>
@@ -366,10 +397,63 @@ export function Checkout() {
             variant="standard"
           />
           <TextField
+            margin="dense"
+            name="unitNumber"
+            label="Số căn hộ, số phòng hoặc số tầng (nếu có)"
+            placeholder="Ví dụ: A1, Tầng 2, Phòng 201"
+            type="text"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            margin="dense"
+            name="streetNumber"
+            label="Số đường (nếu có)"
+            placeholder="Ví dụ: 168A/3"
+            type="text"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
             required
             margin="dense"
-            name="address"
+            name="addressLine1"
             label="Địa chỉ nhận hàng"
+            type="text"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            margin="dense"
+            name="addressLine2"
+            label="Địa chỉ bổ sung (nếu có)"
+            placeholder="Ví dụ: Tên tòa nhà, khu dân cư, v.v."
+            type="text"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            required
+            margin="dense"
+            name="city"
+            label="Thành phố"
+            type="text"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            required
+            margin="dense"
+            name="region"
+            label="Khu vực"
+            type="text"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            margin="dense"
+            name="postalCode"
+            label="Mã bưu điện"
             type="text"
             fullWidth
             variant="standard"

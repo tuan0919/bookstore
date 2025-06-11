@@ -83,11 +83,6 @@ function PaypalButton() {
                   removeItem?.(book.productId.toString());
                 });
                 localStorage.removeItem("selectedBooks");
-                console.log(
-                  "Capture result",
-                  orderData,
-                  JSON.stringify(orderData, null, 2)
-                );
                 navigate("/profileUser/orders")
               }
             } catch (error) {
