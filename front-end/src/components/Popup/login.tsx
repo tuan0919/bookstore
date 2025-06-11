@@ -11,9 +11,12 @@ import {
   IconButton,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useAuthContext } from "~/context/AuthContext";
+import { login } from "~/api/auth";
 import { login } from "~/api/login";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+
 import { getUserDetails } from "~/api/user/userDetails";
 interface LoginPopupProps {
   open: boolean;
@@ -21,6 +24,8 @@ interface LoginPopupProps {
 }
 
 const phoneRegex = /^(0|\+84)(3[2-9]|5[2689]|7[0-9]|8[1-9]|9[0-9])\d{7}$/;
+// const phoneRegex = /^(0|\+84)(3[2-9]|5[2689]|7[0-9]|8[1-9]|9[0-9])\d{7}$/;
+// const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
   const [mode, setMode] = useState<"login" | "forgotPassword">("login");
@@ -33,6 +38,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
   const [isValidPassword, setIsValidPassword] = useState(false);
   const loginButtonRef = useRef<HTMLButtonElement | null>(null);
   const forgotPasswordButtonRef = useRef<HTMLButtonElement | null>(null);
+  const { setJwtToken } = useAuthContext();
   const navigate = useNavigate();
 
   // Cập nhập lại data account khi người dùng nhập và reset lỗi
@@ -47,6 +53,16 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
       setError("Trường này không được để trống!");
       setIsValidAccount(false);
       return;
+    }
+    setError("");
+    setIsValidAccount(true);
+    // if (phoneRegex.test(accountInfo) || emailRegex.test(accountInfo)) {
+    //   setError("");
+    //   setIsValidAccount(true);
+    // } else {
+    //   setError("Vui lòng nhập số điện thoại hoặc email hợp lệ!");
+    //   setIsValidAccount(false);
+    // }
     } else {
       setError("");
       setIsValidAccount(true);
@@ -115,6 +131,12 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
   };
   // Xử lý đăng nhập thành công
   const handleProccessLogin = async () => {
+            const result = await login({
+      username: accountInfo,
+      password: password,
+    });
+    setJwtToken(result.result);
+    console.log("my jwt token now: ", result.result);
     try {
       const response = await login(accountInfo, password);
       if (response.code === 1000) {
@@ -155,8 +177,8 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
           <Box>
             <TextField
               fullWidth
-              label="Số điện thoại/ Email"
-              placeholder="Nhập số điện thoại hoặc email"
+              label="Tài khoản"
+              placeholder="Nhập tên tài khoản"
               margin="dense"
               variant="outlined"
               value={accountInfo}

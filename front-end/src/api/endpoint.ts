@@ -1,6 +1,7 @@
-// src/constants/endpoint.ts
-
 const API_ENDPOINTS = {
+  AUTH: {
+    LOGIN: "/api/v1/auth/login",
+  },
   BOOK: {
     SEARCH: "/api/book/category",
     TOP_WEEKLY: "/api/book/top-weekly",
