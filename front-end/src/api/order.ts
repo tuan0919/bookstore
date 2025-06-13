@@ -17,7 +17,7 @@ export const createOrder = async (orderData: OrderRequestDTO) => {
 };
 export const cancelOrder = async (orderId: number) => {
   try {
-    const response = await axiosInstance.delete(`${API_ENDPOINTS.ORDER.CANCEL}/${orderId}`);
+    const response = await axiosInstance.delete(`${API_ENDPOINTS.ORDER.CANCEL(orderId.toString())}`);
     return response.data;
   } catch (error) {
     throw new Error(`Lỗi hủy đơn hàng: ${error}`);

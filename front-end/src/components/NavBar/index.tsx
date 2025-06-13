@@ -8,9 +8,10 @@ import { LanguageButton } from "./LanguageButton";
 import { SearchField } from "./SearchField";
 import { CategoryButton } from "./CategoryButton";
 import { CartButton } from "./CartButton";
-
+import { useNavigate } from "react-router-dom";
 export function NavBar() {
   console.log("NavBar re-render");
+  const navigate = useNavigate();
   return (
     <Stack direction="column" sx={{ backgroundColor: "white" }}>
       <Box sx={{ backgroundColor: "#C92127" }}>
@@ -47,7 +48,11 @@ export function NavBar() {
             size={{ xs: 12, md: 3 }}
           >
             <Box
+            component={"button"}
+
               sx={{
+                backgroundColor: "transparent",
+                border: "none",
                 position: "relative",
                 display: "flex",
                 alignItems: "center",
@@ -55,6 +60,7 @@ export function NavBar() {
                 height: { xs: "5rem", md: "4rem" },
                 width: { xs: "5rem", md: "12rem" },
               }}
+             onClick={() => navigate("/home")}
             >
               <img src={logo} alt="Logo" width={"100%"} />
             </Box>

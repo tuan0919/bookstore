@@ -10,7 +10,9 @@ import {
 import { Grid2 } from "@mui/material/";
 import { OrderDetailsProps } from "./OrderDetail";
 import { useNavigate } from "react-router-dom";
-
+import { cancelOrder } from "~/api/order";
+import CustomSnackbar from "~/components/Popup/Snackbar";
+import { useState } from "react";
 function onBuyAgain() {
   console.log("Buy again clicked");
 }
@@ -36,6 +38,7 @@ export default function Order({
   shipmentMethod,
   note,
   items,
+  refreshOrders,
 }: OrderDetailsProps) {
   const navigate = useNavigate();
   function handleClick() {
@@ -63,7 +66,27 @@ export default function Order({
     navigate(`view/order_id/${orderId}`);
   }
   const amount = items.reduce((total, item) => total + item.quantity, 0);
+  const [isOpenSnackbar, setIsOpenSnackbar] = useState(false);
+  const [confirmCancel, setConfirmCancel] = useState(false);
+
+  // Xử lý hủy đơn
+  const handleCancelOrder = async () => {
+    // Ngăn chặn sự kiện click lan truyền lên Card
+    try {
+      const response = await cancelOrder(Number(orderId));
+      if (response.code === 1000) {
+        alert("Đơn hàng đã được hủy thành công.");
+        setIsOpenSnackbar(true);
+      } else {
+        alert("Hủy đơn hàng không thành công. Vui lòng thử lại sau.");
+      }
+    } catch (error) {
+      console.error("Lỗi khi hủy đơn hàng:", error);
+      alert("Đã xảy ra lỗi khi hủy đơn hàng. Vui lòng thử lại sau.");
+    }
+  };
   return (
+    <>
     <Card
       variant="outlined"
       sx={{
@@ -114,7 +137,7 @@ export default function Order({
         <Grid2 sx={{ width: 64 }}>
           <Box
             sx={{
-              width: 64 ,
+              width: 64,
               height: 80,
               borderRadius: 1,
               overflow: "visible",
@@ -187,9 +210,48 @@ export default function Order({
             >
               Mua lại
             </Button>
+            {status === "PENDING_CONFIRMATION" && (
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={(e) => {
+                  e.stopPropagation(); // Ngăn chặn sự kiện click lan truyền lên Card(vào chi tiết hóa đơn)
+                  e.preventDefault(); // Ngăn chặn hành động mặc định của nút
+                  setConfirmCancel(true);
+                  setConfirmCancel(true);
+                }}
+              >
+                Hủy đơn
+              </Button>
+            )}
+           
           </Stack>
         </Grid2>
       </Grid2>
     </Card>
+     {confirmCancel && (
+              <CustomSnackbar
+                open={confirmCancel}
+                onClose={() => setConfirmCancel(false)}
+                severity="warning"
+                message="Bạn có chắc chắn muốn hủy đơn không?"
+                duration={3000}
+                actionButtons={[
+                  {
+                    label: "Đồng ý",
+                    onClick: async () => {
+                      await handleCancelOrder();
+                      refreshOrders(); // Load lại đơn hàng
+                      setConfirmCancel(false);
+                    },
+                  },
+                  {
+                    label: "Hủy",
+                    onClick: () => setConfirmCancel(false),
+                  },
+                ]}
+              />
+            )}
+            </>
   );
 }

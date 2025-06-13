@@ -1,7 +1,7 @@
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { Box, Typography } from "@mui/material";
-import { BookDetails } from "./pages/BookDetails";
+import  BookDetailsPage  from "./pages/BookDetails/";
 import { ProfileUser } from "./pages/ProfileUser";
 import CategoryPage from "./pages/Category";
 import { Checkout } from "./pages/Checkout";
@@ -39,8 +39,8 @@ function App() {
       <Routes>
         <Route element={MainLayout}>
           <Route path="/" element={<Navigate to="/home" />} />
-          <Route path="/details" element={<BookDetails />} />
-          <Route path="/details/*" element={<BookDetails />} />
+          <Route path="/details" element={<BookDetailsPage />} />
+          <Route path="/details/:id/*" element={<BookDetailsPage />} />
           <Route path="/home" Component={Home} />
           <Route path="/profileUser/*" Component={ProfileUser} />
           <Route

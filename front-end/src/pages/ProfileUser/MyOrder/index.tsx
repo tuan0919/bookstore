@@ -33,7 +33,7 @@ const OrderList = () => {
         
       }
     ));
-      console.log("Mapped orders:", mappedOrders);
+      
 
       if (status) {
         const filteredOrders = mappedOrders.filter(
@@ -119,6 +119,7 @@ const OrderList = () => {
           paymentMethod={order.paymentMethod}
           shipmentMethod={order.shipmentMethod}
           note={order.note}
+          refreshOrders={() => fetchOrders(page, tab)}
         />
       ))}
       </Box>

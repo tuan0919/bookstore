@@ -12,6 +12,7 @@ import {
 
 export default function PersonalProfile() {
 const userDetails = JSON.parse(localStorage.getItem("userDetails") || "{}");
+console.log("userDetails", userDetails);
 const [day, month, year] = userDetails.dateOfBirth.split('-');
     return (
         <>
