@@ -40,7 +40,6 @@ export default function OrderProgress({ status, date }: OrderProgressProps) {
   };
 
   const getSteps = () => {
-  const baseDate = date ? new Date(date) : new Date();
   let finalStep: StepItem;
   let shippingStep: StepItem;
   if (status === "PENDING_CONFIRMATION" || status === "CONFIRMED") {
@@ -52,12 +51,12 @@ export default function OrderProgress({ status, date }: OrderProgressProps) {
   }else {
     shippingStep = {
       label: "Đang giao hàng",
-      timestamp: formatDate(baseDate),
+      timestamp: formatDate(new Date()),
       key: "isShipping",
     };
   }
   if (status === "DELIVERED") {
-    const completedDate = addDays(baseDate, 3);
+    const completedDate = addDays(new Date(),0);
     finalStep = {
       label: "Hoàn tất",
       timestamp: formatDate(completedDate),
@@ -66,7 +65,7 @@ export default function OrderProgress({ status, date }: OrderProgressProps) {
   } else if (status === "CANCELED") {
     finalStep = {
       label: "Đã hủy",
-      timestamp: formatDate(baseDate),
+      timestamp: formatDate(new Date()),
       key: "cancelled",
     };
   } else {
@@ -80,7 +79,7 @@ export default function OrderProgress({ status, date }: OrderProgressProps) {
   return [
     {
       label: "Đang xử lý",
-      timestamp: formatDate(baseDate),
+      timestamp: formatDate(new Date()),
       key: "processing",
     },
     shippingStep,

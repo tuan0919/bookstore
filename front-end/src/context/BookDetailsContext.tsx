@@ -10,6 +10,7 @@ import { getBookDetails, searchBooks } from "~/api/book";
 import { getCategoryChainOfBook } from "~/api/category";
 import { BookDetailsDTO, PageBookResponseDTO } from "~/types/book";
 import { CategoryChainDTO } from "~/types/category";
+import { useCart } from "~/providers/CartProvider";
 
 interface BookDetailsContextType {
   bookDetails: BookDetailsDTO | null;
@@ -17,6 +18,7 @@ interface BookDetailsContextType {
   relatedBooks: PageBookResponseDTO[] | null;
   isLoading: boolean;
   error: string | null;
+  addToCart: () => void;
 }
 
 const BookDetailsContext = createContext<BookDetailsContextType>({
@@ -25,6 +27,7 @@ const BookDetailsContext = createContext<BookDetailsContextType>({
   relatedBooks: null,
   isLoading: false,
   error: null,
+   addToCart: () => {}
 });
 
 export const useBookDetailsContext = () => useContext(BookDetailsContext);
@@ -43,7 +46,7 @@ export const BookDetailsProvider = ({ children }: BookDetailsProviderProps) => {
   >(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { "*": id } = useParams();
+  const {  id } = useParams();
   useEffect(() => {
     const bookId = id ? parseInt(id, 10) : -1;
     const loadBooks = async () => {
@@ -68,10 +71,18 @@ export const BookDetailsProvider = ({ children }: BookDetailsProviderProps) => {
 
     loadBooks();
   }, [id, setCategoryChain]);
-
+ // Thêm sách vào giỏ hàng 
+  const { increaseItem } = useCart();
+  const addToCart = async () => {
+    if (!id) return;
+    increaseItem(id,1);
+   
+  };  
+ 
+ 
   return (
     <BookDetailsContext.Provider
-      value={{ bookDetails, relatedBooks, categoryChain, isLoading, error }}
+      value={{ bookDetails, relatedBooks, categoryChain, isLoading, error,addToCart }}
     >
       {children}
     </BookDetailsContext.Provider>

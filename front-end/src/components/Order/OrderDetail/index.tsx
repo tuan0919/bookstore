@@ -26,6 +26,7 @@ export interface OrderDetailsProps {
   imgBook: string;
   titleBook: string;
   items: BookBought[];
+  refreshOrders : () => void; 
 }
 
 export default function OrderDetail() {
