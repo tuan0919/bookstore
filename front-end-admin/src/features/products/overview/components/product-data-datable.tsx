@@ -21,6 +21,8 @@ import {
   IconTrash,
 } from '@tabler/icons-react'
 import { ChevronDown, MoreHorizontal } from 'lucide-react'
+import { BookOverviewDTO } from '@/api/book'
+import { useProductOverviewContext } from '@/context/ProductOverviewContext'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -43,36 +45,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-const data: Payment[] = [
-  {
-    id: 'm5gr84i9',
-    sold: 316,
-    category: 'Sách ngoại văn',
-    name: 'Dược sư tự sự (Manga) - Tập 13',
-    inStock: 69,
-    price: 39000,
-    rating: 4.5,
-    reviewCount: 4,
-    thumbnail:
-      'https://nhasachphuongnam.com/images/detailed/277/manga-duoc-su-tu-su-tap-13.jpg',
-    publish: true,
-  },
-]
-
-export type Payment = {
-  id: string
-  name: string
-  inStock: number
-  sold: number
-  rating: number
-  reviewCount: number
-  price: number
-  category: string
-  thumbnail: string
-  publish: boolean
-}
-
-const columns: ColumnDef<Payment>[] = [
+const columns: ColumnDef<BookOverviewDTO>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -98,15 +71,15 @@ const columns: ColumnDef<Payment>[] = [
   {
     header: 'Tên & ảnh sản phẩm',
     cell: ({ row }) => {
-      const { thumbnail, name } = row.original as Payment
+      const { thumbnail, title } = row.original as BookOverviewDTO
       return (
         <div className='flex items-center gap-2'>
           <img
             src={thumbnail}
-            alt={name}
+            alt={title}
             className='h-15 w-15 rounded-sm border object-contain p-1'
           />
-          <div className='capitalize'>{name}</div>
+          <div className='capitalize'>{title}</div>
         </div>
       )
     },
@@ -114,7 +87,7 @@ const columns: ColumnDef<Payment>[] = [
   {
     header: 'Giá bán',
     cell: ({ row }) => {
-      const { price } = row.original as Payment
+      const { price } = row.original as BookOverviewDTO
       return (
         <div className='flex justify-start'>
           <span>{price.toLocaleString('VN') + 'đ'}</span>
@@ -125,11 +98,10 @@ const columns: ColumnDef<Payment>[] = [
   {
     header: 'Số lượng',
     cell: ({ row }) => {
-      const { inStock, sold } = row.original as Payment
+      const { quantityInStock } = row.original as BookOverviewDTO
       return (
         <div className='flex flex-col gap-1'>
-          <span className='font-light'>Còn {inStock} trong kho</span>
-          <span className='font-light'>Bán được {sold}</span>
+          <span className='font-light'>Còn {quantityInStock} trong kho</span>
         </div>
       )
     },
@@ -137,10 +109,10 @@ const columns: ColumnDef<Payment>[] = [
   {
     header: 'Phát hành',
     cell: ({ row }) => {
-      const { publish } = row.original as Payment
+      const { publish } = row.original as BookOverviewDTO
       return (
         <div className='flex flex-col gap-1'>
-          <Switch checked={publish} />
+          <Switch checked={true} />
         </div>
       )
     },
@@ -148,14 +120,14 @@ const columns: ColumnDef<Payment>[] = [
   {
     header: 'Đánh giá',
     cell: ({ row }) => {
-      const { rating, reviewCount } = row.original as Payment
+      const { avgRate, rvCounts } = row.original as BookOverviewDTO
       return (
         <div className='flex items-center gap-2'>
           <div className='flex items-center gap-1 rounded-sm border p-1 text-sm font-medium'>
             <IconStarFilled size={12} />
-            {rating}
+            {avgRate}
           </div>
-          <span className='font-light'>{reviewCount} đánh giá</span>
+          <span className='font-light'>{rvCounts} đánh giá</span>
         </div>
       )
     },
@@ -206,9 +178,21 @@ export function DataTableDemo() {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
-
+  const {
+    overviewBooks,
+    isLoading,
+    error,
+    page,
+    size,
+    totalPage,
+    totalElements,
+    isLastPage,
+    isFirstPage,
+    goToNextPage,
+    goToPreviousPage,
+  } = useProductOverviewContext()
   const table = useReactTable({
-    data,
+    data: overviewBooks,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -231,7 +215,6 @@ export function DataTableDemo() {
       <div className='flex items-center py-4'>
         <Input
           placeholder='Tìm theo tên...'
-          value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
             table.getColumn('email')?.setFilterValue(event.target.value)
           }
@@ -323,22 +306,23 @@ export function DataTableDemo() {
       <div className='flex items-center justify-end space-x-2 py-4'>
         <div className='text-muted-foreground flex-1 text-sm'>
           {table.getFilteredSelectedRowModel().rows.length} of{' '}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {table.getFilteredRowModel().rows.length} row(s) selected. Page:{' '}
+          {page + 1} of {totalPage + 1}, total: {totalElements} books
         </div>
         <div className='space-x-2'>
           <Button
             variant='outline'
             size='sm'
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => goToPreviousPage()}
+            disabled={isFirstPage}
           >
             Previous
           </Button>
           <Button
             variant='outline'
             size='sm'
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            disabled={isLastPage}
+            onClick={() => goToNextPage()}
           >
             Next
           </Button>

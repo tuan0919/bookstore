@@ -60,6 +60,8 @@ public interface IBookService {
                                 MultipartFile[] newGallery,
                                 String[] oldGallery);
 
+  UpdateBookResponse getBookInfoForUpdate(Long bookId);
+
   /**
    * get book's overview information to display on admin product dashboard
    * @param pageable paging object

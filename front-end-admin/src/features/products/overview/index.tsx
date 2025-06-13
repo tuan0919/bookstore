@@ -1,3 +1,4 @@
+import { ProductOverviewProvider } from '@/context/ProductOverviewContext'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { TopNav } from '@/components/layout/top-nav'
@@ -21,12 +22,14 @@ export default function Product() {
 
       {/* ===== Main ===== */}
       <Main>
-        <div className='mb-2 flex items-center justify-between space-y-2'>
-          <h1 className='text-2xl font-bold tracking-tight'>
-            Sản phẩm trong cửa hàng
-          </h1>
-        </div>
-        <DataTableDemo />
+        <ProductOverviewProvider>
+          <div className='mb-2 flex items-center justify-between space-y-2'>
+            <h1 className='text-2xl font-bold tracking-tight'>
+              Sản phẩm trong cửa hàng
+            </h1>
+          </div>
+          <DataTableDemo />
+        </ProductOverviewProvider>
       </Main>
     </>
   )

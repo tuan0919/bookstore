@@ -11,7 +11,7 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import LeftColumn from './components/left-column'
 import RightColumn from './components/right-column'
 
-export default function New() {
+export default function Edit() {
   const { uploadToServer } = useProductNew()
   return (
     <>

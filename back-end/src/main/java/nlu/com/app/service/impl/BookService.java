@@ -6,11 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -410,6 +408,12 @@ public class BookService implements IBookService {
     } catch (IOException e) {
       throw new ApplicationException(ErrorCode.UNKNOWN_EXCEPTION);
     }
+  }
+
+  @Override
+  public UpdateBookResponse getBookInfoForUpdate(Long bookId) {
+    var book = bookRepository.findById(bookId).orElseThrow(() -> new ApplicationException(ErrorCode.BOOK_NOT_FOUND));
+    return bookMapper.toUpdateBookResponse(book);
   }
 
   @Override

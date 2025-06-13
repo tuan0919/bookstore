@@ -42,7 +42,9 @@ public class SecurityConfiguration {
                 "/api/v1/file/upload",
                 "/api/book/**",
                 "/api/category/**",
-                "/api/review/*/overall"
+                "/api/review/*/overall",
+//                    admin endpoints
+                    "/admin/api/book/*"
             )
             .permitAll()
             .anyRequest().authenticated()
