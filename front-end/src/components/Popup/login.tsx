@@ -16,7 +16,7 @@ import {getUserDetails} from "~/api/user/userDetails";
 import { login } from "~/api/login";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import { getUserDetails } from "~/api/user/userDetails";
+
 interface LoginPopupProps {
   open: boolean;
   onClose: () => void;

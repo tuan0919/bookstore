@@ -21,7 +21,7 @@ export interface BookBought {
   quantity: number;
   price: number;
   discount: number;
-  imgBook?: string; // Optional property
+  img?: string; // Optional property
 }
 export default function Order({
   orderId,
@@ -38,7 +38,9 @@ export default function Order({
   shipmentMethod,
   note,
   items,
+  img,
   refreshOrders,
+   goToAllTab
 }: OrderDetailsProps) {
   const navigate = useNavigate();
   function handleClick() {
@@ -57,6 +59,7 @@ export default function Order({
       shipmentMethod,
       note,
       items,
+      img
     };
 
     // Lưu vào localStorage
@@ -146,7 +149,7 @@ export default function Order({
             }}
           >
             <img
-              src={items[0]?.imgBook}
+              src={items[0]?.img}
               alt={titleBook}
               style={{
                 width: "100%",
@@ -242,6 +245,7 @@ export default function Order({
                     onClick: async () => {
                       await handleCancelOrder();
                       refreshOrders(); // Load lại đơn hàng
+                      goToAllTab(); 
                       setConfirmCancel(false);
                     },
                   },
