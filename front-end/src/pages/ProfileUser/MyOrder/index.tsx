@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { Paper, Typography, Tabs, Tab } from "@mui/material";
+import { Paper, Typography, Tabs, Tab, Box, Pagination } from "@mui/material";
 import { getOrder } from "~/api/order";
-import Order from "~/components/Order"; // Import component Order
-import Pagination from "@mui/material/Pagination";
-import { Box } from "@mui/system";
+import Order from "~/components/Order";
+
 const OrderList = () => {
-  const [tab, setTab] = useState<string>("ALL");
-  const [orders, setOrders] = useState<any[]>([]);
+  const [tab, setTab] = useState<string>("ALL"); // Tab hiện tại
+  const [allOrders, setAllOrders] = useState<any[]>([]); // Tất cả đơn hàng
+  const [filteredOrders, setFilteredOrders] = useState<any[]>([]); // Đơn hàng đã lọc theo tab
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const userDetails = JSON.parse(
-    localStorage.getItem("userDetails") || "{}"
-  );
-  const fetchOrders = async (page: number, status?: string) => {
+
+  const userDetails = JSON.parse(localStorage.getItem("userDetails") || "{}");
+
+  // API lấy đơn hàng
+  const fetchOrders = async (page: number) => {
     try {
       const data = await getOrder(page);
-
       console.log("Fetched orders:", data);
+
       const mappedOrders = data.content.map((order: any) => ({
         orderId: order.orderId.toString(),
         orderDateTime: order.orderDate,
@@ -29,26 +30,28 @@ const OrderList = () => {
         price: order.totalAmount,
         feeShip: 32000,
         status: convertStatus(order.status),
-        items: order.items, 
-        
-      }
-    ));
-      
+        items: order.items,
+      }));
 
-      if (status) {
-        const filteredOrders = mappedOrders.filter(
-          (order) => order.status === status
-        );
-        setOrders(filteredOrders);
-      } else {
-        setOrders(mappedOrders);
-      }
+      setAllOrders(mappedOrders); // Cập nhật danh sách gốc
+      applyFilter(mappedOrders, tab); // Lọc theo tab hiện tại
       setTotalPages(data.totalPages);
     } catch (error) {
       console.error("Lỗi khi fetch đơn hàng", error);
     }
   };
 
+  // Hàm lọc đơn theo tab
+  const applyFilter = (orders: any[], status: string) => {
+    if (status === "ALL") {
+      setFilteredOrders(orders);
+    } else {
+      const filtered = orders.filter((order) => order.status === status);
+      setFilteredOrders(filtered);
+    }
+  };
+
+  // Chuyển trạng thái API về key
   const convertStatus = (status: string) => {
     switch (status) {
       case "Chờ xác nhận":
@@ -66,18 +69,19 @@ const OrderList = () => {
     }
   };
 
-  // Call API khi page hoặc tab thay đổi
+  // Call API khi đổi trang
   useEffect(() => {
-    if (tab === "ALL") {
-      fetchOrders(page);
-    } else {
-      fetchOrders(page, tab);
-    }
-  }, [page, tab]);
+    fetchOrders(page);
+  }, [page]);
 
+  // Lọc lại khi đổi tab
+  useEffect(() => {
+    applyFilter(allOrders, tab);
+  }, [tab, allOrders]);
+
+  // Xử lý đổi tab
   const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
     setTab(newValue);
-    setPage(0); // Reset về trang đầu khi đổi tab
   };
 
   return (
@@ -101,28 +105,29 @@ const OrderList = () => {
       </Tabs>
 
       {/* Danh sách hóa đơn */}
-       <Box sx={{ maxHeight: "500px", overflowY: "auto", pr: 1 }}>
-      {orders.map((order) => (
-        <Order
-          key={order.orderId}
-          orderId={order.orderId || ""}
-          orderDateTime={order.orderDateTime}
-          status={order.status}
-          titleBook={order.titleBook}
-          items={order.items}
-          price={order.price}
-          imgBook={order.imgBook}
-          feeShip={order.feeShip}
-          nameUser={order.nameUser}
-          phoneNumber={order.phoneNumber}
-          address={order.address}
-          paymentMethod={order.paymentMethod}
-          shipmentMethod={order.shipmentMethod}
-          note={order.note}
-          refreshOrders={() => fetchOrders(page, tab)}
-        />
-      ))}
+      <Box sx={{ maxHeight: "500px", overflowY: "auto", pr: 1 }}>
+        {filteredOrders.map((order) => (
+          <Order
+            key={order.orderId}
+            orderId={order.orderId || ""}
+            orderDateTime={order.orderDateTime}
+            status={order.status}
+            titleBook={order.titleBook}
+            items={order.items}
+            price={order.price}
+            imgBook={order.imgBook}
+            feeShip={order.feeShip}
+            nameUser={order.nameUser}
+            phoneNumber={order.phoneNumber}
+            address={order.address}
+            paymentMethod={order.paymentMethod}
+            shipmentMethod={order.shipmentMethod}
+            note={order.note}
+            refreshOrders={() => fetchOrders(page)} // Không cần truyền tab vì đã xử lý sẵn
+          />
+        ))}
       </Box>
+
       <Pagination
         count={totalPages}
         page={page + 1}
