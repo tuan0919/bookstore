@@ -20,7 +20,7 @@ public class OrderResponseDTO {
   private AddressDto shippingAddress;
   @Data
   public static class OrderItemDTO {
-
+    private String img;
     private String bookTitle;
     private Double price;
     private Integer quantity;

@@ -6,6 +6,8 @@ import nlu.com.app.constant.EPaymentMethod;
 import nlu.com.app.dto.request.AddressDto;
 import nlu.com.app.dto.response.OrderResponseDTO;
 import nlu.com.app.entity.Address;
+import nlu.com.app.entity.Book;
+import nlu.com.app.entity.BookImage;
 import nlu.com.app.entity.Order;
 import nlu.com.app.entity.OrderItem;
 import org.mapstruct.Builder;
@@ -34,10 +36,21 @@ public interface OrderMapper {
 
   List<OrderResponseDTO.OrderItemDTO> toOrderItemDTOList(List<OrderItem> orderItems);
 
+  @Mapping(source = "book", target = "img", qualifiedByName = "mapImage")
   @Mapping(source = "book.title", target = "bookTitle")
   @Mapping(source = "discountPercentage", target = "discount")
   OrderResponseDTO.OrderItemDTO toOrderItemDTO(OrderItem orderItem);
-
+  @Named("mapImage")
+  default String mapImage(Book book) {
+    if (book.getImages() == null || book.getImages().isEmpty()) {
+      return null;
+    }
+    return book.getImages().stream()
+        .filter(image -> image.isThumbnail() && image.getImageUrl() != null && !image.getImageUrl().isEmpty())
+        .map(BookImage::getImageUrl)
+        .findFirst()
+        .orElse(null);
+  }
 
   @Named("enumToString")
   default String enumToString(EPaymentMethod method) {
