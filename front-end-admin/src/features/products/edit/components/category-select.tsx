@@ -19,18 +19,16 @@ import {
 } from '@/components/ui/popover'
 
 interface CategorySelectorProps {
-  value: Category | null
-  onChange: (category: Category | null) => void
+  value: number
+  onChange: (category_id: number) => void
 }
 
 export function CategorySelector({ value, onChange }: CategorySelectorProps) {
-  const selectedCategory = value
-
   const toggleCategory = (category: Category) => {
-    if (selectedCategory?.id === category.id) {
+    if (value === Number(category.id)) {
       onChange(null) // unselect if clicked again
     } else {
-      onChange(category)
+      onChange(Number(category.id))
     }
   }
 
@@ -42,8 +40,8 @@ export function CategorySelector({ value, onChange }: CategorySelectorProps) {
     return categories
       .filter((cat) => (cat.parent?.id ?? null) === parentId)
       .map((cat) => {
-        const isSelected = selectedCategory?.id === cat.id
-        const isParentSelected = selectedCategory?.id === cat.parent?.id
+        const isSelected = value === Number(cat.id)
+        const isParentSelected = value === Number(cat.parent?.id)
         const disabled = isParentSelected
 
         return (
@@ -80,13 +78,13 @@ export function CategorySelector({ value, onChange }: CategorySelectorProps) {
           id='targetChosen'
           className='flex w-full cursor-pointer flex-wrap gap-2 border-2 border-dashed p-2'
         >
-          {selectedCategory === null ? (
+          {value === null ? (
             <div className='flex w-full justify-center'>
               <span className='text-sm'>Chưa chọn</span>
             </div>
           ) : (
-            <Badge key={selectedCategory.id} variant='default'>
-              {selectedCategory.name}
+            <Badge key={value} variant='default'>
+              {categories[value].name}
             </Badge>
           )}
         </div>

@@ -5,12 +5,20 @@ import { Card, CardContent } from '@/components/ui/card'
 type FileUploaderProps = {
   value: File | null
   onChange: (file: File | null) => void
+  oldImage?: string | null
+  onRemoveOldImage?: () => void
 }
 
-export function FileUploader({ value, onChange }: FileUploaderProps) {
+export function FileUploader({
+  value,
+  onChange,
+  oldImage: initialOldImage = null,
+  onRemoveOldImage,
+}: FileUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const [isHovering, setIsHovering] = useState(false)
+  const [oldImage, setOldImage] = useState<string | null>(initialOldImage)
 
   useEffect(() => {
     if (value) {
@@ -25,43 +33,57 @@ export function FileUploader({ value, onChange }: FileUploaderProps) {
   }, [value])
 
   const handleClick = () => {
-    inputRef.current?.click()
+    if (!oldImage) {
+      inputRef.current?.click()
+    }
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
     if (selectedFile) {
+      setOldImage(null)
+      onRemoveOldImage?.()
       onChange(selectedFile)
     }
   }
 
   const handleRemove = () => {
-    onChange(null)
+    if (oldImage) {
+      setOldImage(null)
+      onRemoveOldImage?.()
+    } else {
+      onChange(null)
+    }
     if (inputRef.current) {
       inputRef.current.value = ''
     }
   }
 
+  const displayImage = preview || oldImage
+  const isClickable = !oldImage
+
   return (
     <Card
-      className='relative overflow-hidden rounded-none border-2 border-dashed p-0'
+      className={`relative overflow-hidden rounded-none border-2 border-dashed p-0 ${
+        isClickable ? 'cursor-pointer' : 'cursor-default'
+      }`}
       onClick={handleClick}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      <CardContent className='flex aspect-square cursor-pointer items-center justify-center p-0'>
-        {!preview ? (
+      <CardContent className='flex aspect-square items-center justify-center p-0'>
+        {!displayImage ? (
           <IconUpload className='text-muted-foreground h-8 w-8' />
         ) : (
           <img
-            src={preview}
+            src={displayImage}
             alt='preview'
             className='h-full w-full object-cover'
           />
         )}
       </CardContent>
 
-      {preview && isHovering && (
+      {displayImage && isHovering && (
         <button
           onClick={(e) => {
             e.stopPropagation()

@@ -1,5 +1,5 @@
 import SunEditor from 'suneditor-react'
-import { useProductNew } from '@/hooks/UseProductNew'
+import { useProductEditContext } from '@/context/ProductEditContext'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { FileUploader } from './file-uploader'
@@ -12,14 +12,21 @@ export default function LeftColumn() {
     setTitle,
     description,
     setDescription,
-  } = useProductNew()
+    oldThumbnail,
+    setOldThumbnail,
+  } = useProductEditContext()
   return (
     <Card className='rounded-none'>
       <CardContent className='flex flex-col gap-6'>
         <div>Hình ảnh sản phẩm</div>
         <div className='mx-auto'>
           <div className='h-[300px] w-[300px]'>
-            <FileUploader onChange={setThumbnail} value={thumbnail} />
+            <FileUploader
+              onChange={setThumbnail}
+              value={thumbnail}
+              oldImage={oldThumbnail}
+              onRemoveOldImage={() => setOldThumbnail(null)}
+            />
           </div>
         </div>
         <div>

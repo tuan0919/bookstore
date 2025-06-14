@@ -56,6 +56,32 @@ export async function createNewBook(
   return response.data
 }
 
+export async function getBookDetails(
+  bookId: number
+): Promise<ApiResponse<BookDTO>> {
+  const data = await axiosInstance.get<ApiResponse<BookDTO>>(
+    API_ENDPOINTS.BOOK.GET_DETAILS(bookId)
+  )
+  return data.data
+}
+
+export async function updateBook(
+  bookId: number,
+  formData: FormData
+): Promise<ApiResponse<BookDTO>> {
+  const response = await axiosInstance.post<ApiResponse<BookDTO>>(
+    API_ENDPOINTS.BOOK.UPDATE(bookId),
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  )
+
+  return response.data
+}
+
 export async function getBooksOverview({
   page,
   size,

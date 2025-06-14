@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { IconFileDescription } from '@tabler/icons-react'
-import { useProductNew } from '@/hooks/UseProductNew'
+import { useProductEditContext } from '@/context/ProductEditContext'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -32,6 +32,7 @@ export default function RightColumn() {
     setAuthor,
     age,
     setAge,
+    price,
     setPrice,
     format,
     setFormat,
@@ -53,7 +54,9 @@ export default function RightColumn() {
     setSupplier,
     productCode,
     setProductCode,
-  } = useProductNew()
+    oldGallery,
+    setOldGallery,
+  } = useProductEditContext()
   const [displayValue, setDisplayValue] = useState('')
   const formatter = new Intl.NumberFormat('vi-VN')
   return (
@@ -65,6 +68,14 @@ export default function RightColumn() {
             <div className='h-[100px] w-[100px]' key={index}>
               <FileUploader
                 key={index}
+                oldImage={oldGallery[index] ?? null}
+                onRemoveOldImage={() => {
+                  setOldGallery((prev) => {
+                    const updated = [...prev]
+                    updated[index] = null
+                    return updated
+                  })
+                }}
                 onChange={(file: File | null) => {
                   const updated = [...gallery]
                   updated[index] = file
@@ -173,7 +184,7 @@ export default function RightColumn() {
             <div>
               <Input
                 placeholder='VD: 1.000.000'
-                value={displayValue}
+                value={price}
                 onChange={(e) => {
                   const raw = e.target.value.replace(/[^\d]/g, '') // chỉ giữ số
                   const number = Number(raw)
