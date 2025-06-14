@@ -26,7 +26,9 @@ export interface OrderDetailsProps {
   imgBook: string;
   titleBook: string;
   items: BookBought[];
+  img?: string; 
   refreshOrders : () => void; 
+   goToAllTab: () => void; 
 }
 
 export default function OrderDetail() {
@@ -45,7 +47,9 @@ export default function OrderDetail() {
     status: "",
     imgBook: "",
     titleBook: "",
+    img:"",
     items: [],
+     refreshOrders: () => {},
   });
 
   useEffect(() => {
@@ -212,7 +216,7 @@ export default function OrderDetail() {
             <Grid2>
               <Box
                 component="img"
-                src={item.imgBook || "/placeholder.png"} 
+                src={item.img || "/placeholder.png"} 
                 alt={item.bookTitle}
                 sx={{
                   width: 64,
@@ -239,7 +243,7 @@ export default function OrderDetail() {
 
         <Box display="flex" justifyContent="flex-end">
           <Typography fontWeight="bold" color="error">
-            Tổng tiền: {order.price.toLocaleString("vi-VN")} ₫
+            Tổng tiền: {total.toLocaleString("vi-VN")} ₫
           </Typography>
         </Box>
       </Paper>

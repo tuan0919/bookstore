@@ -8,7 +8,7 @@ const API_ENDPOINTS = {
   },
   CATEGORY: {
     CHAIN_FOR_BOOK: `/api/category/chain`,
-    CATEGORY : "api/book"
+    CATEGORY: "api/book",
   },
   USER: {
     LOGIN: "/api/v1/auth/login",
@@ -35,7 +35,6 @@ const API_ENDPOINTS = {
   PAYPAL: {
     CREATE_ORDER: "/paypal/api/orders",
     CAPTURE_ORDER: (orderId: string) => `/paypal/api/orders/${orderId}/capture`,
-
   },
   ORDER: {
     CREATE: "/api/orders",

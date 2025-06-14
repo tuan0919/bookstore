@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { Paper, Typography, Tabs, Tab } from "@mui/material";
+import { Paper, Typography, Tabs, Tab, Box, Pagination } from "@mui/material";
 import { getOrder } from "~/api/order";
-import Order from "~/components/Order"; // Import component Order
-import Pagination from "@mui/material/Pagination";
-import { Box } from "@mui/system";
+import Order from "~/components/Order";
+
 const OrderList = () => {
   const [tab, setTab] = useState<string>("ALL");
-  const [orders, setOrders] = useState<any[]>([]);
+  const [allOrders, setAllOrders] = useState<any[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<any[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const userDetails = JSON.parse(
-    localStorage.getItem("userDetails") || "{}"
-  );
-  const fetchOrders = async (page: number, status?: string) => {
+  const itemsPerPage = 10;
+
+  const userDetails = JSON.parse(localStorage.getItem("userDetails") || "{}");
+
+  // API lấy đơn hàng theo trang (chỉ dùng cho tab ALL)
+  const fetchOrders = async (page: number) => {
     try {
       const data = await getOrder(page);
 
-      console.log("Fetched orders:", data);
       const mappedOrders = data.content.map((order: any) => ({
         orderId: order.orderId.toString(),
         orderDateTime: order.orderDate,
@@ -26,29 +27,59 @@ const OrderList = () => {
         paymentMethod: order.paymentMethodName,
         shipmentMethod: "Giao hàng tận nơi",
         note: "",
+        img: order.items.img,
         price: order.totalAmount,
         feeShip: 32000,
         status: convertStatus(order.status),
-        items: order.items, 
-        
-      }
-    ));
-      
+        items: order.items,
+      }));
 
-      if (status) {
-        const filteredOrders = mappedOrders.filter(
-          (order) => order.status === status
-        );
-        setOrders(filteredOrders);
-      } else {
-        setOrders(mappedOrders);
-      }
+      setAllOrders(mappedOrders);
+      setFilteredOrders(mappedOrders);
       setTotalPages(data.totalPages);
     } catch (error) {
       console.error("Lỗi khi fetch đơn hàng", error);
     }
   };
 
+  // API lấy toàn bộ đơn hàng (chỉ dùng cho các tab khác ALL)
+  const fetchAllOrders = async () => {
+    try {
+      let page = 0;
+      let allResults: any[] = [];
+      let isLastPage = false;
+
+      while (!isLastPage) {
+        const data = await getOrder(page);
+        const mappedOrders = data.content.map((order: any) => ({
+          orderId: order.orderId.toString(),
+          orderDateTime: order.orderDate,
+          nameUser: userDetails.fullName,
+          phoneNumber: userDetails.phoneNum,
+          address: order.shippingAddress.addressLine1,
+          paymentMethod: order.paymentMethodName,
+          shipmentMethod: "Giao hàng tận nơi",
+          note: "",
+          img: order.items.img,
+          price: order.totalAmount,
+          feeShip: 32000,
+          status: convertStatus(order.status),
+          items: order.items,
+        }));
+
+        allResults = [...allResults, ...mappedOrders];
+        isLastPage = data.last;
+        page++;
+      }
+
+      return allResults;
+    } catch (error) {
+      console.error("Lỗi khi fetch toàn bộ đơn hàng", error);
+      return [];
+    }
+  };
+
+  // Chuyển trạng thái API về key
   const convertStatus = (status: string) => {
     switch (status) {
       case "Chờ xác nhận":
@@ -66,19 +97,48 @@ const OrderList = () => {
     }
   };
 
-  // Call API khi page hoặc tab thay đổi
+  // Call API khi đổi tab
+  useEffect(() => {
+    const fetchData = async () => {
+      if (tab === "ALL") {
+        setPage(0); // Reset page khi đổi tab
+        fetchOrders(0);
+      } else {
+        setPage(0); // Reset page khi đổi tab
+        const allFetchedOrders = await fetchAllOrders();
+        const filtered = allFetchedOrders.filter((order) => order.status === tab);
+
+        setAllOrders(filtered);
+        setFilteredOrders(filtered);
+        setTotalPages(Math.ceil(filtered.length / itemsPerPage));
+      }
+    };
+
+    fetchData();
+  }, [tab]);
+
+  // Call API khi đổi trang (chỉ với tab ALL)
   useEffect(() => {
     if (tab === "ALL") {
       fetchOrders(page);
-    } else {
-      fetchOrders(page, tab);
     }
-  }, [page, tab]);
+  }, [page]);
 
+  // Xử lý đổi tab
   const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
     setTab(newValue);
-    setPage(0); // Reset về trang đầu khi đổi tab
   };
+
+  // Danh sách đơn hàng hiện tại 
+  const currentOrders =
+    tab === "ALL"
+      ? filteredOrders
+      : filteredOrders.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
+      // Tự động chuyển về tab ALL
+      const handleGoToAllTab = () => {
+  setTab("ALL");
+  setPage(0);
+};
 
   return (
     <Paper sx={{ padding: 3, minWidth: 700, margin: "auto" }}>
@@ -101,30 +161,37 @@ const OrderList = () => {
       </Tabs>
 
       {/* Danh sách hóa đơn */}
-       <Box sx={{ maxHeight: "500px", overflowY: "auto", pr: 1 }}>
-      {orders.map((order) => (
-        <Order
-          key={order.orderId}
-          orderId={order.orderId || ""}
-          orderDateTime={order.orderDateTime}
-          status={order.status}
-          titleBook={order.titleBook}
-          items={order.items}
-          price={order.price}
-          imgBook={order.imgBook}
-          feeShip={order.feeShip}
-          nameUser={order.nameUser}
-          phoneNumber={order.phoneNumber}
-          address={order.address}
-          paymentMethod={order.paymentMethod}
-          shipmentMethod={order.shipmentMethod}
-          note={order.note}
-          refreshOrders={() => fetchOrders(page, tab)}
-        />
-      ))}
+      <Box sx={{ maxHeight: "500px", overflowY: "auto", pr: 1 }}>
+        {currentOrders.map((order) => (
+          <Order
+            key={order.orderId}
+            orderId={order.orderId || ""}
+            orderDateTime={order.orderDateTime}
+            status={order.status}
+            titleBook={order.titleBook}
+            items={order.items}
+            price={order.price}
+            imgBook={order.img}
+            feeShip={order.feeShip}
+            nameUser={order.nameUser}
+            phoneNumber={order.phoneNumber}
+            address={order.address}
+            paymentMethod={order.paymentMethod}
+            shipmentMethod={order.shipmentMethod}
+            note={order.note}
+            img={order.img}
+            refreshOrders={() => fetchOrders(page)}
+             goToAllTab={handleGoToAllTab}
+          />
+        ))}
       </Box>
+
       <Pagination
-        count={totalPages}
+        count={
+          tab === "ALL"
+            ? totalPages
+            : Math.ceil(filteredOrders.length / itemsPerPage)
+        }
         page={page + 1}
         onChange={(_event, value) => setPage(value - 1)}
         color="primary"
