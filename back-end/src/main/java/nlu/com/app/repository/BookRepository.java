@@ -29,5 +29,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
       Pageable pageable
   );
 
+  Page<Book> findAllBy(Pageable pageable);
+
   List<Book> findTop5ByOrderByBookIdDesc();
 }

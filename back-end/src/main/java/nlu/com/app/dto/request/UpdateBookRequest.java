@@ -10,7 +10,7 @@ public class UpdateBookRequest {
     private String language;
     private int page_count;
     private double price;
-    private int product_code;
+    private String product_code;
     private String publisher;
     private int publish_year;
     private int qty_in_stock;

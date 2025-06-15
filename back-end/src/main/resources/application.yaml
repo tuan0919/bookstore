@@ -3,6 +3,10 @@ server:
   servlet:
     context-path: /
 spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 100MB
   application:
     name: BackEnd-BookStore
   jpa:
@@ -23,7 +27,7 @@ spring:
     job:
       enabled: false
 app:
-  jwt-key: 1ytvns7A2HHo2GUQ2d82xS2I7dRyWWv1BTU51Ve+il0=
+  jwt-key: 1ytvns7A2HHo2GUQ2d82xS2I7dRyWWv1BTU51Ve+il0
   aws:
     access-key-id: ${SPRING_AWS_ACCESS_KEY_ID:_}
     secret-access-key: ${SPRING_AWS_SECRET_ACCESS_KEY:_}

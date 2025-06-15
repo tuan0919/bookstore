@@ -6,11 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -70,6 +68,7 @@ public class BookService implements IBookService {
   CategoryService categoryService;
   GenreService genreService;
   FileService fileService;
+  UserReviewService userReviewService;
   @Value("${app.temp-folder}")
   @NonFinal
   String tmp;
@@ -337,6 +336,7 @@ public class BookService implements IBookService {
       book.setQtyInStock(metadata.getQty_in_stock());
       book.setPublishYear(metadata.getPublish_year()+"");
       book.setWeight(metadata.getWeight());
+      book.setProductCode(metadata.getProduct_code());
 
       var category = categoryRepository.findById(metadata.getCategory_id())
               .orElseThrow(() -> new ApplicationException(ErrorCode.CATEGORY_NOT_FOUND));
@@ -395,7 +395,8 @@ public class BookService implements IBookService {
       }
 
       // Xóa tất cả image hiện tại trước khi cập nhật
-      bookImageRepository.deleteAllByBookBookId(bookId);
+      long result = bookImageRepository.deleteAllByBook_BookId(bookId);
+      System.out.println("count deleted old images: "+result);
 
       book.getImages().clear();
       for (BookImage newImage : updatedImages) {
@@ -409,6 +410,22 @@ public class BookService implements IBookService {
     } catch (IOException e) {
       throw new ApplicationException(ErrorCode.UNKNOWN_EXCEPTION);
     }
+  }
+
+  @Override
+  public UpdateBookResponse getBookInfoForUpdate(Long bookId) {
+    var book = bookRepository.findById(bookId).orElseThrow(() -> new ApplicationException(ErrorCode.BOOK_NOT_FOUND));
+    return bookMapper.toUpdateBookResponse(book);
+  }
+
+  @Override
+  public Page<BookOverviewDTO> getBookOverviews(Pageable pageable) {
+    var pageResult = bookRepository.findAllBy(pageable);
+    var result = pageResult
+            .stream().map(b -> bookMapper.toBookOverviewDTO(b, userReviewService, bookImageRepository))
+            .toList();
+
+    return new PageImpl<>(result, pageable, pageResult.getTotalElements());
   }
 
 

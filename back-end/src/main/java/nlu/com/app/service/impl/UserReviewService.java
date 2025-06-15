@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Nguyen Tuan
@@ -76,7 +77,7 @@ public class UserReviewService implements IUserReviewService {
     @Override
     public ReviewOverallDTO getReviewOverall(Long bookId) {
         long totalCount = userReviewRepository.countAllByBookBookId(bookId);
-        long totalScore = userReviewRepository.totalScoreByBookBookId(bookId);
+        long totalScore = Optional.ofNullable(userReviewRepository.totalScoreByBookBookId(bookId)).orElse(0L);
         double avgScore = (double) totalScore / totalCount;
         List<Double> rates = new ArrayList<>();
         for (int i = 5; i >= 1; i--) {

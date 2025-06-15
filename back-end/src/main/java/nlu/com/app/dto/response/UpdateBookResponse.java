@@ -13,7 +13,7 @@ public class UpdateBookResponse {
     private String language;
     private int page_count;
     private double price;
-    private int product_code;
+    private long product_code;
     private String publisher;
     private int qty_in_stock;
     private int publish_year;
