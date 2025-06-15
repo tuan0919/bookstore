@@ -7,6 +7,7 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
+    RUNTIME_EXCEPTION(9998, "You're doing something wrong, this shouldn't happen", HttpStatus.INTERNAL_SERVER_ERROR),
     UNKNOWN_EXCEPTION(9999, "Something went wrong :(.", HttpStatus.INTERNAL_SERVER_ERROR),
     RESOURCE_NOT_FOUND(1001, "Resource not found, please check again!", HttpStatus.NOT_FOUND),
     UNAUTHENTICATED(1002, "You are not authenticated!", HttpStatus.UNAUTHORIZED),
