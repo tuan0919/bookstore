@@ -27,7 +27,7 @@ export default function Edit() {
       <Main>
         <div className='mb-2 flex items-center justify-between space-y-2'>
           <h1 className='text-2xl font-bold tracking-tight'>
-            Thêm sản phẩm mới
+            Chỉnh sửa sản phẩm
           </h1>
         </div>
         <ProductEditProvider>

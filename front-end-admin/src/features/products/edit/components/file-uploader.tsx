@@ -12,13 +12,12 @@ type FileUploaderProps = {
 export function FileUploader({
   value,
   onChange,
-  oldImage: initialOldImage = null,
+  oldImage,
   onRemoveOldImage,
 }: FileUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const [isHovering, setIsHovering] = useState(false)
-  const [oldImage, setOldImage] = useState<string | null>(initialOldImage)
 
   useEffect(() => {
     if (value) {
@@ -41,7 +40,6 @@ export function FileUploader({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
     if (selectedFile) {
-      setOldImage(null)
       onRemoveOldImage?.()
       onChange(selectedFile)
     }
@@ -49,7 +47,6 @@ export function FileUploader({
 
   const handleRemove = () => {
     if (oldImage) {
-      setOldImage(null)
       onRemoveOldImage?.()
     } else {
       onChange(null)
@@ -71,15 +68,11 @@ export function FileUploader({
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      <CardContent className='flex aspect-square items-center justify-center p-0'>
+      <CardContent className='flex aspect-square items-center justify-center overflow-hidden p-0'>
         {!displayImage ? (
           <IconUpload className='text-muted-foreground h-8 w-8' />
         ) : (
-          <img
-            src={displayImage}
-            alt='preview'
-            className='h-full w-full object-cover'
-          />
+          <img src={displayImage} alt='preview' className='object-contain' />
         )}
       </CardContent>
 

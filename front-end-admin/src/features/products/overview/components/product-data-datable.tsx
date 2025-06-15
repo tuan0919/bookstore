@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -20,6 +20,7 @@ import {
   IconTicket,
   IconTrash,
 } from '@tabler/icons-react'
+import { Route as EditProductRoute } from '@/routes/_authenticated/products/$id/edit'
 import { ChevronDown, MoreHorizontal } from 'lucide-react'
 import { BookOverviewDTO } from '@/api/book'
 import { useProductOverviewContext } from '@/context/ProductOverviewContext'
@@ -45,130 +46,142 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-const columns: ColumnDef<BookOverviewDTO>[] = [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label='Select all'
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label='Select row'
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    header: 'Tên & ảnh sản phẩm',
-    cell: ({ row }) => {
-      const { thumbnail, title } = row.original as BookOverviewDTO
-      return (
-        <div className='flex items-center gap-2'>
-          <img
-            src={thumbnail}
-            alt={title}
-            className='h-15 w-15 rounded-sm border object-contain p-1'
-          />
-          <div className='capitalize'>{title}</div>
-        </div>
-      )
+function getColumns(
+  navigate: ReturnType<typeof useNavigate>
+): ColumnDef<BookOverviewDTO>[] {
+  return [
+    {
+      id: 'select',
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && 'indeterminate')
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label='Select all'
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label='Select row'
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
     },
-  },
-  {
-    header: 'Giá bán',
-    cell: ({ row }) => {
-      const { price } = row.original as BookOverviewDTO
-      return (
-        <div className='flex justify-start'>
-          <span>{price.toLocaleString('VN') + 'đ'}</span>
-        </div>
-      )
-    },
-  },
-  {
-    header: 'Số lượng',
-    cell: ({ row }) => {
-      const { quantityInStock } = row.original as BookOverviewDTO
-      return (
-        <div className='flex flex-col gap-1'>
-          <span className='font-light'>Còn {quantityInStock} trong kho</span>
-        </div>
-      )
-    },
-  },
-  {
-    header: 'Phát hành',
-    cell: ({ row }) => {
-      const { publish } = row.original as BookOverviewDTO
-      return (
-        <div className='flex flex-col gap-1'>
-          <Switch checked={true} />
-        </div>
-      )
-    },
-  },
-  {
-    header: 'Đánh giá',
-    cell: ({ row }) => {
-      const { avgRate, rvCounts } = row.original as BookOverviewDTO
-      return (
-        <div className='flex items-center gap-2'>
-          <div className='flex items-center gap-1 rounded-sm border p-1 text-sm font-medium'>
-            <IconStarFilled size={12} />
-            {avgRate}
+    {
+      header: 'Tên & ảnh sản phẩm',
+      cell: ({ row }) => {
+        const { thumbnail, title } = row.original as BookOverviewDTO
+        return (
+          <div className='flex items-center gap-2'>
+            <img
+              src={thumbnail}
+              alt={title}
+              className='h-15 w-15 rounded-sm border object-contain p-1'
+            />
+            <div className='w-[400px] truncate capitalize'>{title}</div>
           </div>
-          <span className='font-light'>{rvCounts} đánh giá</span>
-        </div>
-      )
+        )
+      },
     },
-  },
-  {
-    id: 'actions',
-    enableHiding: false,
-    cell: () => {
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant='ghost' className='h-8 w-8 p-0'>
-              <span className='sr-only'>Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
-            <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-            <DropdownMenuItem>
-              <IconEdit />
-              <span>Chỉnh sửa thông tin</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <IconTicket />
-              <span>Chỉnh sửa ưu đãi</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <IconTrash />
-              <span>Xóa sản phẩm</span>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <IconEye />
-              <span>Xem chi tiết</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
+    {
+      header: 'Giá bán',
+      cell: ({ row }) => {
+        const { price } = row.original as BookOverviewDTO
+        return (
+          <div className='flex justify-start'>
+            <span>{price.toLocaleString('VN') + 'đ'}</span>
+          </div>
+        )
+      },
     },
-  },
-]
+    {
+      header: 'Số lượng',
+      cell: ({ row }) => {
+        const { quantityInStock } = row.original as BookOverviewDTO
+        return (
+          <div className='flex flex-col gap-1'>
+            <span className='font-light'>Còn {quantityInStock} trong kho</span>
+          </div>
+        )
+      },
+    },
+    {
+      header: 'Phát hành',
+      cell: ({ row }) => {
+        const { publish } = row.original as BookOverviewDTO
+        return (
+          <div className='flex flex-col gap-1'>
+            <Switch checked={true} />
+          </div>
+        )
+      },
+    },
+    {
+      header: 'Đánh giá',
+      cell: ({ row }) => {
+        const { avgRate, rvCounts } = row.original as BookOverviewDTO
+        return (
+          <div className='flex items-center gap-2'>
+            <div className='flex items-center gap-1 rounded-sm border p-1 text-sm font-medium'>
+              <IconStarFilled size={12} />
+              {avgRate}
+            </div>
+            <span className='font-light'>{rvCounts} đánh giá</span>
+          </div>
+        )
+      },
+    },
+    {
+      id: 'actions',
+      enableHiding: false,
+      cell: ({ row }) => {
+        const { bookId } = row.original as BookOverviewDTO
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant='ghost' className='h-8 w-8 p-0'>
+                <span className='sr-only'>Open menu</span>
+                <MoreHorizontal />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align='end'>
+              <DropdownMenuLabel>Hành động</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() =>
+                  navigate({
+                    to: EditProductRoute.to,
+                    params: { id: bookId.toString() },
+                  })
+                }
+              >
+                <IconEdit />
+                <span>Chỉnh sửa thông tin</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <IconTicket />
+                <span>Chỉnh sửa ưu đãi</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <IconTrash />
+                <span>Xóa sản phẩm</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <IconEye />
+                <span>Xem chi tiết</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
+      },
+    },
+  ]
+}
 
 export function DataTableDemo() {
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -178,6 +191,8 @@ export function DataTableDemo() {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+  const navigate = useNavigate()
+  const columns = getColumns(navigate)
   const {
     overviewBooks,
     isLoading,

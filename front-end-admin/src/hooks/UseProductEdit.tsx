@@ -40,6 +40,7 @@ export function useProductEdit() {
     setPageCount(dto.page_count)
     setWeight(dto.weight)
     setSize(dto.size)
+    setCategory(dto.category_id)
     setPublishYear(dto.publish_year + '')
     setTranslator(dto.translator)
     setPublisher(dto.publisher)
@@ -54,53 +55,104 @@ export function useProductEdit() {
 
   const updateOnServer = async (bookId: number) => {
     const formData = new FormData()
+    const debugPayload: Record<string, any> = {}
+
     if (oldThumbnail) {
       formData.append('old_thumbnail', oldThumbnail)
+      debugPayload.old_thumbnail = oldThumbnail
     }
+
     if (thumbnail) {
       formData.append('new_thumbnail', thumbnail)
+      debugPayload.new_thumbnail = thumbnail.name
     }
 
     formData.append('title', title)
+    debugPayload.title = title
+
     formData.append('description', description)
+    debugPayload.description = description
 
     formData.append('category_id', category.toString())
+    debugPayload.category_id = category.toString()
+
     formData.append('genre_id', genre.toString())
+    debugPayload.genre_id = genre.toString()
+
     formData.append('author', author)
+    debugPayload.author = author
+
     formData.append('age', age.toString())
+    debugPayload.age = age.toString()
+
     formData.append('price', price.toString())
+    debugPayload.price = price.toString()
+
     formData.append('format', format)
+    debugPayload.format = format
+
     formData.append('language', language)
+    debugPayload.language = language
+
     formData.append('page_count', pageCount.toString())
+    debugPayload.page_count = pageCount.toString()
+
     formData.append('weight', weight.toString())
+    debugPayload.weight = weight.toString()
+
     formData.append('size', size)
+    debugPayload.size = size
+
     formData.append('publish_year', publishYear)
+    debugPayload.publish_year = publishYear
+
     formData.append('translator', translator)
+    debugPayload.translator = translator
+
     formData.append('publisher', publisher)
+    debugPayload.publisher = publisher
+
     formData.append('qty_in_stock', qtyInStock.toString())
+    debugPayload.qty_in_stock = qtyInStock.toString()
+
     formData.append('supplier', supplier)
+    debugPayload.supplier = supplier
+
     formData.append('product_code', productCode)
-    console.log('Final oldGallery:', oldGallery)
-    oldGallery
-      .filter((link) => link != null)
-      .forEach((link) => {
-        formData.append('old_gallery', link)
-        console.log('Appending old gallery file:', link)
+    debugPayload.product_code = productCode
+
+    const oldGalleryLinks = oldGallery.filter(
+      (link): link is string => link != null
+    )
+    oldGalleryLinks.forEach((link) => formData.append('old_gallery', link))
+    debugPayload.old_gallery = oldGalleryLinks
+
+    const newGalleryFiles = gallery.filter((f): f is File => !!f)
+    newGalleryFiles.forEach((file) => formData.append('new_gallery', file))
+    debugPayload.new_gallery = newGalleryFiles.map((f) => f.name)
+
+    console.log('🧪 Debug Payload:', debugPayload)
+    try {
+      await updateBook(bookId, formData)
+
+      toast('Thao tác thành công!', {
+        description: 'Cập nhật thông tin sách thành công.',
+        action: {
+          label: 'Xác nhận',
+          onClick: () => {},
+        },
+        position: 'top-center',
       })
-    gallery
-      .filter((f): f is File => !!f)
-      .forEach((file) => {
-        formData.append('new_gallery', file)
-        console.log('Appending new gallery file:', file.name)
+    } catch (error: any) {
+      toast('Thao tác thất bại!', {
+        description: `Có lỗi xảy ra: ${error.message || 'Không rõ nguyên nhân.'}`,
+        action: {
+          label: 'Xác nhận',
+          onClick: () => {},
+        },
+        position: 'top-center',
       })
-    updateBook(bookId, formData)
-    toast('Thao tác thành công!', {
-      description: 'Sách mới đã được tạo thành công.',
-      action: {
-        label: 'Xác nhận',
-        onClick: () => {},
-      },
-    })
+    }
   }
 
   return {

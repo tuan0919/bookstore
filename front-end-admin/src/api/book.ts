@@ -1,3 +1,4 @@
+import { isAxiosError } from 'axios'
 import { ApiResponse, PageApiResponse } from '@/types/api'
 import axiosInstance from './axios'
 import API_ENDPOINTS from './endpoint'
@@ -69,17 +70,26 @@ export async function updateBook(
   bookId: number,
   formData: FormData
 ): Promise<ApiResponse<BookDTO>> {
-  const response = await axiosInstance.post<ApiResponse<BookDTO>>(
-    API_ENDPOINTS.BOOK.UPDATE(bookId),
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+  try {
+    const response = await axiosInstance.post(
+      `/api/book/${bookId}/update`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    )
+    return response.data
+  } catch (error: unknown) {
+    if (isAxiosError(error)) {
+      const message = error.response?.data?.message || error.message
+      throw new Error(message)
+    } else {
+      // Lỗi không phải từ Axios (hiếm gặp)
+      throw new Error('Unexpected error occurred.')
     }
-  )
-
-  return response.data
+  }
 }
 
 export async function getBooksOverview({

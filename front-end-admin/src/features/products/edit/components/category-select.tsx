@@ -10,7 +10,6 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
 } from '@/components/ui/command'
 import {
   Popover,
@@ -26,7 +25,7 @@ interface CategorySelectorProps {
 export function CategorySelector({ value, onChange }: CategorySelectorProps) {
   const toggleCategory = (category: Category) => {
     if (value === Number(category.id)) {
-      onChange(null) // unselect if clicked again
+      // do nothing
     } else {
       onChange(Number(category.id))
     }
@@ -78,15 +77,23 @@ export function CategorySelector({ value, onChange }: CategorySelectorProps) {
           id='targetChosen'
           className='flex w-full cursor-pointer flex-wrap gap-2 border-2 border-dashed p-2'
         >
-          {value === null ? (
-            <div className='flex w-full justify-center'>
-              <span className='text-sm'>Chưa chọn</span>
-            </div>
-          ) : (
-            <Badge key={value} variant='default'>
-              {categories[value].name}
-            </Badge>
-          )}
+          {(() => {
+            const selectedCategory = categories.find(
+              (c) => Number(c.id) === value
+            )
+            if (!selectedCategory) {
+              return (
+                <div className='flex w-full justify-center'>
+                  <span className='text-sm'>Chưa chọn</span>
+                </div>
+              )
+            }
+            return (
+              <Badge key={selectedCategory.id} variant='default'>
+                {selectedCategory.name}
+              </Badge>
+            )
+          })()}
         </div>
       </PopoverTrigger>
       <PopoverContent className='w-80'>
@@ -97,12 +104,12 @@ export function CategorySelector({ value, onChange }: CategorySelectorProps) {
             <CommandGroup heading='Danh mục'>
               {renderCategories(categories)}
             </CommandGroup>
-            <CommandSeparator />
+            {/* <CommandSeparator />
             <CommandGroup>
               <CommandItem className='justify-center text-center'>
                 Thêm thể loại mới
               </CommandItem>
-            </CommandGroup>
+            </CommandGroup> */}
           </CommandList>
         </Command>
       </PopoverContent>
