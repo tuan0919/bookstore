@@ -140,19 +140,6 @@ export function BookOverview({ sx = undefined }: { sx?: SxProps<Theme> }) {
             {bookDetails?.price.toLocaleString("vi-VN")} đ
           </Typography>
         )}
-        {/* <Box
-          display={"flex"}
-          bgcolor={red["700"]}
-          alignItems={"center"}
-          justifyContent={"center"}
-          paddingX={1}
-          paddingY={0.1}
-          borderRadius={1}
-        >
-          <Typography sx={{ fontWeight: "medium", color: "white" }}>
-            -20%
-          </Typography>
-        </Box> */}
         {isLoading ? (
           <Skeleton variant="rectangular" width={50} height={20} />
         ) : (

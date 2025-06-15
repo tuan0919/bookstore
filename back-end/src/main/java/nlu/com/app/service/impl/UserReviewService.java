@@ -78,13 +78,16 @@ public class UserReviewService implements IUserReviewService {
     public ReviewOverallDTO getReviewOverall(Long bookId) {
         long totalCount = userReviewRepository.countAllByBookBookId(bookId);
         long totalScore = Optional.ofNullable(userReviewRepository.totalScoreByBookBookId(bookId)).orElse(0L);
-        double avgScore = (double) totalScore / totalCount;
+
+        double avgScore = totalCount == 0 ? 0.0 : (double) totalScore / totalCount;
+
         List<Double> rates = new ArrayList<>();
         for (int i = 5; i >= 1; i--) {
             long count = userReviewRepository.countAllByBookBookIdAndReviewTypeAndRating(bookId, ReviewType.BOOK, i);
-            double rate = (double) count / totalCount * 100;
+            double rate = totalCount == 0 ? 0.0 : (double) count / totalCount * 100;
             rates.add(rate);
         }
+
         return ReviewOverallDTO.builder()
                 .avgScore(avgScore)
                 .bookId(bookId)

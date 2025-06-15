@@ -14,6 +14,13 @@ export interface ReviewBookResponseDTO {
   };
 }
 
+export interface BookReviewOverallResponse {
+  bookId: number;
+  avgScore: number;
+  total: number;
+  rates: number[];
+}
+
 export interface PageReviewResponse {
   content: ReviewBookResponseDTO[];
   pageable: Pageable;

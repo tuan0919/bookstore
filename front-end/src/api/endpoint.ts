@@ -12,7 +12,9 @@ const API_ENDPOINTS = {
   },
   REVIEW: {
     GET_BOOK_REVIEWS: (bookId: number) => `/api/book/${bookId}/reviews`,
-    CREATE_REVIEW_FOR_BOOK: () => `/api/review/create`,
+    CREATE_REVIEW_FOR_BOOK: `/api/review/create`,
+    GET_REVIEW_OVERALL: (bookId: number) =>
+      `/api/book/${bookId}/review-overall`,
   },
   USER: {
     LOGIN: "/api/v1/auth/login",
