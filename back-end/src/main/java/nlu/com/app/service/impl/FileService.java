@@ -62,7 +62,7 @@ public class FileService implements IFileService {
                     .contentType(file.getContentType())
                     .build();
             s3Client.putObject(putObjectRequest, RequestBody.fromFile(tempFile));
-            return "https://cnd1.anhtuan.online/"+key;
+            return "https://cdn1.anhtuan.online/"+key;
         } catch (IOException e) {
             e.printStackTrace();
             throw new ApplicationException(ErrorCode.UNEXPECTED_BEHAVIOR);
