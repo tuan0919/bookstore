@@ -99,7 +99,7 @@ public class UserReviewService implements IUserReviewService {
     @Transactional
     @Override
     public Page<CreateReviewResponse> getReviewsOfBook(Long bookId, Pageable pageable) {
-        var reviews = userReviewRepository.findByBookBookId(bookId, pageable);
+        var reviews = userReviewRepository.findByBookBookIdOrderByReviewDateDesc(bookId, pageable);
         var results = reviews.stream()
                 .map(userReviewMapper::toResponse)
                 .toList();

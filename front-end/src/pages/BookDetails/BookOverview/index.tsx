@@ -38,7 +38,7 @@ const WrapText = styled(Box)(({ theme }) => ({
 }));
 
 export function BookOverview({ sx = undefined }: { sx?: SxProps<Theme> }) {
-  const { bookDetails, isLoading } = useBookDetailsContext();
+  const { bookDetails, isLoading, reviewOverall } = useBookDetailsContext();
   return (
     <Stack sx={sx} spacing={1}>
       {isLoading ? (
@@ -110,14 +110,14 @@ export function BookOverview({ sx = undefined }: { sx?: SxProps<Theme> }) {
         <Rating
           size="small"
           name="text-feedback"
-          value={5}
+          value={reviewOverall?.avgScore || 0}
           readOnly
           precision={0.5}
         />
         <Typography
           sx={{ color: yellow["800"], fontWeight: "medium", fontSize: 14 }}
         >
-          {`(43 đánh giá)`}
+          {`(${reviewOverall?.total || 0} đánh giá)`}
         </Typography>
       </Box>
       <Box display={"flex"} alignItems={"center"} gap={2}>

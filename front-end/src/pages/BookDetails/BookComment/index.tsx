@@ -6,6 +6,7 @@ import { useBookComment } from "~/hooks/use-book-comment";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { ReviewList } from "./ReviewList";
+import { addNewReview } from "~/api/review";
 
 export function BookComment({
   sx = undefined,
@@ -23,7 +24,20 @@ export function BookComment({
       <Typography sx={{ fontWeight: "medium" }} fontSize={"large"}>
         Bình luận sản phẩm
       </Typography>
-      {localStorage.getItem("access_token") ? <InputBox /> : <RemindBox />}
+      {localStorage.getItem("access_token") ? (
+        <InputBox
+          onSubmit={async ({ rating, text }) => {
+            await addNewReview(text, rating, Number(id));
+            if (page === 0) {
+              fetchReviews(Number(id), page, size);
+            } else {
+              setPage(0); // will automatically fetch reviews
+            }
+          }}
+        />
+      ) : (
+        <RemindBox />
+      )}
       <ReviewList rv={reviews} />
       <Box justifyContent={"center"} display={"flex"}>
         <Pagination

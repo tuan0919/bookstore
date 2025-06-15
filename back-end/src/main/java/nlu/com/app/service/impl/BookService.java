@@ -204,7 +204,7 @@ public class BookService implements IBookService {
             .userName(review.getUser().getUsername())
             .rating(review.getRating())
             .reviewText(review.getReviewText())
-            .reviewDate(review.getReview_date().toString())
+            .reviewDate(review.getReviewDate().toString())
             .build())
         .collect(Collectors.toList());
 
@@ -242,7 +242,7 @@ public class BookService implements IBookService {
                       .userName(review.getUser().getUsername())
                       .rating(review.getRating())
                       .reviewText(review.getReviewText())
-                      .reviewDate(review.getReview_date().toString())
+                      .reviewDate(review.getReviewDate().toString())
                       .build())
               .collect(Collectors.toList());
 
