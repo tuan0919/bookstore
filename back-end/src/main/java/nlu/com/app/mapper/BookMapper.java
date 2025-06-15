@@ -131,7 +131,6 @@ public interface BookMapper {
   PageBookResponseDTO toPageDto(Book book, @Context double discountPercentage,
       double averageRating);
 
-
   @Mapping(target = "page_count", source = "book.pageCount")
   @Mapping(target = "qty_in_stock", source = "book.qtyInStock")
   @Mapping(target = "product_code", source = "book.productCode")
@@ -144,6 +143,7 @@ public interface BookMapper {
   @Mapping(target = "qty_in_stock", source = "book.qtyInStock")
   @Mapping(target = "product_code", source = "book.productCode")
   @Mapping(target = "publish_year", source = "book.publishYear")
+  @Mapping(target = "category_id", source = "book.category.categoryId")
   @Mapping(target = "thumbnail", source = "book.images", qualifiedByName = "bookImagesToThumbnailURL")
   @Mapping(target = "gallery", source = "book.images", qualifiedByName = "bookImagesToGalleryURLs")
   UpdateBookResponse toUpdateBookResponse(Book book);

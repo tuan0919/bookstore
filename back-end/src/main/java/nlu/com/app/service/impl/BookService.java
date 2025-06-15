@@ -336,6 +336,7 @@ public class BookService implements IBookService {
       book.setQtyInStock(metadata.getQty_in_stock());
       book.setPublishYear(metadata.getPublish_year()+"");
       book.setWeight(metadata.getWeight());
+      book.setProductCode(metadata.getProduct_code());
 
       var category = categoryRepository.findById(metadata.getCategory_id())
               .orElseThrow(() -> new ApplicationException(ErrorCode.CATEGORY_NOT_FOUND));
@@ -394,7 +395,8 @@ public class BookService implements IBookService {
       }
 
       // Xóa tất cả image hiện tại trước khi cập nhật
-      bookImageRepository.deleteAllByBookBookId(bookId);
+      long result = bookImageRepository.deleteAllByBook_BookId(bookId);
+      System.out.println("count deleted old images: "+result);
 
       book.getImages().clear();
       for (BookImage newImage : updatedImages) {
