@@ -10,6 +10,12 @@ const API_ENDPOINTS = {
     CHAIN_FOR_BOOK: `/api/category/chain`,
     CATEGORY: "api/book",
   },
+  REVIEW: {
+    GET_BOOK_REVIEWS: (bookId: number) => `/api/book/${bookId}/reviews`,
+    CREATE_REVIEW_FOR_BOOK: `/api/review/create`,
+    GET_REVIEW_OVERALL: (bookId: number) =>
+      `/api/book/${bookId}/review-overall`,
+  },
   USER: {
     LOGIN: "/api/v1/auth/login",
     DETAILS: {
@@ -39,15 +45,14 @@ const API_ENDPOINTS = {
   ORDER: {
     CREATE: "/api/orders",
     GET: (page: number, size: number) => {
-      if(page !== undefined && size !== undefined) {
+      if (page !== undefined && size !== undefined) {
         return `/api/orders?page=${page}&size=${size}`;
-      } else{
+      } else {
         return `/api/orders`;
       }
     },
-   CANCEL : (orderId: string) => `/api/orders/${orderId}/cancel`,
+    CANCEL: (orderId: string) => `/api/orders/${orderId}/cancel`,
   },
-
 };
 
 export default API_ENDPOINTS;

@@ -32,5 +32,5 @@ public interface UserReviewRepository extends JpaRepository<UserReview, Long> {
   """)
   Long totalScoreByBookBookId(Long bookId);
 
-  Page<UserReview> findByBookBookId(Long bookBookId, Pageable pageable);
+  Page<UserReview> findByBookBookIdOrderByReviewDateDesc(Long bookBookId, Pageable pageable);
 }

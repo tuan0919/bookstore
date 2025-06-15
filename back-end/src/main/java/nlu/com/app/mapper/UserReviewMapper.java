@@ -39,7 +39,7 @@ public interface UserReviewMapper {
   @Mapping(target = "review_type", source = "review.reviewType")
   @Mapping(target = "book_id", expression = "java(review.getBook() != null ? review.getBook().getBookId() : null)")
   @Mapping(target = "collection_id", expression = "java(review.getCollection() != null ? review.getCollection().getCollectionId() : null)")
-  @Mapping(target = "created_at", source = "review.review_date", qualifiedByName = "_reviewDateToString")
+  @Mapping(target = "created_at", source = "review.reviewDate", qualifiedByName = "_reviewDateToString")
   @Mapping(target = "user", source = "review.user", qualifiedByName = "toUser")
   CreateReviewResponse toResponse(UserReview review);
 
@@ -62,7 +62,7 @@ public interface UserReviewMapper {
             .orElseThrow(() -> new ApplicationException(ErrorCode.USER_NOT_EXISTED));
     var review = new UserReview();
     review.setUser(user);
-    review.setReview_date(LocalDate.now());
+    review.setReviewDate(LocalDate.now());
     review.setReviewText(request.getReview_text());
     review.setReviewType(request.getReview_type());
     review.setRating(request.getRating());

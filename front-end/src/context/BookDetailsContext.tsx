@@ -11,6 +11,8 @@ import { getCategoryChainOfBook } from "~/api/category";
 import { BookDetailsDTO, PageBookResponseDTO } from "~/types/book";
 import { CategoryChainDTO } from "~/types/category";
 import { useCart } from "~/providers/CartProvider";
+import { BookReviewOverallResponse } from "~/types/review";
+import { getBookReviewOverall } from "~/api/review";
 
 interface BookDetailsContextType {
   bookDetails: BookDetailsDTO | null;
@@ -19,6 +21,7 @@ interface BookDetailsContextType {
   isLoading: boolean;
   error: string | null;
   addToCart: () => void;
+  reviewOverall: BookReviewOverallResponse | null;
 }
 
 const BookDetailsContext = createContext<BookDetailsContextType>({
@@ -27,7 +30,8 @@ const BookDetailsContext = createContext<BookDetailsContextType>({
   relatedBooks: null,
   isLoading: false,
   error: null,
-   addToCart: () => {}
+  addToCart: () => {},
+  reviewOverall: null,
 });
 
 export const useBookDetailsContext = () => useContext(BookDetailsContext);
@@ -46,7 +50,9 @@ export const BookDetailsProvider = ({ children }: BookDetailsProviderProps) => {
   >(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const {  id } = useParams();
+  const [reviewOverall, setReviewOverall] =
+    useState<BookReviewOverallResponse | null>(null);
+  const { id } = useParams();
   useEffect(() => {
     const bookId = id ? parseInt(id, 10) : -1;
     const loadBooks = async () => {
@@ -61,6 +67,8 @@ export const BookDetailsProvider = ({ children }: BookDetailsProviderProps) => {
           context: " ",
         });
         setRelatedBooks(relatedRes.result.content);
+        const overall = await getBookReviewOverall(Number(id));
+        setReviewOverall(overall.result);
       } catch (err) {
         console.error(err);
         setError("Failed to load books");
@@ -71,18 +79,24 @@ export const BookDetailsProvider = ({ children }: BookDetailsProviderProps) => {
 
     loadBooks();
   }, [id, setCategoryChain]);
- // Thêm sách vào giỏ hàng 
+  // Thêm sách vào giỏ hàng
   const { increaseItem } = useCart();
   const addToCart = async () => {
     if (!id) return;
-    increaseItem(id,1);
-   
-  };  
- 
- 
+    increaseItem(id, 1);
+  };
+
   return (
     <BookDetailsContext.Provider
-      value={{ bookDetails, relatedBooks, categoryChain, isLoading, error,addToCart }}
+      value={{
+        bookDetails,
+        relatedBooks,
+        categoryChain,
+        isLoading,
+        error,
+        addToCart,
+        reviewOverall,
+      }}
     >
       {children}
     </BookDetailsContext.Provider>
