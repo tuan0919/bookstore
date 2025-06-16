@@ -43,6 +43,7 @@ import { Route as AuthenticatedCouponsOverviewImport } from './routes/_authentic
 import { Route as AuthenticatedCouponsNewImport } from './routes/_authenticated/coupons/new'
 import { Route as AuthenticatedCategoriesOverviewImport } from './routes/_authenticated/categories/overview'
 import { Route as AuthenticatedProductsIdEditImport } from './routes/_authenticated/products/$id/edit'
+import { Route as AuthenticatedOrdersIdDetailsImport } from './routes/_authenticated/orders/$id/details'
 
 // Create/Update Routes
 
@@ -251,6 +252,13 @@ const AuthenticatedProductsIdEditRoute =
   AuthenticatedProductsIdEditImport.update({
     id: '/products/$id/edit',
     path: '/products/$id/edit',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+
+const AuthenticatedOrdersIdDetailsRoute =
+  AuthenticatedOrdersIdDetailsImport.update({
+    id: '/orders/$id/details',
+    path: '/orders/$id/details',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
@@ -475,6 +483,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUsersIndexImport
       parentRoute: typeof AuthenticatedRouteImport
     }
+    '/_authenticated/orders/$id/details': {
+      id: '/_authenticated/orders/$id/details'
+      path: '/orders/$id/details'
+      fullPath: '/orders/$id/details'
+      preLoaderRoute: typeof AuthenticatedOrdersIdDetailsImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
     '/_authenticated/products/$id/edit': {
       id: '/_authenticated/products/$id/edit'
       path: '/products/$id/edit'
@@ -526,6 +541,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedHelpCenterIndexRoute: typeof AuthenticatedHelpCenterIndexRoute
   AuthenticatedTasksIndexRoute: typeof AuthenticatedTasksIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
+  AuthenticatedOrdersIdDetailsRoute: typeof AuthenticatedOrdersIdDetailsRoute
   AuthenticatedProductsIdEditRoute: typeof AuthenticatedProductsIdEditRoute
 }
 
@@ -545,6 +561,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedHelpCenterIndexRoute: AuthenticatedHelpCenterIndexRoute,
   AuthenticatedTasksIndexRoute: AuthenticatedTasksIndexRoute,
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
+  AuthenticatedOrdersIdDetailsRoute: AuthenticatedOrdersIdDetailsRoute,
   AuthenticatedProductsIdEditRoute: AuthenticatedProductsIdEditRoute,
 }
 
@@ -583,6 +600,7 @@ export interface FileRoutesByFullPath {
   '/settings/': typeof AuthenticatedSettingsIndexRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
+  '/orders/$id/details': typeof AuthenticatedOrdersIdDetailsRoute
   '/products/$id/edit': typeof AuthenticatedProductsIdEditRoute
 }
 
@@ -616,6 +634,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsIndexRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
+  '/orders/$id/details': typeof AuthenticatedOrdersIdDetailsRoute
   '/products/$id/edit': typeof AuthenticatedProductsIdEditRoute
 }
 
@@ -652,6 +671,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
+  '/_authenticated/orders/$id/details': typeof AuthenticatedOrdersIdDetailsRoute
   '/_authenticated/products/$id/edit': typeof AuthenticatedProductsIdEditRoute
 }
 
@@ -689,6 +709,7 @@ export interface FileRouteTypes {
     | '/settings/'
     | '/tasks'
     | '/users'
+    | '/orders/$id/details'
     | '/products/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -721,6 +742,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tasks'
     | '/users'
+    | '/orders/$id/details'
     | '/products/$id/edit'
   id:
     | '__root__'
@@ -755,6 +777,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/'
     | '/_authenticated/tasks/'
     | '/_authenticated/users/'
+    | '/_authenticated/orders/$id/details'
     | '/_authenticated/products/$id/edit'
   fileRoutesById: FileRoutesById
 }
@@ -828,6 +851,7 @@ export const routeTree = rootRoute
         "/_authenticated/help-center/",
         "/_authenticated/tasks/",
         "/_authenticated/users/",
+        "/_authenticated/orders/$id/details",
         "/_authenticated/products/$id/edit"
       ]
     },
@@ -946,6 +970,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/users/": {
       "filePath": "_authenticated/users/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/orders/$id/details": {
+      "filePath": "_authenticated/orders/$id/details.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/products/$id/edit": {

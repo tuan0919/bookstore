@@ -1,15 +1,14 @@
 package nlu.com.app.mapper;
 
 import java.util.List;
+
+import com.paypal.sdk.models.Customer;
 import nlu.com.app.constant.EOrderStatus;
 import nlu.com.app.constant.EPaymentMethod;
 import nlu.com.app.dto.request.AddressDto;
+import nlu.com.app.dto.response.OrderDetailsResponseDTO;
 import nlu.com.app.dto.response.OrderResponseDTO;
-import nlu.com.app.entity.Address;
-import nlu.com.app.entity.Book;
-import nlu.com.app.entity.BookImage;
-import nlu.com.app.entity.Order;
-import nlu.com.app.entity.OrderItem;
+import nlu.com.app.entity.*;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -32,9 +31,22 @@ public interface OrderMapper {
   @Mapping(target = "shippingAddress", source = "address")
   OrderResponseDTO toOrderResponseDTO(Order order);
 
+  @Mapping(source = "paymentMethod.methodName", target = "paymentMethodName", qualifiedByName = "enumToString")
+  @Mapping(source = "status", target = "status", qualifiedByName = "orderStatusToString")
+  @Mapping(source = "orderItems", target = "items")
+  @Mapping(target = "shippingAddress", source = "address")
+  @Mapping(target = "customer", source = "order.user", qualifiedByName = "toCustomerDTO")
+  OrderDetailsResponseDTO toOrderDetailsResponseDTO(Order order);
+
   AddressDto toAddressDTO(Address address);
 
   List<OrderResponseDTO.OrderItemDTO> toOrderItemDTOList(List<OrderItem> orderItems);
+
+  @Named("toCustomerDTO")
+  @Mapping(target = "user_id", source = "user.userId")
+  @Mapping(target = "username", source = "user.username")
+  @Mapping(target = "email", expression = "java(user.getEmail() == null ? \"Người dùng này chưa set email \" : user.getEmail())")
+  OrderDetailsResponseDTO.CustomerDTO toCustomerDTO(User user);
 
   @Mapping(source = "book", target = "img", qualifiedByName = "mapImage")
   @Mapping(source = "book.title", target = "bookTitle")
