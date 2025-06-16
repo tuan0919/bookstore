@@ -12,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 import nlu.com.app.constant.EOrderStatus;
 import nlu.com.app.dto.cart.Cart;
 import nlu.com.app.dto.cart.CartItem;
+import nlu.com.app.dto.response.OrderDetailsResponseDTO;
 import nlu.com.app.dto.response.OrderResponseDTO;
 import nlu.com.app.entity.Book;
 import nlu.com.app.entity.Order;
@@ -164,9 +165,21 @@ public class OrderService implements IOrderService {
     if (username == null) {
       throw new ApplicationException(ErrorCode.UNAUTHENTICATED);
     }
-    User user = userRepository.findByUsername(username).get();
+    User user = userRepository.findByUsername(username).orElseThrow(() -> new ApplicationException(ErrorCode.UNAUTHENTICATED));
     Page<Order> ordersPage = orderRepository.findAllByUser(user, pageable);
     return ordersPage.map(orderMapper::toOrderResponseDTO);
+  }
+
+  public Page<OrderResponseDTO> getOrdersWithPagination_ForAdmin(Pageable pageable) {
+    Page<Order> ordersPage = orderRepository.findAll(pageable);
+    return ordersPage.map(orderMapper::toOrderResponseDTO);
+  }
+
+  @Override
+  public OrderDetailsResponseDTO getOrderById(Long id) {
+    var order = orderRepository.findById(id)
+            .orElseThrow(() -> new ApplicationException(ErrorCode.ORDER_NOT_FOUND));
+    return orderMapper.toOrderDetailsResponseDTO(order);
   }
 
   @Override

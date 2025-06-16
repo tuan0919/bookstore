@@ -19,8 +19,6 @@ export function useBookOverview(initialPage = 0, initialSize = 5) {
       try {
         const rs = await getBooksOverview({ page, size })
         setBooksOverview(rs.result.content)
-        setPage(rs.result.pageable.pageNumber)
-        setSize(rs.result.pageable.pageSize)
         setTotalPage(rs.result.totalPages)
         setTotalElements(rs.result.totalElements)
         setIsLastPage(rs.result.last)
