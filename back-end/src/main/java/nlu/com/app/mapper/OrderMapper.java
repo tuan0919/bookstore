@@ -40,6 +40,7 @@ public interface OrderMapper {
 
   AddressDto toAddressDTO(Address address);
 
+  List<OrderDetailsResponseDTO.OrderItemDTO> toOrderItemDTOList_ForDetails(List<OrderItem> orderItems);
   List<OrderResponseDTO.OrderItemDTO> toOrderItemDTOList(List<OrderItem> orderItems);
 
   @Named("toCustomerDTO")
@@ -52,6 +53,12 @@ public interface OrderMapper {
   @Mapping(source = "book.title", target = "bookTitle")
   @Mapping(source = "discountPercentage", target = "discount")
   OrderResponseDTO.OrderItemDTO toOrderItemDTO(OrderItem orderItem);
+
+  @Mapping(source = "book", target = "img", qualifiedByName = "mapImage")
+  @Mapping(source = "book.title", target = "bookTitle")
+  @Mapping(source = "discountPercentage", target = "discount")
+  OrderDetailsResponseDTO.OrderItemDTO toOrderItemDTO_ForDetails(OrderItem orderItem);
+
   @Named("mapImage")
   default String mapImage(Book book) {
     if (book.getImages() == null || book.getImages().isEmpty()) {
