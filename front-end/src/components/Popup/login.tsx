@@ -131,9 +131,6 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
           localStorage.setItem("userDetails", JSON.stringify(userDetails.result));
           navigate("/");
         }
-        // Lưu thông tin chi tiết người dùng vào localStorage
-        const userDetails = await getUserDetails();
-        localStorage.setItem("userDetails", JSON.stringify(userDetails));
         onClose();
       } else {
         setError(
