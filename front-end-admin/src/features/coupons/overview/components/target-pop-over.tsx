@@ -1,3 +1,4 @@
+import { PromotionResponseDTO } from '@/types/promotion'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -6,7 +7,11 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 
-export function TargetPopOver() {
+export function TargetPopOver({
+  promotion,
+}: {
+  promotion: PromotionResponseDTO
+}) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -23,10 +28,11 @@ export function TargetPopOver() {
             </p>
           </div>
           <div className='flex flex-wrap gap-2'>
-            <Badge variant='default'>Truyện tiếng việt</Badge>
-            <Badge variant='default'>Truyện ngoại văn</Badge>
-            <Badge variant='default'>Truyện tranh</Badge>
-            <Badge variant='default'>Truyện tiếng Hàn</Badge>
+            {promotion.categories.map((category) => (
+              <Badge key={category.categoryId} variant='default'>
+                {category.categoryName}
+              </Badge>
+            ))}
           </div>
         </div>
       </PopoverContent>

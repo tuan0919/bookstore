@@ -1,9 +1,10 @@
-import * as React from 'react'
+import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
 import { vi } from 'date-fns/locale'
 import { CalendarIcon } from 'lucide-react'
 import { DateRange } from 'react-day-picker'
 import { cn } from '@/lib/utils'
+import { usePromotionNewContext } from '@/context/PromotionNewContext'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import {
@@ -15,8 +16,11 @@ import {
 export function DatePickerWithRange({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
-  const [date, setDate] = React.useState<DateRange | undefined>()
-
+  const [date, setDate] = useState<DateRange | undefined>()
+  useEffect(() => {
+    console.log('date: ', date)
+  }, [date])
+  const { setStartDate, setEndDate } = usePromotionNewContext()
   return (
     <div className={cn('grid gap-2', className)}>
       <Popover>
@@ -33,11 +37,11 @@ export function DatePickerWithRange({
             {date?.from ? (
               date.to ? (
                 <>
-                  {format(date.from, 'dd/MM/yyyy', { locale: vi })} -{' '}
-                  {format(date.to, 'dd/MM/yyyy', { locale: vi })}
+                  {format(date.from, 'yyyy-MM-dd', { locale: vi })} ~{' '}
+                  {format(date.to, 'yyyy-MM-dd', { locale: vi })}
                 </>
               ) : (
-                format(date.from, 'dd/MM/yyyy', { locale: vi })
+                format(date.from, 'yyyy-MM-dd', { locale: vi })
               )
             ) : (
               <span>Chọn khoảng thời gian</span>
@@ -47,7 +51,6 @@ export function DatePickerWithRange({
         <PopoverContent className='w-auto p-0' align='start'>
           <Calendar
             locale={vi}
-            initialFocus
             mode='range'
             defaultMonth={date?.from}
             selected={date}
