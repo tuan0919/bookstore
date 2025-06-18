@@ -13,8 +13,9 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { IconEdit, IconPlus, IconSearch, IconTrash } from '@tabler/icons-react'
-import { coupons, Coupon } from '@/resources/coupons'
+import { PromotionResponseDTO } from '@/types/promotion'
 import { ChevronDown, MoreHorizontal } from 'lucide-react'
+import { usePromotionOverviewContext } from '@/context/PromotionOverviewContext'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -46,12 +47,14 @@ export function CouponDataTable() {
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
   const [open, setOpen] = useState(false)
-  const [selectedCategory, setSelectedCategory] = useState<Coupon | null>(null)
+  const { promotions } = usePromotionOverviewContext()
+  const [selectedCategory, setSelectedCategory] =
+    useState<PromotionResponseDTO | null>(null)
   React.useEffect(() => {
     setOpen(true)
   }, [selectedCategory])
 
-  function CouponDialog({ category }: { category: Coupon }) {
+  function PromotionDialog({ promotion }: { promotion: PromotionResponseDTO }) {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -66,7 +69,7 @@ export function CouponDataTable() {
             <IconPlus />
             <span>Thêm mới</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setSelectedCategory(category)}>
+          <DropdownMenuItem onClick={() => setSelectedCategory(promotion)}>
             <IconEdit />
             <span>Chỉnh sửa</span>
           </DropdownMenuItem>
@@ -79,7 +82,7 @@ export function CouponDataTable() {
     )
   }
 
-  const columns: ColumnDef<Coupon>[] = [
+  const columns: ColumnDef<PromotionResponseDTO>[] = [
     // select
     {
       id: 'select',
@@ -107,36 +110,24 @@ export function CouponDataTable() {
     {
       header: 'Áp dụng cho',
       cell: ({ row }) => {
-        const { category } = row.original as Coupon
+        const promotion = row.original as PromotionResponseDTO
         return (
           <div className='flex items-center gap-2'>
             <div className='flex flex-col gap-2'>
-              <TargetPopOver />
+              <TargetPopOver promotion={promotion} />
             </div>
-          </div>
-        )
-      },
-    },
-    // Loại
-    {
-      header: 'Loại giảm giá',
-      cell: ({ row }) => {
-        const { type } = row.original as Coupon
-        return (
-          <div className='flex justify-start'>
-            <span>{type}</span>
           </div>
         )
       },
     },
     // Code
     {
-      header: 'Code',
+      header: 'Tên khuyến mãi',
       cell: ({ row }) => {
-        const { code } = row.original as Coupon
+        const { promotionName } = row.original as PromotionResponseDTO
         return (
           <div className='flex flex-col gap-1'>
-            <span className='font-manrope'>{code}</span>
+            <span className='font-manrope'>{promotionName}</span>
           </div>
         )
       },
@@ -145,10 +136,12 @@ export function CouponDataTable() {
     {
       header: 'Giảm giá',
       cell: ({ row }) => {
-        const { discount } = row.original as Coupon
+        const { discountPercentage } = row.original as PromotionResponseDTO
         return (
           <div className='flex items-center gap-2'>
-            <span className='font-manrope font-light'>{discount}</span>
+            <span className='font-manrope font-light'>
+              {discountPercentage}
+            </span>
           </div>
         )
       },
@@ -157,10 +150,10 @@ export function CouponDataTable() {
     {
       header: 'Ngày bắt đầu',
       cell: ({ row }) => {
-        const { start } = row.original as Coupon
+        const { startDate } = row.original as PromotionResponseDTO
         return (
           <div className='flex items-center gap-2'>
-            <span className='font-manrope font-light'>{start}</span>
+            <span className='font-manrope font-light'>{startDate}</span>
           </div>
         )
       },
@@ -169,10 +162,10 @@ export function CouponDataTable() {
     {
       header: 'Ngày kết thúc',
       cell: ({ row }) => {
-        const { end } = row.original as Coupon
+        const { endDate } = row.original as PromotionResponseDTO
         return (
           <div className='flex items-center gap-2'>
-            <span className='font-manrope font-light'>{end}</span>
+            <span className='font-manrope font-light'>{endDate}</span>
           </div>
         )
       },
@@ -181,7 +174,7 @@ export function CouponDataTable() {
     {
       header: 'Tình trạng',
       cell: ({ row }) => {
-        const { status } = row.original as Coupon
+        const { status } = row.original as PromotionResponseDTO
         return <Badge variant='outline'>{status}</Badge>
       },
     },
@@ -190,14 +183,14 @@ export function CouponDataTable() {
       id: 'actions',
       enableHiding: false,
       cell: ({ row }) => {
-        const category = row.original as Coupon
-        return <CouponDialog category={category} />
+        const promotion = row.original as PromotionResponseDTO
+        return <PromotionDialog promotion={promotion} />
       },
     },
   ]
 
-  const table = useReactTable<Coupon>({
-    data: coupons,
+  const table = useReactTable<PromotionResponseDTO>({
+    data: promotions,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

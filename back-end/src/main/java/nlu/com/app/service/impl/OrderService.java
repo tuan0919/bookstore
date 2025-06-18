@@ -58,6 +58,7 @@ public class OrderService implements IOrderService {
   UserAddressRepository userAddressRepository;
 
   @Override
+  @Transactional
   public OrderResponseDTO createOrderFromCart(List<Long> selectedProductIds, Long paymentMethodId) {
     String username = SecurityUtils.getCurrentUsername();
     if (username == null) {
