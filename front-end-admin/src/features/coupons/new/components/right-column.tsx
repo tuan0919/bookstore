@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card'
-import { DatePickerWithRange } from '@/features/coupons/overview/components/date-picker'
+import { DatePickerWithRange } from '@/features/coupons/new/components/date-picker'
 
 export function RightCard() {
   return (

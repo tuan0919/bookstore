@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { format } from 'date-fns'
 import { vi } from 'date-fns/locale'
 import { CalendarIcon } from 'lucide-react'
@@ -17,9 +17,6 @@ export function DatePickerWithRange({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
   const [date, setDate] = useState<DateRange | undefined>()
-  useEffect(() => {
-    console.log('date: ', date)
-  }, [date])
   const { setStartDate, setEndDate } = usePromotionNewContext()
   return (
     <div className={cn('grid gap-2', className)}>
@@ -54,7 +51,13 @@ export function DatePickerWithRange({
             mode='range'
             defaultMonth={date?.from}
             selected={date}
-            onSelect={setDate}
+            onSelect={(range) => {
+              setDate(range)
+              if (range?.from && range?.to) {
+                setStartDate(format(range.from, 'yyyy-MM-dd'))
+                setEndDate(format(range.to, 'yyyy-MM-dd'))
+              }
+            }}
             numberOfMonths={2}
           />
         </PopoverContent>
