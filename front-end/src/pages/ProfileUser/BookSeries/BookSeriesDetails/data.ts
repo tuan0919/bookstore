@@ -1,20 +1,5 @@
-import React, { useState, useMemo } from "react";
-import {
-  Box,
-  Card,
-  CardMedia,
-  CardContent,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Typography
-} from "@mui/material";
-import PropTypes from "prop-types";
-import BookSeriesDetails from "./BookSeriesDetails";
-
 // Mẫu dữ liệu với danh sách sách con
-const BOOK_SETS = [
+export const BOOK_SETS = [
   {
     id: 1,
     title: "Thanh Gươm Diệt Quỷ Kimetsu No Yaiba",
@@ -24,20 +9,43 @@ const BOOK_SETS = [
     books: [
       {
         id: 1, title: "Thanh Gươm Diệt Quỷ - Kimetsu No Yaiba - Tập 1 - Tàn Khốc (Tái Bản)",
-        image: "https://cdn1.fahasa.com/media/catalog/product/t/h/thanh-guom-diet-quy-tap-1_2.jpg"
+        image: "https://cdn1.fahasa.com/media/catalog/product/t/h/thanh-guom-diet-quy-tap-1_2.jpg",
+        price: 25000
       },
       {
         id: 2, title: "Thanh Gươm Diệt Quỷ - Kimetsu No Yaiba - Tập 2 - Ngươi Là...",
-        image: "https://cdn1.fahasa.com/media/catalog/product/t/h/thanh-guom-diet-quy-tap-2.jpg"
+        image: "https://cdn1.fahasa.com/media/catalog/product/t/h/thanh-guom-diet-quy-tap-2.jpg",
+        price: 25000
       },
       {
         id: 3, title: "Thanh Gươm Diệt Quỷ - Kimetsu No Yaiba - Tập 3 - Khích Lệ Bản Thân",
-        image: "https://cdn1.fahasa.com/media/catalog/product/t/h/thanh-guom-diet-quy-tap-3.jpg"
+        image: "https://cdn1.fahasa.com/media/catalog/product/t/h/thanh-guom-diet-quy-tap-3.jpg",
+        price: 25000
       },
       {
-        id: 3, title: "Thanh Gươm Diệt Quỷ - Kimetsu No Yaiba - Tập 3 - Khích Lệ Bản Thân",
-        image: "https://cdn1.fahasa.com/media/catalog/product/t/h/thanh-guom-diet-quy-tap-3.jpg"
-      }
+        id: 4, title: "Thanh Gươm Diệt Quỷ - Kimetsu No Yaiba - Tập 4 - Lưỡi Gươm Mạnh Mẽ",
+        image: "https://cdn1.fahasa.com/media/catalog/product/t/h/thanh-guom-diet-quy-tap-4---luoi-guom-manh-me.jpg",
+        price: 25000
+      },
+      {
+        id: 5, title: "Thanh Gươm Diệt Quỷ - Kimetsu No Yaiba - Tập 5 - Xuống Địa Ngục",
+        image: "https://cdn1.fahasa.com/media/catalog/product/t/h/thanh-guom-diet-quy-tap-5.jpg",
+        price: 25000
+      },
+      {
+        id: 6, title: "Thanh Gươm Diệt Quỷ - Kimetsu No Yaiba - Tập 6 - Phát Xét Của Các Trụ Cột",
+        image: "https://cdn1.fahasa.com/media/catalog/product/t/h/thanh-guom-diet-quy-tap-6.jpg",
+        price: 25000
+      },
+      // {
+      //   id: 7, title: "Thanh Gươm Diệt Quỷ - Kimetsu No Yaiba - Tập 3 - Khích Lệ Bản Thân",
+      //   image: "https://cdn1.fahasa.com/media/catalog/product/t/h/thanh-guom-diet-quy-tap-3.jpg"
+      // },
+      // {
+      //   id: 8, title: "Thanh Gươm Diệt Quỷ - Kimetsu No Yaiba - Tập 3 - Khích Lệ Bản Thân",
+      //   image: "https://cdn1.fahasa.com/media/catalog/product/t/h/thanh-guom-diet-quy-tap-3.jpg"
+      // },
+     
     ]
   },
   {
@@ -150,130 +158,3 @@ const BOOK_SETS = [
   },
 ];
 
-// Dropdown sắp xếp
-function SortSelect({ sortBy, onSortChange }) {
-  return (
-    <FormControl size="small" sx={{ minWidth: 140 }}>
-      <InputLabel id="sort-label">Sắp xếp</InputLabel>
-      <Select
-        labelId="sort-label"
-        label="Sắp xếp"
-        value={sortBy}
-        onChange={e => onSortChange(e.target.value)}
-      >
-        <MenuItem value="az">A → Z</MenuItem>
-        <MenuItem value="za">Z → A</MenuItem>
-        <MenuItem value="newest">Mới nhất</MenuItem>
-        <MenuItem value="oldest">Cũ nhất</MenuItem>
-      </Select>
-    </FormControl>
-  );
-}
-
-SortSelect.propTypes = {
-  sortBy: PropTypes.oneOf(["az", "za", "newest", "oldest"]).isRequired,
-  onSortChange: PropTypes.func.isRequired
-};
-
-// 1 thẻ sách
-function BookCard({ book, onSelect }) {
-  return (
-    <Card
-      onClick={() => onSelect(book)}
-      sx={{
-        width: 200,
-        m: 1,
-        position: "relative",
-        transition: "transform 0.2s",
-        "&:hover": { transform: "scale(1.03)" }
-      }}
-    >
-      {/* Badge */}
-      <Box
-        sx={{
-          position: "absolute",
-          top: 8,
-          left: 8,
-          bgcolor: book.isPrivate ? "grey.700" : "success.main",
-          color: "#fff",
-          px: 1,
-          py: 0.5,
-          borderRadius: 1,
-          fontSize: "0.75rem",
-          zIndex: 1
-        }}
-      >
-        {book.isPrivate ? "Riêng tư" : "Công khai"}
-      </Box>
-
-      <CardMedia component="img" height="140" image={book.image} alt={book.title} />
-
-      {/* Số quyển */}
-      <Box
-        sx={{
-          position: "absolute",
-          bottom: 8,
-          right: 8,
-          bgcolor: "rgba(0,0,0,0.6)",
-          color: "#fff",
-          px: 1,
-          borderRadius: 1,
-          fontSize: "0.75rem"
-        }}
-      >
-        {book.count} quyển
-      </Box>
-
-      <CardContent sx={{ pt: 2, pb: 1 }}>
-        <Typography variant="subtitle2" noWrap>
-          {book.title}
-        </Typography>
-      </CardContent>
-    </Card>
-  );
-}
-
-BookCard.propTypes = {
-  book: PropTypes.object.isRequired,
-  onSelect: PropTypes.func.isRequired
-};
-
-// Component chính
-export default function BookSeries() {
-  const [sortBy, setSortBy] = useState("newest");
-  const [selectedSeries, setSelectedSeries] = useState(null);
-
-  // Sắp xếp
-  const sortedBooks = useMemo(() => {
-    return [...BOOK_SETS].sort((a, b) => {
-      switch (sortBy) {
-        case "az": return a.title.localeCompare(b.title);
-        case "za": return b.title.localeCompare(a.title);
-        case "oldest": return a.id - b.id;
-        default: return b.id - a.id;
-      }
-    });
-  }, [sortBy]);
-
-  return (
-    <Box sx={{ p: 3 }}>
-      {/* Header + Sort */}
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-        <Typography variant="h5">📚 Sách theo bộ</Typography>
-        <SortSelect sortBy={sortBy} onSortChange={setSortBy} />
-      </Box>
-
-      {/* Danh sách Flex-wrap */}
-      <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "flex-start" }}>
-        {sortedBooks.map(series => (
-          <BookCard key={series.id} book={series} onSelect={setSelectedSeries} />
-        ))}
-      </Box>
-
-      {/* Chi tiết khi chọn */}
-      {selectedSeries && (
-        <BookSeriesDetails series={selectedSeries} onClose={() => setSelectedSeries(null)} />
-      )}
-    </Box>
-  );
-}

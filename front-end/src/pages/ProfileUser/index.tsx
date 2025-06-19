@@ -7,10 +7,13 @@ import ChangePassword from "./ProfileSections/ChangePassword";
 import InvoiceInfo from "./ProfileSections/InvoiceInfo";
 import Privileges from "./ProfileSections/Privileges";
 
-import BookSeries from "./PageOther/BookSeries";
+import MyVoucher from "./MyVoucher";
+import BookSeriesDetails from './BookSeries/BookSeriesDetails';
+import BookSeries from "./BookSeries";
 import NotificationList from "./Nofitication";
 import OrderList from "./MyOrder";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+
 export function ProfileUser() {
   const [openAccount, setOpenAccount] = useState(true);
   const [selected, setSelected] = useState("Hồ sơ cá nhân");
@@ -39,6 +42,8 @@ export function ProfileUser() {
           <Route path="info/invoice" element={<InvoiceInfo />} />
           <Route path="info/privileges" element={<Privileges />} />
           <Route path="book-series" element={<BookSeries />} />
+          <Route path="book-series/index/:id" element={<BookSeriesDetails />} />
+          <Route path="vouchers" element={<MyVoucher />} />
           <Route path="notifications" element={<NotificationList />} />
           <Route path="orders" element={<OrderList />} />
           <Route path="*" element={<div>Chưa có nội dung</div>} />

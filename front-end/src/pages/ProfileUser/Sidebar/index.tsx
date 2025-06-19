@@ -9,11 +9,12 @@ import {
   Button,
   Box,
   Typography,
+  Badge, 
 } from "@mui/material";
 import { AccountCircle, ExpandLess, ExpandMore } from "@mui/icons-material";
 import {
   LocalShipping,
-  CardGiftcard,
+  ConfirmationNumber,
   LocalOffer,
   Notifications,
   Favorite,
@@ -42,9 +43,19 @@ export default function SidebarMenu({
     { label: "Ưu đãi thành viên", path: "info/privileges" },
   ];
 
+  const voucherCount = 6;
+
   const otherItems = [
     {label: "Đơn hàng của tôi",icon: <LocalShipping />, path:"orders"},
-    {label: "Ví voucher",icon: <CardGiftcard />, path:"vouchers"},
+    {
+      label: "Ví voucher",
+      icon: (
+        <Badge badgeContent={voucherCount} color="error">
+          <ConfirmationNumber />
+        </Badge>
+      ),
+      path: "vouchers",
+    },    
     {label: "Tài khoản F-Point / Freeship",icon: <LocalOffer />, path:"account-fpoint"},
     {label: "Thông Báo",icon: <Notifications />, path:"notifications"},
     {label: "Sản phẩm yêu thích",icon: <Favorite />, path:"wishlist"},
