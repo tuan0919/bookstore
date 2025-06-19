@@ -9,11 +9,11 @@ import {
   Inventory,
 } from "@mui/icons-material";
 import { grey } from "@mui/material/colors";
+
 interface StepItem {
   label: string;
   timestamp: string;
   key: "processing" | "isShipping" | "completed" | "cancelled";
-  
 }
 
 interface OrderProgressProps {
@@ -21,8 +21,8 @@ interface OrderProgressProps {
   date?: string;
 }
 
-export default function OrderProgress({ status, date }: OrderProgressProps) {
-  //   format date: dd/MM/yyyy - HH:mm
+export default function OrderProgress({ status }: OrderProgressProps) {
+  // Format ngày giờ
   const formatDate = (date: Date) => {
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -32,62 +32,7 @@ export default function OrderProgress({ status, date }: OrderProgressProps) {
     return `${day}/${month}/${year} - ${hours}:${minutes}`;
   };
 
-  //   cộng ngày
-  const addDays = (date: Date, days: number) => {
-    const result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-  };
-
-  const getSteps = () => {
-  let finalStep: StepItem;
-  let shippingStep: StepItem;
-  if (status === "PENDING_CONFIRMATION" || status === "CONFIRMED") {
-    shippingStep = {
-      label: "Đang giao hàng",
-      timestamp: "",
-      key: "isShipping",
-    };
-  }else {
-    shippingStep = {
-      label: "Đang giao hàng",
-      timestamp: formatDate(new Date()),
-      key: "isShipping",
-    };
-  }
-  if (status === "DELIVERED") {
-    const completedDate = addDays(new Date(),0);
-    finalStep = {
-      label: "Hoàn tất",
-      timestamp: formatDate(completedDate),
-      key: "completed",
-    };
-  } else if (status === "CANCELED") {
-    finalStep = {
-      label: "Đã hủy",
-      timestamp: formatDate(new Date()),
-      key: "cancelled",
-    };
-  } else {
-    finalStep = {
-      label: "Hoàn tất",
-      timestamp: "",
-      key: "completed",
-    };
-  }
-
-  return [
-    {
-      label: "Đang xử lý",
-      timestamp: formatDate(new Date()),
-      key: "processing",
-    },
-    shippingStep,
-    finalStep,
-  ];
-};
-
-  const steps = getSteps();
+  // Xác định index bước hiện tại
   const getCurrentStepIndex = () => {
     switch (status) {
       case "PENDING_CONFIRMATION":
@@ -103,42 +48,81 @@ export default function OrderProgress({ status, date }: OrderProgressProps) {
     }
   };
 
+  // Tạo các bước và gán timestamp cho tất cả các bước <= bước hiện tại
+  const getSteps = () => {
+    const currentDate = formatDate(new Date());
+
+    const stepItems: StepItem[] = [
+      {
+        label: "Đang xử lý",
+        timestamp: "",
+        key: "processing",
+      },
+      {
+        label: "Đang giao hàng",
+        timestamp: "",
+        key: "isShipping",
+      },
+      {
+        label: status === "CANCELED" ? "Đã hủy" : "Hoàn tất",
+        timestamp: "",
+        key: status === "CANCELED" ? "cancelled" : "completed",
+      },
+    ];
+
+    const currentStepIndex = getCurrentStepIndex();
+
+    // Gán timestamp cho tất cả các step trước hoặc bằng bước hiện tại
+    const updatedSteps = stepItems.map((step, index) => {
+      if (index <= currentStepIndex) {
+        return { ...step, timestamp: currentDate };
+      }
+      return step;
+    });
+
+    return updatedSteps;
+  };
+
+  const steps = getSteps();
   const currentStep = getCurrentStepIndex();
+
   const getBackgroundColor = (status: string) => {
     if (status === "DELIVERED") return "#f0fbea";
     if (status === "CANCELED") return "#ffecec";
     return "#f5f5f5";
   };
- const renderStepIcon = (stepKey: StepItem["key"]) => {
-  const color = getIconColor(stepKey);
 
-  switch (stepKey) {
-    case "processing":
-      return <Inventory fontSize="large" sx={{ color }} />;
-    case "isShipping":
-      return <LocalShipping fontSize="large" sx={{ color }} />;
-    case "completed":
-      return <CheckCircle fontSize="large" sx={{ color }} />;
-    case "cancelled":
-      return <Cancel fontSize="large" sx={{ color }} />;
-    default:
-      return null;
-  }
-};
-const getIconColor = (stepKey: StepItem["key"]) => {
-  if (status === "CANCELED") return "error.main";
+  const renderStepIcon = (stepKey: StepItem["key"]) => {
+    const color = getIconColor(stepKey);
 
-  if (stepKey === "processing" && currentStep >= 0) return "success.main";
-  if (stepKey === "isShipping" && currentStep >= 1) return "success.main";
-  if (stepKey === "completed" && currentStep >= 2) return "success.main";
+    switch (stepKey) {
+      case "processing":
+        return <Inventory fontSize="large" sx={{ color }} />;
+      case "isShipping":
+        return <LocalShipping fontSize="large" sx={{ color }} />;
+      case "completed":
+        return <CheckCircle fontSize="large" sx={{ color }} />;
+      case "cancelled":
+        return <Cancel fontSize="large" sx={{ color }} />;
+      default:
+        return null;
+    }
+  };
 
-  return "grey.300";
-};
+  const getIconColor = (stepKey: StepItem["key"]) => {
+    if (status === "CANCELED") return "error.main";
 
+    if (stepKey === "processing" && currentStep >= 0) return "success.main";
+    if (stepKey === "isShipping" && currentStep >= 1) return "success.main";
+    if (stepKey === "completed" && currentStep >= 2) return "success.main";
+
+    return "grey.300";
+  };
 
   const isCancelled = status === "CANCELED";
   const activeColor = isCancelled ? "error.main" : "success.main";
   const inactiveColor = "grey.300";
+
   return (
     <Box
       sx={{
@@ -156,7 +140,7 @@ const getIconColor = (stepKey: StepItem["key"]) => {
               sx={{
                 display: "flex",
                 alignItems: "center",
-                gap: 2, // khoảng cách giữa icon và nội dung
+                gap: 2,
               }}
             >
               <Box
@@ -170,7 +154,7 @@ const getIconColor = (stepKey: StepItem["key"]) => {
                   alignItems: "center",
                 }}
               >
-               {renderStepIcon(step.key as "processing" | "isShipping" | "completed" | "cancelled")}
+                {renderStepIcon(step.key)}
               </Box>
               <Box>
                 <Typography fontWeight="bold">{step.label}</Typography>
@@ -197,7 +181,6 @@ const getIconColor = (stepKey: StepItem["key"]) => {
         {steps.map((_, index) => {
           if (index === steps.length - 1) return null;
 
-          // Dòng trước bước hiện tại hoặc đang ở bước cuối thì đường đều xanh
           const isLineGreen = currentStep > index;
 
           return (
