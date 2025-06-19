@@ -66,6 +66,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         return { code: 500, result: 'Lỗi khi gọi API xóa giỏ hàng' };
     }
   };
+  
 
   useEffect(() => {
     fetchCart();

@@ -21,6 +21,7 @@
     "@mui/base": "^5.0.0-beta.70",
     "@mui/icons-material": "^6.4.8",
     "@mui/material": "^6.4.8",
+    "@paypal/react-paypal-js": "^8.8.3",
     "@tippyjs/react": "^4.2.6",
     "axios": "^1.9.0",
     "html-react-parser": "^5.2.2",
@@ -29,9 +30,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^6.30.0",
-    "swiper": "^11.2.6",
-    "@paypal/react-paypal-js": "^8.8.3"
-    
+    "swiper": "^11.2.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
