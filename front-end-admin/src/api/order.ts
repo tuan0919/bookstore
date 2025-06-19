@@ -1,7 +1,8 @@
 import { ApiResponse, PageApiResponse } from '@/types/api'
+
 import axiosInstance from './axios'
 import API_ENDPOINTS from './endpoint'
-
+import { OrderDTO } from '@/types/order'
 export interface OrderItem {
   img: string
   bookTitle: string
@@ -29,6 +30,7 @@ export interface OrderDTO {
   status: string
   shippingAddress: ShippingAddress
 }
+
 
 export const getOrders = async (page: number, size: number) => {
   const res = await axiosInstance.get<PageApiResponse<OrderDTO>>(

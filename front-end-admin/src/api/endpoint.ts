@@ -9,6 +9,13 @@ const API_ENDPOINTS = {
     GET_ALL_ORDER: `/admin/api/order`,
     GET_ORDER_BY_ID: (id: number) => `/admin/api/order/${id}`,
   },
+
+
+  PROMOTION: {
+    GET_ALL_PROMOTION: '/admin/api/promotion/',
+    CREATE: '/admin/api/promotion/create',
+  },
+
 }
 
 export default API_ENDPOINTS

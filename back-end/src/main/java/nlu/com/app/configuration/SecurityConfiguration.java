@@ -47,7 +47,8 @@ public class SecurityConfiguration {
 //                    admin endpoints, temporary public for easier testing
                 "/admin/api/book/*",
                 "/admin/api/order",
-                "/admin/api/order/*"
+                "/admin/api/order/*",
+                    "/admin/api/promotion/*"
             )
             .permitAll()
             .anyRequest().authenticated()

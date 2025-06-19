@@ -1,5 +1,6 @@
 package nlu.com.app.repository;
 
+import java.util.Collection;
 import java.util.List;
 import nlu.com.app.entity.Category;
 import nlu.com.app.entity.Promotion;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PromotionCategoriesRepository extends JpaRepository<PromotionCategories, Long> {
-
+  List<PromotionCategories> findByCategory_CategoryIdIn(Collection<Long> categoryIds);
   List<PromotionCategories> findByCategory(Category category);
 
   @Query("""
