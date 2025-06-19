@@ -1,6 +1,8 @@
 package nlu.com.app.service.impl;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,25 +14,15 @@ import lombok.experimental.FieldDefaults;
 import nlu.com.app.constant.EOrderStatus;
 import nlu.com.app.dto.cart.Cart;
 import nlu.com.app.dto.cart.CartItem;
+import nlu.com.app.dto.request.UpdateOrderStatus;
 import nlu.com.app.dto.response.OrderDetailsResponseDTO;
 import nlu.com.app.dto.response.OrderResponseDTO;
-import nlu.com.app.entity.Book;
-import nlu.com.app.entity.Order;
-import nlu.com.app.entity.OrderItem;
-import nlu.com.app.entity.PaymentMethod;
-import nlu.com.app.entity.Promotion;
-import nlu.com.app.entity.User;
-import nlu.com.app.entity.UserAddress;
+import nlu.com.app.dto.response.TimelineOrderResponseDTO;
+import nlu.com.app.entity.*;
 import nlu.com.app.exception.ApplicationException;
 import nlu.com.app.exception.ErrorCode;
 import nlu.com.app.mapper.OrderMapper;
-import nlu.com.app.repository.BookRepository;
-import nlu.com.app.repository.OrderItemRepository;
-import nlu.com.app.repository.OrderRepository;
-import nlu.com.app.repository.PaymentMethodRepository;
-import nlu.com.app.repository.PromotionCategoriesRepository;
-import nlu.com.app.repository.UserAddressRepository;
-import nlu.com.app.repository.UserRepository;
+import nlu.com.app.repository.*;
 import nlu.com.app.service.IOrderService;
 import nlu.com.app.util.SecurityUtils;
 import org.springframework.data.domain.Page;
@@ -56,6 +48,9 @@ public class OrderService implements IOrderService {
   UserRepository userRepository;
   OrderMapper orderMapper;
   UserAddressRepository userAddressRepository;
+  OrderTimelineRepository orderTimelineRepository;
+  // Định dạng ngày tháng theo mẫu: 23 th4, 2025 - 09:40 AM
+  private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("d 'th'M, yyyy - hh:mm a");
 
   @Override
   @Transactional
@@ -151,9 +146,18 @@ public class OrderService implements IOrderService {
         .orElseThrow(() -> new ApplicationException(ErrorCode.UNKNOWN_EXCEPTION));
     order.setPaymentMethod(paymentMethod);
 
+    OrderTimeline orderTimeline = OrderTimeline.builder()
+            .createdAt(LocalDateTime.now())
+            .orderStatus(EOrderStatus.PENDING_CONFIRMATION)
+            .name("Đơn hàng đã được tạo")
+            .description("Khách hàng xác nhận đơn hàng, chờ xác nhận.")
+            .order(order)
+            .build();
+
     // Save order
     orderRepository.save(order);
     orderItemRepository.saveAll(orderItems);
+    orderTimelineRepository.save(orderTimeline);
 
     // Clear cart
     cartService.removeItemsFromCart(user.getUserId(), selectedProductIds);
@@ -194,5 +198,84 @@ public class OrderService implements IOrderService {
 
     order.setStatus(EOrderStatus.CANCELED);
     orderRepository.save(order);
+  }
+
+  @Override
+  @Transactional
+  public String updateOrderStatus(Long orderId, UpdateOrderStatus request) {
+    // 1. Lấy đơn hàng
+    Order order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new ApplicationException(ErrorCode.ORDER_NOT_FOUND));
+
+    EOrderStatus currentStatus = order.getStatus();
+    EOrderStatus newStatus = EOrderStatus.valueOf(request.getStatus());
+
+    // 2. Kiểm tra logic hủy đơn hàng
+    if (newStatus == EOrderStatus.CANCELED) {
+      if (!(currentStatus == EOrderStatus.PENDING_CONFIRMATION || currentStatus == EOrderStatus.CONFIRMED)) {
+        throw new ApplicationException(ErrorCode.CANT_CANCEL_ORDER);
+      }
+    }
+
+    // 3. Cập nhật trạng thái mới
+    order.setStatus(newStatus);
+    orderRepository.save(order);
+
+    // 4. Tạo timeline phù hợp với trạng thái mới
+    OrderTimeline.OrderTimelineBuilder timelineBuilder = OrderTimeline.builder()
+            .createdAt(LocalDateTime.now())
+            .orderStatus(newStatus)
+            .order(order);
+
+    switch (newStatus) {
+      case PENDING_CONFIRMATION:
+        timelineBuilder
+                .name("Đơn hàng đã được tạo")
+                .description("Khách hàng xác nhận đơn hàng, chờ xác nhận.");
+        break;
+      case CONFIRMED:
+        timelineBuilder
+                .name("Đơn hàng đã được xác nhận")
+                .description("Đơn hàng đã được xác nhận bởi quản trị viên.");
+        break;
+      case SHIPPING:
+        timelineBuilder
+                .name("Đơn hàng đang được vận chuyển")
+                .description("Đơn hàng đã được giao cho đơn vị vận chuyển.");
+        break;
+      case DELIVERED:
+        timelineBuilder
+                .name("Đơn hàng đã giao thành công")
+                .description("Khách hàng đã nhận được đơn hàng.");
+        break;
+      case CANCELED:
+        timelineBuilder
+                .name("Đơn hàng đã bị hủy")
+                .description("Đơn hàng đã bị hủy bởi khách hàng hoặc quản trị viên.");
+        break;
+    }
+
+    orderTimelineRepository.save(timelineBuilder.build());
+
+    return "Cập nhật trạng thái đơn hàng thành công";
+  }
+
+  @Override
+  public TimelineOrderResponseDTO getTimelineOrder(Long orderId) {
+    // Lấy danh sách timeline theo orderId, sắp xếp theo thời gian tăng dần
+    List<OrderTimeline> timelines = orderTimelineRepository.findByOrderOrderIdOrderByCreatedAtAsc(orderId);
+
+    // Map sang DTO và định dạng ngày tháng
+    List<TimelineOrderResponseDTO.Timeline> dtoTimelines = timelines.stream()
+            .map(t -> TimelineOrderResponseDTO.Timeline.builder()
+                    .name(t.getName())
+                    .description(t.getDescription())
+                    .createdAt(t.getCreatedAt().format(FORMATTER))
+                    .build())
+            .collect(Collectors.toList());
+
+    return TimelineOrderResponseDTO.builder()
+            .timelines(dtoTimelines)
+            .build();
   }
 }
