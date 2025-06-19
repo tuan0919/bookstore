@@ -48,7 +48,8 @@ public class SecurityConfiguration {
                 "/admin/api/book/*",
                 "/admin/api/order",
                 "/admin/api/order/*",
-                    "/admin/api/promotion/*"
+                    "/admin/api/promotion/*",
+                    "/admin/api/chart/*"
             )
             .permitAll()
             .anyRequest().authenticated()
