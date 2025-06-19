@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
-import { getOrderById, OrderDTO } from '@/api/order'
+import { OrderDTO } from '@/types/order'
+import { getOrderById } from '@/api/order'
 
 export function useOrderDetails() {
   const [order, setOrder] = useState<OrderDTO | null>(null)
@@ -9,7 +10,6 @@ export function useOrderDetails() {
     const loadOrder = async () => {
       const dto = await getOrderById(Number(id))
       setOrder(dto.result)
-      console.log('order: ', dto.result)
     }
     loadOrder()
   }, [id])
