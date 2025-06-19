@@ -1,17 +1,10 @@
 import { Box, Divider, Typography, Checkbox } from "@mui/material";
-
+import { useCart } from "~/providers/CartProvider";
 import CartItem from "../CartItem/";
-export interface Book {
-  id: number;
-  title: string;
-  price: number;
-  quantity: number;
-  img: string;
-  salePrice: number;
-}
-
+import { CartItemPropertyResponseDTO } from "~/types/cart";
+import { useEffect, useState } from "react";
 interface ListCartItemProps {
-  listBook: Book[];
+  listBook: CartItemPropertyResponseDTO[];
   onQuantityChange: (bookId: number, newQuantity: number) => void;
   onToggleCheckbox: (bookId: number) => void;
   onToggleAll: () => void;
@@ -19,12 +12,16 @@ interface ListCartItemProps {
 }
 
 function ListCartItem({
-  listBook,
-  onQuantityChange,
+  listBook ,
   onToggleCheckbox,
   checkedItems,
   onToggleAll,
 }: ListCartItemProps) {
+  const {  cart, increaseItem, decreaseItem, removeItem } = useCart();
+ const [listBookData, setListBook] = useState(listBook);
+ useEffect(() => {
+    setListBook(cart); 
+  }, [cart]);
   return (
     <Box bgcolor={"#f5f5f5"}>
       {/* Header */}
@@ -75,19 +72,26 @@ function ListCartItem({
         p={2}
         bgcolor={"#fff"}
         borderRadius={2}
+       sx={{
+         overflowY:"auto",
+        maxHeight:"calc(100vh - 200px)"
+       }}
       >
-        {listBook.map((book, index) => (
-          <Box key={book.id}>
+        {listBookData.length > 0 &&  listBookData.map((item) => (
+          <Box key={item.productId}>
             <CartItem
-              key={book.id}
-              book={book}
-              onQuantityChange={onQuantityChange}
+             book={item}
+             
               onToggleCheckbox={onToggleCheckbox}
-              isChecked={checkedItems.includes(book.id)}
+              isChecked={checkedItems.includes(item.productId)}
+              increaseItem={increaseItem}
+              decreaseItem={decreaseItem}
+              removeItem={removeItem}
             />
-            {index !== listBook.length - 1 && <Divider sx={{ my: 2 }} />}
+            {item.productId !== listBookData.length - 1 && <Divider sx={{ my: 2 }} />}
           </Box>
         ))}
+     
       </Box>
     </Box>
   );

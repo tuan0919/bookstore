@@ -17,16 +17,19 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
 
   @Bean
-  public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
+  public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
     RedisTemplate<String, Object> template = new RedisTemplate<>();
-    template.setConnectionFactory(factory);
+    template.setConnectionFactory(connectionFactory);
 
-    // Key/Value serialization config
     template.setKeySerializer(new StringRedisSerializer());
     template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+    template.setHashKeySerializer(new StringRedisSerializer());
+    template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
 
+    template.afterPropertiesSet();
     return template;
   }
+
   @Bean
   RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
 

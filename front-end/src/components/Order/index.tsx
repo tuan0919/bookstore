@@ -10,55 +10,86 @@ import {
 import { Grid2 } from "@mui/material/";
 import { OrderDetailsProps } from "./OrderDetail";
 import { useNavigate } from "react-router-dom";
-
+import { cancelOrder } from "~/api/order";
+import CustomSnackbar from "~/components/Popup/Snackbar";
+import { useState } from "react";
 function onBuyAgain() {
   console.log("Buy again clicked");
 }
-
+export interface BookBought {
+  bookTitle: string;
+  quantity: number;
+  price: number;
+  discount: number;
+  img?: string; // Optional property
+}
 export default function Order({
   orderId,
   status,
   orderDateTime,
   imgBook,
   titleBook,
-  amount,
   price,
   feeShip,
   nameUser,
-    phoneNumber,
-    address,
-    paymentMethod,
-    shipmentMethod,
-    note
+  phoneNumber,
+  address,
+  paymentMethod,
+  shipmentMethod,
+  note,
+  items,
+  img,
+  refreshOrders,
+   goToAllTab
 }: OrderDetailsProps) {
   const navigate = useNavigate();
   function handleClick() {
-      const orderData = {
-        orderId,
-        status,
-        orderDateTime,
-        imgBook,
-        titleBook,
-        amount,
-        price,
-        feeShip,
-        nameUser,
-        phoneNumber,
-          address,
-          paymentMethod,
-          shipmentMethod,
-          note
-        // thêm các thông tin khác nếu cần
-      };
-    
-      // Lưu vào localStorage
-      localStorage.setItem("selectedOrder", JSON.stringify(orderData));
-    
-      // Điều hướng sang trang chi tiết
-      navigate(`view/order_id/${orderId}`);
-    }
+    const orderData = {
+      orderId,
+      status,
+      orderDateTime,
+      imgBook,
+      titleBook,
+      feeShip,
+      price,
+      nameUser,
+      phoneNumber,
+      address,
+      paymentMethod,
+      shipmentMethod,
+      note,
+      items,
+      img
+    };
 
+    // Lưu vào localStorage
+    localStorage.setItem("selectedOrder", JSON.stringify(orderData));
+
+    // Điều hướng sang trang chi tiết
+    navigate(`view/order_id/${orderId}`);
+  }
+  const amount = items.reduce((total, item) => total + item.quantity, 0);
+  const [isOpenSnackbar, setIsOpenSnackbar] = useState(false);
+  const [confirmCancel, setConfirmCancel] = useState(false);
+
+  // Xử lý hủy đơn
+  const handleCancelOrder = async () => {
+    // Ngăn chặn sự kiện click lan truyền lên Card
+    try {
+      const response = await cancelOrder(Number(orderId));
+      if (response.code === 1000) {
+        alert("Đơn hàng đã được hủy thành công.");
+        setIsOpenSnackbar(true);
+      } else {
+        alert("Hủy đơn hàng không thành công. Vui lòng thử lại sau.");
+      }
+    } catch (error) {
+      console.error("Lỗi khi hủy đơn hàng:", error);
+      alert("Đã xảy ra lỗi khi hủy đơn hàng. Vui lòng thử lại sau.");
+    }
+  };
   return (
+    <>
     <Card
       variant="outlined"
       sx={{
@@ -112,12 +143,13 @@ export default function Order({
               width: 64,
               height: 80,
               borderRadius: 1,
-              overflow: "hidden",
+              overflow: "visible",
               flexShrink: 0,
+              objectFit: "contain",
             }}
           >
             <img
-              src={imgBook}
+              src={items[0]?.img}
               alt={titleBook}
               style={{
                 width: "100%",
@@ -136,9 +168,13 @@ export default function Order({
               fontWeight={500}
               sx={{
                 wordBreak: "break-word",
+                maxWidth: 300,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
               }}
             >
-              {titleBook}
+              {items.map((item) => item.bookTitle).join(", ")}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
               {amount} sản phẩm
@@ -159,7 +195,7 @@ export default function Order({
           <Typography variant="body2" color="text.secondary">
             Tổng tiền:{" "}
             <span style={{ color: "red", fontWeight: "bold", fontSize: 16 }}>
-              {(price * amount + feeShip).toLocaleString()} ₫
+              {price.toLocaleString()} ₫
             </span>
           </Typography>
         </Grid2>
@@ -177,9 +213,49 @@ export default function Order({
             >
               Mua lại
             </Button>
+            {status === "PENDING_CONFIRMATION" && (
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={(e) => {
+                  e.stopPropagation(); // Ngăn chặn sự kiện click lan truyền lên Card(vào chi tiết hóa đơn)
+                  e.preventDefault(); // Ngăn chặn hành động mặc định của nút
+                  setConfirmCancel(true);
+                  setConfirmCancel(true);
+                }}
+              >
+                Hủy đơn
+              </Button>
+            )}
+           
           </Stack>
         </Grid2>
       </Grid2>
     </Card>
+     {confirmCancel && (
+              <CustomSnackbar
+                open={confirmCancel}
+                onClose={() => setConfirmCancel(false)}
+                severity="warning"
+                message="Bạn có chắc chắn muốn hủy đơn không?"
+                duration={3000}
+                actionButtons={[
+                  {
+                    label: "Đồng ý",
+                    onClick: async () => {
+                      await handleCancelOrder();
+                      refreshOrders(); // Load lại đơn hàng
+                      goToAllTab(); 
+                      setConfirmCancel(false);
+                    },
+                  },
+                  {
+                    label: "Hủy",
+                    onClick: () => setConfirmCancel(false),
+                  },
+                ]}
+              />
+            )}
+            </>
   );
 }

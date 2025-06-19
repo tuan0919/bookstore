@@ -1,20 +1,24 @@
 import { Box, Checkbox, IconButton, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import QuantityInput from "../../../components/NumberInput";
-import { Book } from "../ListCartItem";
-
+import { CartItemPropertyResponseDTO } from "~/types/cart";
+import {CartResult} from "~/providers/CartProvider";
 interface CartItemProps {
-  book: Book;
-  onQuantityChange: (bookId: number, newQuantity: number) => void;
+  book: CartItemPropertyResponseDTO;
   onToggleCheckbox: (bookId: number) => void;
   isChecked: boolean;
+  increaseItem: (bookId: string, quantity: number) => Promise<CartResult>;
+  decreaseItem: (bookId: string, quantity: number) => Promise<CartResult>;
+  removeItem?: (bookId: string) => Promise<CartResult>;  
 }
 
 function CartItem({
   book,
-  onQuantityChange,
   onToggleCheckbox,
   isChecked,
+  increaseItem,
+decreaseItem,
+  removeItem
 }: CartItemProps) {
   return (
     <Box
@@ -29,13 +33,13 @@ function CartItem({
         color="error"
         defaultChecked
         checked={isChecked}
-        onChange={() => onToggleCheckbox(book.id)}
+        onChange={() => onToggleCheckbox(book.productId)}
       />
 
       {/* Hình ảnh sách */}
       <Box width={80} height={80} flexShrink={0}>
         <img
-          src={book.img}
+          src={book.imageUrl}
           alt={book.title}
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
@@ -65,12 +69,10 @@ function CartItem({
         borderRadius={1}
       >
         <QuantityInput
+         bookId={book.productId.toString()}
           value={book.quantity}
-          onChange={(e, val) => {
-            if (val !== null) {
-              onQuantityChange(book.id, val); // Gọi hàm truyền lên từ cha
-            }
-          }}
+          onIncrease={(id, val) => increaseItem(id, val)}
+          onDecrease={(id, val) => decreaseItem(id, val)}
         ></QuantityInput>
       </Box>
 
@@ -80,7 +82,7 @@ function CartItem({
       </Typography>
 
       {/* Nút xoá */}
-      <IconButton color="error">
+      <IconButton color="error" onClick={() => removeItem?.(book.productId.toString())}>
         <DeleteIcon />
       </IconButton>
     </Box>

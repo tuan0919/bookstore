@@ -1,8 +1,12 @@
 server:
-  port: 8181
+  port: 8080
   servlet:
     context-path: /
 spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 100MB
   application:
     name: BackEnd-BookStore
   jpa:
@@ -15,15 +19,23 @@ spring:
     url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/bookstore}
   data:
     redis:
-      port: 6389
+      port: 6379
       host: localhost
-
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false
 app:
-  jwt-key: 1ytvns7A2HHo2GUQ2d82xS2I7dRyWWv1BTU51Ve+il0=
+  jwt-key: 1ytvns7A2HHo2GUQ2d82xS2I7dRyWWv1BTU51Ve+il0
   aws:
-    access-key-id: ${SPRING_AWS_ACCESS_KEY_ID:<Nhập Key ID vào đây>}
-    secret-access-key: ${SPRING_AWS_SECRET_ACCESS_KEY:<Nhập Secret Key Id vào đây>}
+    access-key-id:  ${SPRING_AWS_ACCESS_KEY_ID:_}
+    secret-access-key: ${SPRING_AWS_SECRET_ACCESS_KEY:_}
     bucket:
       name: nqat.bookstore.bucket
       request-timeout: 3600 # in seconds
+  temp-folder: D:\tmp
 
+  paypal:
+    client-id: ${SPRING_PAYPAL_CLIENT_ID:AXjNIAvmyN7nqjWNdYrdjoX94D4vcaJ2LWHdXqz8qular76_jCvfH-uOSdCojCK-fgpo920v7bFA3Hm1}
+    client-secret: ${SPRING_PAYPAL_CLIENT_SECRET:EIVotgOAxlAu80qDQnGxTWjKb_MsI0hxy-LsqlAzPWoQepxn_DmODeEDxVjYDIhyP_zmqOBye41xrXS-}

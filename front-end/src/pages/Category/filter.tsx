@@ -4,62 +4,28 @@ import { grey, orange, red } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
-
-interface Category {
+import { getCategories } from "../../mapper/CategoryMapper";
+import { getGenres } from "../../mapper/CategoryMapper";
+import { useSearchContext } from "~/providers/SearchProvider";
+export interface Category {
+  id: number;
   name: string;
   slug: string;
-  subCategories?: Category[];
+  subCategories: Category[];
 }
 
-const categories: Category[] = [
-  {
-    name: "Sách tiếng Việt",
-    slug: "sach-tieng-viet",
-    subCategories: [
-      {
-        name: "Manga",
-        slug: "manga",
-        subCategories: [
-          { name: "Shounen", slug: "shounen" },
-          { name: "Shoujo", slug: "shoujo" },
-        ],
-      },
-      { name: "Comic", slug: "comic" },
-      { name: "Manhwa", slug: "manhwa" },
-      { name: "Manhua", slug: "manhua" },
-      { name: "Light Novel", slug: "light-novel" },
-    ],
-  },
-  {
-    name: "Sách ngoại văn",
-    slug: "sach-ngoai-van",
-    subCategories: [
-      { name: "Manga", slug: "manga" },
-      { name: "Comic", slug: "comic" },
-      { name: "Manhwa", slug: "manhwa" },
-      { name: "Manhua", slug: "manhua" },
-      { name: "Light Novel", slug: "light-novel" },
-    ],
-  },
-  {
-    name: "Sách tiếng Nhật",
-    slug: "sach-tieng-nhat",
-  },
-  {
-    name: "Sản phẩm giới hạn",
-    slug: "san-pham-gioi-han",
-  },
-];
-const ageGroups = ["Dưới 6 tuổi", "6-12 tuổi", "12-18 tuổi", "Trên 18 tuổi"];
+const categories: Category[] = getCategories();
 const priceRanges = ["Dưới 100K", "100K - 300K", "300K - 500K", "Trên 500K"];
-const genres = ["Hành động", "Phiêu lưu", "Tình cảm", "Hài hước", "Kinh dị"];
-
+const genres = getGenres();
 interface FilterSidebarProps {
   currentSlug?: string;
-  
+  onPriceFilterChange?: (selectedPrices: string[]) => void;
 }
 
-export default function FilterSidebar({ currentSlug }: FilterSidebarProps) {
+export default function FilterSidebar({
+  currentSlug,
+  onPriceFilterChange,
+}: FilterSidebarProps) {
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
     new Set()
   );
@@ -68,7 +34,7 @@ export default function FilterSidebar({ currentSlug }: FilterSidebarProps) {
     [key: string]: boolean;
   }>({});
   const navigate = useNavigate();
-
+  const { setFilters } = useSearchContext();
   useEffect(() => {
     if (currentSlug) {
       const slugParts = currentSlug.split("/").filter(Boolean);
@@ -85,7 +51,6 @@ export default function FilterSidebar({ currentSlug }: FilterSidebarProps) {
         });
 
         setExpandedCategories(expanded);
-        console.log("Expanded categories:", expanded);
       }
     } else {
       setShowAllCategories(true);
@@ -93,11 +58,17 @@ export default function FilterSidebar({ currentSlug }: FilterSidebarProps) {
     }
   }, [currentSlug]);
 
-  const handleCategoryClick = (fullSlug: string) => {
+  const handleCategoryClick = (fullSlug: string, categoryId: number) => {
     navigate(`/category/${fullSlug}`);
+    setFilters((prev) => ({ ...prev, categoryId: categoryId }));
   };
   const handleFilterChange = (filter: string) => {
-    setSelectedFilters((prev) => ({ ...prev, [filter]: !prev[filter] }));
+    const updated = { ...selectedFilters, [filter]: !selectedFilters[filter] };
+    setSelectedFilters(updated);
+
+    // Gửi các giá tiền được chọn ra ngoài
+    const selectedPrices = priceRanges.filter((price) => updated[price]);
+    onPriceFilterChange?.(selectedPrices);
   };
   const renderCategories = (
     categoriesToRender: Category[],
@@ -105,19 +76,16 @@ export default function FilterSidebar({ currentSlug }: FilterSidebarProps) {
     level = 0
   ) => {
     return categoriesToRender.map((category) => {
-     console.log("parentSlug ban đầu thế nào:", parentSlug);
       const fullSlug = parentSlug
         ? `${parentSlug}/${category.slug}`
         : `${category.slug}`;
-        console.log("fullSlug ban đầu có rỗng ko:", fullSlug);
+
       const hasSubCategories =
         category.subCategories && category.subCategories.length > 0;
 
       // **Chỉ đổi màu đỏ cho mục đang chọn**
       const isSelected = currentSlug?.slice(1) === fullSlug;
-      console.log("Current isSelected:", isSelected);
-      console.log(" fullSlug:", fullSlug);
-      console.log(" currentSlug:", currentSlug);
+
       return (
         <Box key={category.slug} pl={level * 2}>
           <Link
@@ -130,7 +98,7 @@ export default function FilterSidebar({ currentSlug }: FilterSidebarProps) {
               "&:hover": { color: orange[600] },
             }}
             onClick={() => {
-              handleCategoryClick(fullSlug);
+              handleCategoryClick(fullSlug, category.id);
             }}
           >
             {category.name}
@@ -156,7 +124,7 @@ export default function FilterSidebar({ currentSlug }: FilterSidebarProps) {
       flexDirection="column"
       gap={2}
       sx={{
-        backgroundColor: "white"
+        backgroundColor: "white",
       }}
     >
       {/* Nhóm sản phẩm */}
@@ -192,25 +160,6 @@ export default function FilterSidebar({ currentSlug }: FilterSidebarProps) {
               )
             )}
       </Box>
-      {/* Nhóm Tuổi */}
-      <Box>
-        <Typography fontWeight={700} fontSize={16} color={grey[800]}>
-          NHÓM TUỔI
-        </Typography>
-        {ageGroups.map((age) => (
-          <FormControlLabel
-            key={age}
-            sx={{ display: "block" }} // Ép checkbox xuống dòng
-            control={
-              <Checkbox
-                checked={!!selectedFilters[age]}
-                onChange={() => handleFilterChange(age)}
-              />
-            }
-            label={age}
-          />
-        ))}
-      </Box>
 
       {/* Giá Tiền */}
       <Box>
@@ -239,15 +188,15 @@ export default function FilterSidebar({ currentSlug }: FilterSidebarProps) {
         </Typography>
         {genres.map((genre) => (
           <FormControlLabel
-            key={genre}
+            key={genre.id}
             sx={{ display: "block" }} // Ép checkbox xuống dòng
             control={
               <Checkbox
-                checked={!!selectedFilters[genre]}
-                onChange={() => handleFilterChange(genre)}
+                checked={!!selectedFilters[genre.name]}
+                onChange={() => handleFilterChange(genre.name)}
               />
             }
-            label={genre}
+            label={genre.name}
           />
         ))}
       </Box>

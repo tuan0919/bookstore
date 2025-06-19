@@ -1,4 +1,3 @@
-import React from "react";
 import {
     Card,
     CardContent,
@@ -10,7 +9,11 @@ import {
     Paper,
 } from "@mui/material";
 
+
 export default function PersonalProfile() {
+const userDetails = JSON.parse(localStorage.getItem("userDetails") || "{}");
+console.log("userDetails", userDetails);
+const [day, month, year] = userDetails.dateOfBirth.split('-');
     return (
         <>
             {/* Banner */}
@@ -110,32 +113,20 @@ export default function PersonalProfile() {
                         Hồ sơ cá nhân
                     </Typography>
                     <Grid container spacing={2} direction="column">
-                        {/* Họ */}
+                        {/* Họ và tên */}
                         <Grid item>
                             <Grid container alignItems="center">
                                 <Grid item xs={3}>
                                     <Typography variant="body2">
-                                        Họ<span style={{ color: "red" }}>*</span>
+                                        Họ và tên<span style={{ color: "red" }}>*</span>
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={9}>
-                                    <TextField fullWidth size="small" defaultValue="Tuấn Hoàng" />
+                                    <TextField fullWidth size="small" defaultValue={userDetails.fullName} />
                                 </Grid>
                             </Grid>
                         </Grid>
-                        {/* Tên */}
-                        <Grid item>
-                            <Grid container alignItems="center">
-                                <Grid item xs={3}>
-                                    <Typography variant="body2">
-                                        Tên<span style={{ color: "red" }}>*</span>
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={9}>
-                                    <TextField fullWidth size="small" defaultValue="Minh" />
-                                </Grid>
-                            </Grid>
-                        </Grid>
+                      
                         {/* Số điện thoại */}
                         <Grid item>
                             <Grid container alignItems="center">
@@ -144,7 +135,7 @@ export default function PersonalProfile() {
                                 </Grid>
                                 <Grid item xs={9}>
                                     <Box position="relative">
-                                        <TextField fullWidth size="small" defaultValue="0987693574" />
+                                        <TextField fullWidth size="small" defaultValue={userDetails.phoneNum} />
                                         <Button
                                             size="small"
                                             sx={{
@@ -161,7 +152,7 @@ export default function PersonalProfile() {
                             </Grid>
                         </Grid>
                         {/* Email */}
-                        <Grid item>
+                        {/* <Grid item>
                             <Grid container alignItems="center">
                                 <Grid item xs={3}>
                                     <Typography variant="body2">Email</Typography>
@@ -183,7 +174,7 @@ export default function PersonalProfile() {
                                     </Box>
                                 </Grid>
                             </Grid>
-                        </Grid>
+                        </Grid> */}
                         {/* Birthday */}
                         <Grid item>
                             <Grid container alignItems="center">
@@ -195,13 +186,13 @@ export default function PersonalProfile() {
                                 <Grid item xs={9}>
                                     <Grid container spacing={1}>
                                         <Grid item xs={4}>
-                                            <TextField fullWidth size="small" defaultValue="28" />
+                                            <TextField fullWidth size="small" defaultValue={day} />
                                         </Grid>
                                         <Grid item xs={4}>
-                                            <TextField fullWidth size="small" defaultValue="12" />
+                                            <TextField fullWidth size="small" defaultValue={month} />
                                         </Grid>
                                         <Grid item xs={4}>
-                                            <TextField fullWidth size="small" defaultValue="2003" />
+                                            <TextField fullWidth size="small" defaultValue={year} />
                                         </Grid>
                                     </Grid>
                                 </Grid>

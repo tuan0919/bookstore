@@ -55,6 +55,6 @@ public class UserReview {
   private String reviewText;
 
   @Column(name = "review_date")
-  private LocalDate review_date;
+  private LocalDate reviewDate;
 }
 

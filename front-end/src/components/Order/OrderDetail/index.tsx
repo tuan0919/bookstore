@@ -10,7 +10,7 @@ import {
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import OrderStepper from "../OrderProgress";
-
+import { BookBought } from "../index";
 export interface OrderDetailsProps {
   orderId: string;
   orderDateTime: string;
@@ -25,7 +25,10 @@ export interface OrderDetailsProps {
   status: string;
   imgBook: string;
   titleBook: string;
-  amount: number;
+  items: BookBought[];
+  img?: string; 
+  refreshOrders : () => void; 
+   goToAllTab: () => void; 
 }
 
 export default function OrderDetail() {
@@ -44,7 +47,9 @@ export default function OrderDetail() {
     status: "",
     imgBook: "",
     titleBook: "",
-    amount: 1,
+    img:"",
+    items: [],
+     refreshOrders: () => {},
   });
 
   useEffect(() => {
@@ -57,8 +62,21 @@ export default function OrderDetail() {
       }
     }
   }, [orderId]);
-
-  const total = order.price * order.amount + order.feeShip;
+  const amount = order.items.reduce(
+    (acc, item) => acc + item.quantity,
+    0
+  );
+  const total = order.price  + order.feeShip;
+  const getBackgroundColor = (status: string) => {
+    if (status === "DELIVERED") return "#f0fbea";
+    if (status === "CANCELED") return "#ffecec";
+    return "#f5f5f5";
+  };
+  const getFontColor = (status: string) => {
+    if (status === "DELIVERED") return "#6bbf5a";
+    if (status === "CANCELED") return "#ff6666";
+    return "#a6a6a6";
+  };
 
   return (
     <Box p={2}>
@@ -73,8 +91,8 @@ export default function OrderDetail() {
               label={order.status}
               sx={{
                 marginLeft: 1,
-                bgcolor: "rgba(35, 193, 107, 0.2)",
-                color: "#23C16B",
+                bgcolor: getBackgroundColor(order.status),
+                color: getFontColor(order.status),
                 fontWeight: "bold",
               }}
             />
@@ -84,7 +102,7 @@ export default function OrderDetail() {
             Ngày mua: {order.orderDateTime}
           </Typography>
         </Grid2>
-        <OrderStepper status={order.status} />
+        <OrderStepper status={order.status} date={order.orderDateTime} />
       </Paper>
 
       <Grid2
@@ -182,37 +200,47 @@ export default function OrderDetail() {
       </Grid2>
 
       {/* Danh sách sản phẩm */}
-      <Paper variant="outlined" sx={{ p: 2, borderRadius: 2}}>
+      <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
         <Typography fontWeight="bold" gutterBottom>
-          Sản phẩm ({order.amount})
+          Sản phẩm ({amount})
         </Typography>
-        <Grid2 container spacing={2} alignItems="center">
-          <Grid2>
-            <Box
-              component="img"
-              src={order.imgBook}
-              alt={order.titleBook}
-              sx={{
-                width: 64,
-                height: 80,
-                borderRadius: 1,
-                objectFit: "cover",
-              }}
-            />
+
+        {order.items.map((item, index) => (
+          <Grid2
+            container
+            spacing={2}
+            alignItems="center"
+            key={index}
+            sx={{ mb: 1 }}
+          >
+            <Grid2>
+              <Box
+                component="img"
+                src={item.img || "/placeholder.png"} 
+                alt={item.bookTitle}
+                sx={{
+                  width: 64,
+                  height: 80,
+                  borderRadius: 1,
+                  objectFit: "cover",
+                }}
+              />
+            </Grid2>
+            <Grid2>
+              <Typography color="text.secondary">
+                Giá: {item.price.toLocaleString("vi-VN")} ₫ × {item.quantity}
+              </Typography>
+            </Grid2>
+            <Grid2>
+              <Typography fontWeight="bold">
+                {(item.price * item.quantity).toLocaleString("vi-VN")} ₫
+              </Typography>
+            </Grid2>
           </Grid2>
-          <Grid2>
-            <Typography>{order.titleBook}</Typography>
-            <Typography color="text.secondary">
-              Giá: {order.price.toLocaleString("vi-VN")} ₫ × {order.amount}
-            </Typography>
-          </Grid2>
-          <Grid2>
-            <Typography fontWeight="bold">
-              {(order.price * order.amount).toLocaleString("vi-VN")} ₫
-            </Typography>
-          </Grid2>
-        </Grid2>
+        ))}
+
         <Divider sx={{ my: 2 }} />
+
         <Box display="flex" justifyContent="flex-end">
           <Typography fontWeight="bold" color="error">
             Tổng tiền: {total.toLocaleString("vi-VN")} ₫

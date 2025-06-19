@@ -3,8 +3,25 @@ import { grey, red } from "@mui/material/colors";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import bookImage from "~/assets/product/mockup_1.png";
 import { useNavigate } from "react-router-dom";
-export function BookCard() {
+import { useCart } from "~/providers/CartProvider";
+import CustomSnackbar from "~/components/Popup/Snackbar";
+import { useState } from "react";
+export interface BookCard {
+  thumbnail: string;
+  title: string;
+  discountPrice: number;
+  originallPrice: number;
+  bookId: number;
+}
+export function BookCard({ card }: { card?: BookCard }) {
   const navigate = useNavigate();
+  const { increaseItem } = useCart();
+  const [initStateSnackbar, setStateSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+    duration: 800,
+  });
   return (
     <Box
       sx={{
@@ -28,7 +45,17 @@ export function BookCard() {
         gap: "4px",
         backgroundColor: "#fff",
       }}
+      onClick={() => {
+        navigate(`/details/${card?.bookId}`);
+      }}
     >
+      <CustomSnackbar
+        open={initStateSnackbar.open}
+        onClose={() => setStateSnackbar({ ...initStateSnackbar, open: false })}
+        message={initStateSnackbar.message}
+        severity="success"
+        duration={initStateSnackbar.duration}
+      />
       {/* Ảnh sách + icon giỏ hàng overlay */}
       <Box
         sx={{
@@ -41,7 +68,7 @@ export function BookCard() {
       >
         <Box
           component="img"
-          src={bookImage}
+          src={card?.thumbnail || bookImage}
           sx={{
             width: "100%",
             height: "100%",
@@ -85,8 +112,14 @@ export function BookCard() {
                 backgroundColor: red[800],
               },
             }}
-            onClick={() => {
-              navigate("/cart");
+            onClick={(event) => {
+              event.stopPropagation();
+              increaseItem(card?.bookId.toString() || "", 1);
+              setStateSnackbar({
+                ...initStateSnackbar,
+                open: true,
+                message: "Đã thêm vào giỏ hàng",
+              });
             }}
           >
             <ShoppingCartIcon fontSize="small" />
@@ -95,30 +128,37 @@ export function BookCard() {
       </Box>
 
       {/* Tiêu đề sách */}
-      <Typography
-        fontFamily={"Segoe UI"}
-        sx={{
-          fontSize: 15,
-          fontWeight: 600,
-          color: grey[900],
-          transition: "color 0.4s ease-in-out",
-          cursor: "pointer",
-          "&:hover": {
-            color: red[600],
-          },
-        }}
-      >
-        Dược sư tự sự (Manga) - Tập 13
-      </Typography>
+      <Tooltip title={card?.title || "Dược sư tự sự (Manga) - Tập 13"}>
+        <Typography
+          fontFamily={"Segoe UI"}
+          sx={{
+            fontSize: 15,
+            fontWeight: 600,
+            color: grey[900],
+            transition: "color 0.4s ease-in-out",
+            cursor: "pointer",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            "&:hover": {
+              color: red[600],
+            },
+          }}
+        >
+          {card?.title || `Dược sư tự sự (Manga) - Tập 13`}
+        </Typography>
+      </Tooltip>
 
-      {/* Giá bán & Giá gạch */}
+      {/* Giá bán & Giá bị gạch (giảm giá) */}
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography
           fontFamily={"Segoe UI"}
           sx={{ fontSize: 15, fontWeight: 600 }}
           color={red[600]}
         >
-          39,950₫
+          {card?.discountPrice.toLocaleString("vi") + "₫" || "39.950₫"}
         </Typography>
         <Typography
           fontFamily={"Segoe UI"}
@@ -130,7 +170,7 @@ export function BookCard() {
           }}
           color={grey[400]}
         >
-          47,000₫
+          {card?.originallPrice.toLocaleString("vi") + "₫" || "47.000₫"}
         </Typography>
       </Box>
     </Box>
