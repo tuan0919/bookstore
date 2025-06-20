@@ -6,21 +6,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nlu.com.app.dto.AppResponse;
 import nlu.com.app.dto.request.CreateOrderRequest;
+import nlu.com.app.dto.request.UpdateOrderStatus;
 import nlu.com.app.dto.response.OrderResponseDTO;
 import nlu.com.app.dto.response.PaymentMethodDTO;
+import nlu.com.app.dto.response.TimelineOrderResponseDTO;
 import nlu.com.app.service.IOrderService;
 import nlu.com.app.service.IPaymentMethodService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author VuLuu
@@ -60,5 +55,17 @@ public class OrderController {
   public AppResponse<String> cancelOrder(@PathVariable Long orderId) {
     orderService.cancelOrder(orderId);
     return AppResponse.<String>builder().result("Order cancelled successfully").build();
+  }
+
+  @PutMapping("/{orderId}/status")
+  public AppResponse<String> updateStatus(@PathVariable Long orderId, @RequestBody UpdateOrderStatus request) {
+    return AppResponse.<String>builder().result(orderService.updateOrderStatus(orderId, request)).build();
+  }
+
+  @GetMapping("/{orderId}/timeline")
+  public AppResponse<TimelineOrderResponseDTO> getTimelineOrders(@PathVariable Long orderId) {
+    return AppResponse.<TimelineOrderResponseDTO>builder()
+            .result(orderService.getTimelineOrder(orderId))
+            .build();
   }
 }

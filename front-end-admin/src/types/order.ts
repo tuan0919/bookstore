@@ -6,6 +6,10 @@ export interface OrderItem {
   discount: number
 }
 
+export interface OrderTimeline {
+  timelines: { name: string; description: string; createdAt: string }[]
+}
+
 interface ShippingAddress {
   unitNumber: string
   streetNumber: string
@@ -18,10 +22,15 @@ interface ShippingAddress {
 
 export interface OrderDTO {
   orderId: number
-  orderDate: string // ISO format, consider using Date if parsed
+  orderDate: string
   totalAmount: number
   paymentMethodName: string
   items: OrderItem[]
   status: string
   shippingAddress: ShippingAddress
+  customer: {
+    user_id: number
+    username: string
+    email: string
+  }
 }

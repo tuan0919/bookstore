@@ -42,6 +42,8 @@ public class SecurityConfiguration {
                 "/api/v1/auth/login",
                 "/api/v1/file/upload",
                 "/api/book/**",
+                "/api/orders/*/status",
+                "/api/orders/*/timeline",
                 "/api/category/**",
                 "/api/review/*/overall",
 //                    admin endpoints, temporary public for easier testing
