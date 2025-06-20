@@ -27,11 +27,10 @@ import { BookRelated } from "../BookRelated";
 import { useState } from "react";
 import { SaveBookDialog } from "../SaveBookDialog";
 import { NewBookCollectionDialog } from "../SaveBookDialog/NewBookCollectionDialog";
-import {
-  
-  useBookDetailsContext,
-} from "~/context/BookDetailsContext";
+import { useBookDetailsContext } from "~/context/BookDetailsContext";
 import CustomSnackbar from "~/components/Popup/Snackbar";
+import { useTranslation } from "react-i18next";
+import { CATEGORY_CODE_TO_NAME } from "~/constant/category";
 const CustomizeBox = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -44,18 +43,13 @@ const CustomizeBox = styled(Box)(({ theme }) => ({
 }));
 
 export function BookDetails() {
-  const { addToCart } = useBookDetailsContext();
-  const breadcrumbs = [
-    <Link underline="hover" key="1" color="inherit" href="/">
-      Foreign books
-    </Link>,
-    <Link underline="hover" key="2" color="inherit" href="/">
-      Personal Development
-    </Link>,
-    <Typography key="3" sx={{ color: "text.primary" }}>
-      Popular Psychology
-    </Typography>,
-  ];
+  const { addToCart, categoryChain } = useBookDetailsContext();
+  type CategoryCode = keyof typeof CATEGORY_CODE_TO_NAME;
+  const breadcrumbs = (categoryChain?.list || []).map((c) => (
+    <Link key={c.id} href={`/category?categoryId=${c.id}&page=1&size=12`}>
+      {CATEGORY_CODE_TO_NAME[c.name as CategoryCode]}
+    </Link>
+  ));
   const [open, setOpen] = useState(false);
   const [openSubDialog, setOpenSubDialog] = useState(false);
   const [initStateSnackbar, setStateSnackbar] = useState({
@@ -64,6 +58,7 @@ export function BookDetails() {
     severity: "success",
     duration: 800,
   });
+  const { t } = useTranslation();
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -102,7 +97,9 @@ export function BookDetails() {
                   });
                 }}
               >
-                <Typography fontWeight={"bold"}>Thêm vào giỏ hàng</Typography>
+                <Typography fontWeight={"bold"}>
+                  {t("page.bookDetail.buttonAddToCart")}
+                </Typography>
               </Button>
               {/* Popup thông báo thêm sách  */}
               <CustomSnackbar
@@ -121,7 +118,9 @@ export function BookDetails() {
                 startIcon={<AddCardRoundedIcon />}
                 sx={{ textTransform: "none" }}
               >
-                <Typography fontWeight={"bold"}>Mua ngay</Typography>
+                <Typography fontWeight={"bold"}>
+                  {t("page.bookDetail.buttonBuyNow")}
+                </Typography>
               </Button>
               <IconButton onClick={handleClickOpen}>
                 <BookmarkBorderRoundedIcon />

@@ -21,7 +21,7 @@ import {
   RateReview,
 } from "@mui/icons-material";
 import { red } from "@mui/material/colors";
-
+import { useTranslation } from "react-i18next";
 export default function SidebarMenu({
   selected,
   setSelected,
@@ -30,26 +30,26 @@ export default function SidebarMenu({
   currentPath,
 }) {
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   const handleClick = (path: string) => {
     navigate(`/profileUser/${path}`);
   };
   const accountItems = [
-    { label: "Hồ sơ cá nhân", path: "info/account" },
-    { label: "Sổ địa chỉ", path: "info/address" },
-    { label: "Đổi mật khẩu", path: "info/password" },
-    { label: "Thông tin xuất hóa đơn GTGT", path: "info/invoice" },
-    { label: "Ưu đãi thành viên", path: "info/privileges" },
+    { label: `${(t('page.profileUser.profileSection.acccountItem.item1'))}`, path: "info/account" },
+    { label: `${(t('page.profileUser.profileSection.acccountItem.item2'))}`, path: "info/address" },
+    { label: `${(t('page.profileUser.profileSection.acccountItem.item3'))}`, path: "info/password" },
+    { label: `${(t('page.profileUser.profileSection.acccountItem.item4'))}`, path: "info/invoice" },
+    { label: `${(t('page.profileUser.profileSection.acccountItem.item5'))}`, path: "info/privileges" },
   ];
 
   const otherItems = [
-    {label: "Đơn hàng của tôi",icon: <LocalShipping />, path:"orders"},
-    {label: "Ví voucher",icon: <CardGiftcard />, path:"vouchers"},
-    {label: "Tài khoản F-Point / Freeship",icon: <LocalOffer />, path:"account-fpoint"},
-    {label: "Thông Báo",icon: <Notifications />, path:"notifications"},
-    {label: "Sản phẩm yêu thích",icon: <Favorite />, path:"wishlist"},
-    {label: "Sách theo bộ",icon: <MenuBook />, path:"book-series"},
-    {label: "Nhận xét của tôi",icon: <RateReview />, path:"review"},
+    {label: `${(t('page.profileUser.profileSection.otherItem.item1'))}`,icon: <LocalShipping />, path:"orders"},
+    {label: `${(t('page.profileUser.profileSection.otherItem.item2'))}`,icon: <CardGiftcard />, path:"vouchers"},
+    {label: `${(t('page.profileUser.profileSection.otherItem.item3'))}`,icon: <LocalOffer />, path:"account-fpoint"},
+    {label: `${(t('page.profileUser.profileSection.otherItem.item4'))}`,icon: <Notifications />, path:"notifications"},
+    {label: `${(t('page.profileUser.profileSection.otherItem.item5'))}`,icon: <Favorite />, path:"wishlist"},
+    {label: `${(t('page.profileUser.profileSection.otherItem.item6'))}`,icon: <MenuBook />, path:"book-series"},
+    {label: `${(t('page.profileUser.profileSection.otherItem.item7'))}`,icon: <RateReview />, path:"review"},
   ];
 
   return (
@@ -97,7 +97,7 @@ export default function SidebarMenu({
             <AccountCircle color="action" />
           </ListItemIcon>
           <ListItemText
-            primary="Thông tin tài khoản"
+            primary={t('page.profileUser.profileSection.otherItem.item0')}
             primaryTypographyProps={{
               fontWeight: "medium",
               color: accountItems.includes(selected) ? red[700] : "inherit",

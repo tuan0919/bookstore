@@ -1,15 +1,16 @@
 import { Box, Typography } from "@mui/material";
 import { ContentTable } from "./ContentTable";
-
+import { useTranslation } from "react-i18next";
 export function BookInformation() {
+    const {t} = useTranslation();
     return (
         <Box>
             <Typography sx={{ fontWeight: 'medium', marginBottom: 2 }} fontSize={'large'}>
-                Thông tin sản phẩm
+                {t('page.bookDetail.bookInfo.frist')}
             </Typography>
             <ContentTable />
             <Typography fontSize={'small'} sx={{ marginTop: 2 }}>
-                Giá sản phẩm trên đã bao gồm thuế theo luật hiện hành. Bên cạnh đó, tuỳ vào loại sản phẩm, hình thức và địa chỉ giao hàng mà có thể phát sinh thêm chi phí khác như Phụ phí đóng gói, phí vận chuyển, phụ phí hàng cồng kềnh,...
+                {t('page.bookDetail.bookInfo.third')}
             </Typography>
         </Box>
     )

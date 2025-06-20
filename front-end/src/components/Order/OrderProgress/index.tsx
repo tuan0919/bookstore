@@ -9,7 +9,7 @@ import {
   Inventory,
 } from "@mui/icons-material";
 import { grey } from "@mui/material/colors";
-
+import { useTranslation } from "react-i18next";
 interface StepItem {
   label: string;
   timestamp: string;
@@ -22,6 +22,7 @@ interface OrderProgressProps {
 }
 
 export default function OrderProgress({ status }: OrderProgressProps) {
+  const { t } = useTranslation();
   // Format ngày giờ
   const formatDate = (date: Date) => {
     const day = String(date.getDate()).padStart(2, "0");
@@ -54,17 +55,17 @@ export default function OrderProgress({ status }: OrderProgressProps) {
 
     const stepItems: StepItem[] = [
       {
-        label: "Đang xử lý",
+        label: `${t("page.profileUser.profileSection.orders.orderDetail.item3")}`,
         timestamp: "",
         key: "processing",
       },
       {
-        label: "Đang giao hàng",
+        label: `${t("page.profileUser.profileSection.orders.orderDetail.item4")}`,
         timestamp: "",
         key: "isShipping",
       },
       {
-        label: status === "CANCELED" ? "Đã hủy" : "Hoàn tất",
+        label: status === "CANCELED" ? `${t("page.profileUser.profileSection.orders.orderDetail.item5")}` : `${t("page.profileUser.profileSection.orders.orderDetail.item6")}`,
         timestamp: "",
         key: status === "CANCELED" ? "cancelled" : "completed",
       },

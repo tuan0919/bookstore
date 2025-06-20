@@ -1,0 +1,264 @@
+{
+  "navbar": {
+    "notifications": "Notifications",
+    "cart": "Cart",
+    "profile": {
+      "userInfo": "User Information",
+      "orders": "My Orders",
+      "myBooks": "My Books",
+      "logout": "Logout"
+    },
+    "language": {
+      "vi": "Vietnamese",
+      "en": "English"
+    },
+    "buttonLogin": {
+      "label": "Account",
+      "login": {
+        "label": "Login",
+        "popup": {
+          "item1": "Login",
+          "item2": "Username",
+          "item3": "Password",
+          "item4": "Forgot Password"
+        }
+      },
+      "register": {
+        "label": "Register",
+        "popup": {
+          "item1": "Register",
+          "item2": "Username",
+          "item3": "Password"
+        }
+      }
+    }
+  },
+  "footer": {
+    "info": {
+      "first": "5th Floor, 387-389 Hai Ba Trung, District 3, HCMC - Fahasa Book Publishing JSC - 60-62 Le Loi, District 1, HCMC, Vietnam.",
+      "second": "Fahasa.com accepts online orders and home delivery. We DO NOT support direct purchase or pickup at our office or any Fahasa system nationwide."
+    },
+    "anotherInfo": {
+      "column1": {
+        "title": "SERVICES",
+        "item1": "Terms of Use",
+        "item2": "Personal Information Privacy Policy",
+        "item3": "Payment Security Policy",
+        "item4": "About Fahasa",
+        "item5": "System of Centers and Bookstores"
+      },
+      "column2": {
+        "title": "SUPPORT",
+        "item1": "Return - Refund Policy",
+        "item2": "Warranty - Compensation Policy",
+        "item3": "Shipping Policy",
+        "item4": "Wholesale Policy"
+      },
+      "column3": {
+        "title": "MY ACCOUNT",
+        "item1": "Login/Create new account",
+        "item2": "Change customer address",
+        "item3": "Account details",
+        "item4": "Order history"
+      },
+      "column4": {
+        "title": "CONTACT",
+        "item1": "60-62 Le Loi, District 1, HCMC",
+        "item2": "Purchase Guide",
+        "item3": "Payment Guide",
+        "item4": "Shipping Guide"
+      },
+      "copyrightInfo": "Business Registration Certificate No. 0304132047 issued by the Department of Planning and Investment of Ho Chi Minh City on 20/12/2005, changed for the 10th time on 20/05/2022."
+    }
+  },
+  "page": {
+    "home": {
+      "section1": "NOVEL",
+      "section2": "COMIC",
+      "section3": "TRENDING SETS",
+      "section4": "WEEKLY RANKING"
+    },
+    "search": {
+      "Breadcrumbs": "ALL PRODUCT GROUPS",
+      "filter": {
+        "label": "PRODUCT GROUPS",
+        "category": "All Product Groups",
+        "price": {
+          "title": "PRICE",
+          "item1": "Under 100K",
+          "item2": "100K - 300K",
+          "item3": "300K - 500K",
+          "item4": "Above 500K"
+        },
+        "context": "BOOK TITLE",
+        "placeholder": "Enter book's title to search",
+        "genre": "GENRE"
+      },
+      "filterContent": {
+        "label1": {
+          "item1": "Newest",
+          "item2": "Best Selling",
+          "item3": "Price Ascending",
+          "item4": "Price Descending"
+        },
+        "label2": "products"
+      }
+    },
+    "bookDetail": {
+      "buttonAddToCart": "Add to Cart",
+      "buttonBuyNow": "Buy Now",
+      "rating": {
+        "title": "Product Reviews",
+        "item1": "reviews",
+        "item2": "stars"
+      },
+      "overview": {
+        "item1": "Publisher:",
+        "item2": "Publishing House:",
+        "item3": "Author:",
+        "item4": "Cover Type:",
+        "item5": "Stock Quantity:"
+      },
+      "bookInfo": {
+        "frist": "Product Information",
+        "second": {
+          "itme1": "Product Code",
+          "itme2": "Supplier Name",
+          "itme3": "Author",
+          "itme4": "Publishing House",
+          "itme5": "Publishing Year",
+          "itme6": "Language",
+          "itme7": "Weight (gr)",
+          "itme8": "Package Dimensions",
+          "itme9": "Format",
+          "itme10": "Pages"
+        },
+        "third": "The listed product price includes applicable taxes. Additional fees may apply depending on the product type, delivery method, and delivery address, such as packaging fees, shipping fees, oversized item fees, etc."
+      },
+      "bookPreview": "Product Description",
+      "bookComment": {
+        "title": "Product Comments",
+        "placeholder": "Write your comment..."
+      }
+    },
+    "cart": {
+      "listBook": {
+        "checkbox": {
+          "item1": "Select All",
+          "item2": "products"
+        },
+        "amount": "Quantity",
+        "price": "Total Price"
+      },
+      "discount": {
+        "title": "PROMOTIONS",
+        "item1": "100K Discount Code - All Items",
+        "item2": "Orders from 1.1 million VND - Excluding Manga, Foreign books...",
+        "item3": "Valid until: 30/04/2025",
+        "item4": "Buy more 171,050 VND",
+        "item5": "Buy more",
+        "item6": "Multiple codes can be applied simultaneously",
+        "item7": "Some codes can be applied simultaneously if not restricted"
+      },
+      "gift": {
+        "item1": "Receive Gift",
+        "item2": "Choose Gift",
+        "item3": "E-Gift"
+      },
+      "pay": {
+        "title": "Total",
+        "item1": "Discount (Enter code successfully - 10K discount code for the WHOLE FLOOR - Orders from 130K)",
+        "item2": "Total Amount (including VAT)",
+        "item3": "Pay"
+      }
+    },
+    "checkout": {
+      "content": {
+        "address": {
+          "section": "Delivery Address",
+          "button": "Edit",
+          "radioLabel": "Deliver to another address"
+        },
+        "payment": {
+          "section": "Payment Method",
+          "item1": "Pay with Paypal wallet.",
+          "item2": "Pay with VNPay gateway.",
+          "item3": "Cash on delivery."
+        },
+        "check": {
+          "section": "Review Order"
+        },
+        "discount": {
+          "section": "Promotion Code / Gift Code",
+          "item1": "Promotion Code / Gift Code",
+          "item2": "Select promotion code"
+        },
+        "bottomDrawer": {
+          "item1": "Total",
+          "item2": "Shipping Fee",
+          "item3": "Grand Total",
+          "item4": "I agree to the website's terms of use",
+          "item5": "Confirm Payment"
+        }
+      }
+    },
+    "profileUser": {
+      "profileSection": {
+        "acccountItem": {
+          "item1": "Personal Profile",
+          "item2": "Address Book",
+          "item3": "Change Password",
+          "item4": "VAT Invoice Information",
+          "item5": "Membership Benefits"
+        },
+        "otherItem": {
+          "item0": "Account Information",
+          "item1": "My Orders",
+          "item2": "Voucher Wallet",
+          "item3": "F-Point / Freeship Account",
+          "item4": "Notifications",
+          "item5": "Favorite Products",
+          "item6": "Book Sets",
+          "item7": "My Reviews"
+        },
+        "orders": {
+          "status": {
+            "item1": "All",
+            "item2": "Pending Confirmation",
+            "item3": "Confirmed",
+            "item4": "Shipping",
+            "item5": "Delivered",
+            "item6": "Cancelled"
+          },
+          "orderItem": {
+            "total": "Total Price:",
+            "button": "Buy Again",
+            "product": "product"
+          },
+          "orderDetail": {
+            "item1": "Purchase Date",
+            "item2": "Order ID",
+            "item3": "Processing",
+            "item4": "Shipping",
+            "item5": "Cancelled",
+            "item6": "Delivered",
+            "item7": "Recipient Information",
+            "item8": "Full Name: ",
+            "item9": "Phone Number: ",
+            "item10": "Address: ",
+            "item11": "Payment Method",
+            "item12": "Total Amount",
+            "item13": "Subtotal:",
+            "item14": "Shipping Fee:",
+            "item15": "Grand Total:",
+            "item16": "Shipping Method",
+            "item17": "Note",
+            "item18": "Products",
+            "item19": "Total Amount",
+            "item20": "Buy again"
+          }
+        }
+      }
+    }
+  }
+}

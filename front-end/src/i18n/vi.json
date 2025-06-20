@@ -1,0 +1,264 @@
+{
+  "navbar": {
+    "notifications": "Thông báo",
+    "cart": "Giỏ hàng",
+    "profile": {
+      "userInfo": "Thông tin cá nhân",
+      "orders": "Đơn hàng của tôi",
+      "myBooks": "Bộ sách của tôi",
+      "logout": "Đăng xuất"
+    },
+    "language": {
+      "vi": "Tiếng Việt",
+      "en": "Tiếng Anh"
+    },
+    "buttonLogin": {
+      "label": "Tài khoản",
+      "login": {
+        "label": "Đăng nhập",
+        "popup": {
+          "item1": "Đăng nhập",
+          "item2": "Tài khoản",
+          "item3": "Mật khẩu",
+          "item4": "Quên mật khẩu"
+        }
+      },
+      "register": {
+        "label": "Đăng ký",
+        "popup": {
+          "item1": "Đăng ký",
+          "item2": "Tài khoản",
+          "item3": "Mật khẩu"
+        }
+      }
+    }
+  },
+  "footer": {
+    "info": {
+      "first": "Lầu 5, 387-389 Hai Bà Trưng Quận 3 TP HCMCông Ty Cổ Phần Phát Hành Sách TP HCM - FAHASA60 - 62 Lê Lợi, Quận 1, TP. HCM, Việt Nam.",
+      "second": "Fahasa.com nhận đặt hàng trực tuyến và giao hàng tận nơi. KHÔNG hỗ trợ đặt mua và nhận hàng trực tiếp tại văn phòng cũng như tất cả Hệ Thống Fahasa trên toàn quốc."
+    },
+    "anotherInfo": {
+      "column1": {
+        "title": "DỊCH VỤ",
+        "item1": "Điều khoản sử dụng",
+        "item2": " Chính sách bảo mật thông tin cá nhân",
+        "item3": " Chính sách bảo mật thanh toán",
+        "item4": "Giới thiệu Fahasa",
+        "item5": " Hệ thống trung tâm - nhà sách"
+      },
+      "column2": {
+        "title": "HỖ TRỢ",
+        "item1": "Chính sách đổi - trả - hoàn tiền",
+        "item2": " Chính sách bảo hành - bồi hoàn",
+        "item3": "Chính sách vận chuyển",
+        "item4": "Chính sách khách sỉ"
+      },
+      "column3": {
+        "title": " TÀI KHOẢN CỦA TÔI",
+        "item1": " Đăng nhập/Tạo mới tài khoản",
+        "item2": "Thay đổi địa chỉ khách hàng",
+        "item3": "Chi tiết tài khoản",
+        "item4": " Lịch sử mua hàng"
+      },
+      "column4": {
+        "title": "LIÊN HỆ",
+        "item1": "60-62 Lê Lợi, Q.1, TP. HCM",
+        "item2": "Hướng dẫn mua hàng",
+        "item3": "Hướng dẫn thanh toán",
+        "item4": "Hướng dẫn vận chuyển"
+      },
+      "copyrightInfo": "Giấy chứng nhận Đăng ký Kinh doanh số 0304132047 do Sở Kế hoạch và Đầu tư Thành phố Hồ Chí Minh cấp ngày 20/12/2005, đăng ký thay đổi lần thứ 10, ngày 20/05/2022."
+    }
+  },
+  "page": {
+    "home": {
+      "section1": "TIỂU THUYẾT",
+      "section2": "TRUYỆN TRANH",
+      "section3": "BỘ XU HƯỚNG",
+      "section4": "BẢNG XẾP HẠNG TUẦN"
+    },
+    "search": {
+      "Breadcrumbs": "TẤT CẢ NHÓM SẢN PHẨM",
+      "filter": {
+        "label": "NHÓM SẢN PHẨM",
+        "category": "Tất Cả Nhóm Sản Phẩm",
+        "price": {
+          "title": " GIÁ TIỀN",
+          "item1": "Dưới 100K",
+          "item2": "100K - 300K",
+          "item3": "300K - 500K",
+          "item4": "Trên 500K"
+        },
+        "context": "TIÊU ĐỀ SÁCH",
+        "placeholder": "Nhập tiêu đề sách cần tìm kiếm",
+        "genre": "THỂ LOẠI"
+      },
+      "filterContent": {
+        "label1": {
+          "item1": "Mới nhất",
+          "item2": "Bán chạy",
+          "item3": "Giá tăng dần",
+          "item4": "Giá giảm dần"
+        },
+        "label2": "sản phẩm"
+      }
+    },
+    "bookDetail": {
+      "buttonAddToCart": "Thêm vào giỏ hàng",
+      "buttonBuyNow": "Mua ngay",
+      "rating": {
+        "title": "Đánh giá sản phẩm",
+        "item1": "lượt đánh giá",
+        "item2": "sao"
+      },
+      "overview": {
+        "item1": "Nhà phát hành:",
+        "item2": "Nhà xuất bản:",
+        "item3": "Tác giả:",
+        "item4": "Hình thức bìa:",
+        "item5": "Số lượng còn trong kho:"
+      },
+      "bookInfo": {
+        "frist": "Thông tin sản phẩm",
+        "second": {
+          "itme1": "Mã hàng",
+          "itme2": "Tên nhà cung cấp",
+          "itme3": "Tác giả",
+          "itme4": "NXB",
+          "itme5": "Năm xuất bản",
+          "itme6": "Ngôn ngữ",
+          "itme7": "Trọng lượng (gr)",
+          "itme8": "Kích thước bao bì",
+          "itme9": "Hình thức",
+          "itme10": "Số trang"
+        },
+        "third": "Giá sản phẩm trên đã bao gồm thuế theo luật hiện hành. Bên cạnh đó, tuỳ vào loại sản phẩm, hình thức và địa chỉ giao hàng mà có thể phát sinh thêm chi phí khác như Phụ phí đóng gói, phí vận chuyển, phụ phí hàng cồng kềnh,..."
+      },
+      "bookPreview": "Mô tả sản phẩm",
+      "bookComment": {
+        "title": "Bình luận sản phẩm",
+        "placeholder": "Viết bình luận của bạn..."
+      }
+    },
+    "cart": {
+      "listBook": {
+        "checkbox": {
+          "item1": "Chọn tất cả",
+          "item2": "sản phẩm"
+        },
+        "amount": "Số lượng",
+        "price": "Thành tiền"
+      },
+      "discount": {
+        "title": "KHUYẾN MÃI",
+        "item1": "Mã Giảm 100K - Toàn Sàn",
+        "item2": "Đơn hàng từ 1.1tr - Không bao gồm giá trị của các sản phẩm sau Manga, Ngoại...",
+        "item3": "Hạn sử dụng: 30/04/2025",
+        "item4": " Mua thêm 171.050 đ",
+        "item5": " Mua thêm",
+        "item6": " Có thể áp dụng đồng thời nhiều mã",
+        "item7": "Một số mã có thể áp dụng đồng thời nếu không bị giới hạn"
+      },
+      "gift": {
+        "item1": "Nhận quà",
+        "item2": "Chọn quà",
+        "item3": " Quà Tặng E-..."
+      },
+      "pay": {
+        "title": "Thành tiền",
+        "item1": "Giảm giá (Nhập mã thành công - Mã giảm giá 10K TOÀN SÀN - Đơn hàng từ 130K)",
+        "item2": "Tổng Số Tiền (gồm VAT)",
+        "item3": "Thanh toán"
+      }
+    },
+    "checkout": {
+      "content": {
+        "address": {
+          "section": " Địa chỉ giao hàng",
+          "button": "Sửa",
+          "radioLabel": "Giao hàng đến địa chỉ khác"
+        },
+        "payment": {
+          "section": " Phương thức thanh toán",
+          "item1": "Thanh toán bằng ví Paypal.",
+          "item2": "Thanh toán bằng cổng VNPay.",
+          "item3": "Thanh toán khi nhận hàng."
+        },
+        "check": {
+          "section": "Kiểm tra lại đơn hàng"
+        },
+        "discount": {
+          "section": " Mã khuyến mãi / mã quà tặng",
+          "item1": "Mã KM / Quà tặng",
+          "item2": "Chọn mã khuyến mãi"
+        },
+        "bottomDrawer": {
+          "item1": "Thành tiền",
+          "item2": "Phí vận chuyển",
+          "item3": "Tổng tiền",
+          "item4": "Tôi đồng ý với điều khoản sử dụng của trang web",
+          "item5": " Xác nhận thanh toán"
+        }
+      }
+    },
+    "profileUser": {
+      "profileSection": {
+        "acccountItem": {
+          "item1": "Hồ sơ cá nhân",
+          "item2": "Sổ địa chỉ",
+          "item3": "Đổi mật khẩu",
+          "item4": "Thông tin xuất hóa đơn GTGT",
+          "item5": "Ưu đãi thành viên"
+        },
+        "otherItem": {
+          "item0": "Thông tin tài khoản",
+          "item1": "Đơn hàng của tôi",
+          "item2": "Ví voucher",
+          "item3": "Tài khoản F-Point / Freeship",
+          "item4": "Thông Báo",
+          "item5": "Sản phẩm yêu thích",
+          "item6": "Sách theo bộ",
+          "item7": "Nhận xét của tôi"
+        },
+        "orders": {
+          "status": {
+            "item1": "Tất cả",
+            "item2": "Chờ xác nhận",
+            "item3": "Đã xác nhận",
+            "item4": "Đang vận chuyển",
+            "item5": "Đã chuyển đến",
+            "item6": "Đã hủy"
+          },
+          "orderItem": {
+            "total": "Tổng tiền:",
+            "button": "Mua lại",
+            "product": "sản phẩm"
+          },
+          "orderDetail": {
+            "item1": "Ngày mua",
+            "item2": "Mã đơn hàng",
+            "item3": "Đang xử lý",
+            "item4": "Đang giao hàng",
+            "item5": "Đã hủy",
+            "item6": "Đã giao",
+            "item7": "Thông tin người nhận: ",
+            "item8": "Họ và tên: ",
+            "item9": "Số điện thoại: ",
+            "item10": "Địa chỉ: ",
+            "item11": "Phương thức thanh toán",
+            "item12": "Tổng tiền",
+            "item13": "Tạm tính:",
+            "item14": "Phí vận chuyển:",
+            "item15": "Tổng cộng:",
+            "item16": "Phương thức vận chuyển",
+            "item17": "Ghi chú",
+            "item18": "Sản phẩm",
+            "item19": "Tổng tiền",
+            "item20": "Mua lại"
+          }
+        }
+      }
+    }
+  }
+}

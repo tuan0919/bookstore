@@ -3,30 +3,29 @@ import { grey } from "@mui/material/colors";
 import { useState } from "react";
 import vnSVG from '~/assets/vn.svg';
 import usSVG from '~/assets/us.svg';
+import { useTranslation } from 'react-i18next';
 
 function VNLang() {
-    return (
-        <img src={vnSVG} width={30} height={30} alt="vn"/>
-    )
+    return <img src={vnSVG} width={30} height={30} alt="vn" />;
 }
 
 function USLang() {
-    return (
-        <img src={usSVG} width={30} height={30} alt="vn"/>
-    )
+    return <img src={usSVG} width={30} height={30} alt="us" />;
 }
 
 export function LanguageButton() {
-    // Đánh dấu chỉ phần này là Client Component
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
-    const [chosenLang, setChosenLang] = useState<string>('VN');
+    const { t, i18n } = useTranslation();
+    const currentLang = i18n.language;
+
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
 
     const handleClose = (lang: string) => {
-        setChosenLang(() => lang)
+        i18n.changeLanguage(lang);
+        localStorage.setItem('lang', lang);
         setAnchorEl(null);
     };
 
@@ -40,18 +39,12 @@ export function LanguageButton() {
                 onClick={handleClick}
                 disableRipple
                 sx={{
-                    border: {
-                        xs: '3px solid',
-                        md: '3px solid'
-                    },
-                    borderColor: {
-                        md: grey['A700'],
-                        xs: grey['600']
-                    },
+                    border: '2px solid',
+                    borderColor: grey[700],
                     padding: 0,
                 }}
             >
-                {chosenLang === 'VN' ? <VNLang/> : <USLang/>}
+                {currentLang === 'vi' ? <VNLang /> : <USLang />}
             </IconButton>
             <Menu
                 id="language-menu"
@@ -59,12 +52,18 @@ export function LanguageButton() {
                 open={open}
                 onClose={() => setAnchorEl(null)}
                 MenuListProps={{
-                "aria-labelledby": "language-button",
+                    "aria-labelledby": "language-button",
                 }}
             >
-                <MenuItem onClick={() => handleClose("VN")}>🇻🇳 Tiếng Việt</MenuItem>
-                <MenuItem onClick={() => handleClose("EN")}>🇺🇸 English</MenuItem>
+                <MenuItem onClick={() => handleClose('vi')}>
+                    🇻🇳 {t('navbar.language.vi')}
+                </MenuItem>
+                <MenuItem onClick={() => handleClose('en')}>
+                    🇺🇸 {t('navbar.language.en')} 
+                </MenuItem>
             </Menu>
+
+           
         </div>
     );
 }

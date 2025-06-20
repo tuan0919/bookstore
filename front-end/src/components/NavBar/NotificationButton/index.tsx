@@ -2,8 +2,9 @@ import { Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import icoLoginSVG from '~/assets/ico_login.svg';
-
+import {useTranslation} from 'react-i18next';
 export function NotificationButton() {
+    const { t } = useTranslation();
     return (
         <Box sx={{ position: 'relative', }}>
             <Stack direction={'column'} sx={{
@@ -18,7 +19,7 @@ export function NotificationButton() {
                     color: { xs: grey[200], md: grey[600] }
                 }}/>
                 <Typography sx={{ color: grey[600], fontWeight: 'light', fontSize: '13px', }}>
-                    Thông Báo
+                    {t('navbar.notifications')}
                 </Typography>
             </Stack>
             <Paper

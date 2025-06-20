@@ -1,7 +1,7 @@
 import { Box, Button, Rating, TextField } from "@mui/material";
 import { SxProps, Theme } from "@mui/system";
 import { useState } from "react";
-
+import { useTranslation } from "react-i18next";
 export function InputBox({
   sx = undefined,
   onSubmit,
@@ -12,7 +12,7 @@ export function InputBox({
   const [focused, setFocused] = useState(false);
   const [rating, setRating] = useState<number | null>(0);
   const [text, setText] = useState("");
-
+  const {t} = useTranslation();
   const handleCancel = () => {
     setFocused(false);
     setRating(0);
@@ -41,7 +41,7 @@ export function InputBox({
         value={text}
         onChange={(e) => setText(e.target.value)}
         onFocus={() => setFocused(true)}
-        placeholder="Viết bình luận của bạn..."
+        placeholder={t("page.bookDetail.bookComment.placeholder")}
         multiline
       />
 

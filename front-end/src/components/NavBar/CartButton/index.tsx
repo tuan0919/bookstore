@@ -3,6 +3,7 @@ import AddShoppingCartRoundedIcon from "@mui/icons-material/AddShoppingCartRound
 import { grey } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "~/providers/CartProvider";
+import { useTranslation } from 'react-i18next';
 export function CartButton() {
   const naviagation = useNavigate();
   const { cart } = useCart();
@@ -10,6 +11,7 @@ export function CartButton() {
   if (cart) {
     totalItems = cart.length;
   }
+   const { t } = useTranslation();
   return (
     <Stack
       component="div"
@@ -58,7 +60,7 @@ export function CartButton() {
           },
         }}
       >
-        Giỏ hàng
+        {t("navbar.cart")}
       </Typography>
     </Stack>
   );
