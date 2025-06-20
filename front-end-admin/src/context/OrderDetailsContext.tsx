@@ -1,15 +1,10 @@
 // context/OrderDetailsContext.tsx
 import { createContext, useContext, ReactNode } from 'react'
-import { OrderDTO } from '@/api/order'
 import { useOrderDetails } from '@/hooks/UseOrderDetails'
 
-interface OrderDetailsContextType {
-  order: OrderDTO | null
-}
-
-const OrderDetailsContext = createContext<OrderDetailsContextType>({
-  order: null,
-})
+const OrderDetailsContext = createContext<ReturnType<typeof useOrderDetails>>(
+  {} as ReturnType<typeof useOrderDetails>
+)
 
 export const useOrderDetailsContext = () => useContext(OrderDetailsContext)
 
@@ -20,10 +15,10 @@ interface OrderDetailsProviderProps {
 export const OrderDetailsProvider = ({
   children,
 }: OrderDetailsProviderProps) => {
-  const { order } = useOrderDetails()
+  const value = useOrderDetails()
 
   return (
-    <OrderDetailsContext.Provider value={{ order }}>
+    <OrderDetailsContext.Provider value={value}>
       {children}
     </OrderDetailsContext.Provider>
   )

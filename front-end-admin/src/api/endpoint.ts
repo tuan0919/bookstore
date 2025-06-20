@@ -8,6 +8,8 @@ const API_ENDPOINTS = {
   ORDER: {
     GET_ALL_ORDER: `/admin/api/order`,
     GET_ORDER_BY_ID: (id: number) => `/admin/api/order/${id}`,
+    GET_ORDER_TIMELINE: (id: number) => `/api/orders/${id}/timeline`,
+    UPDATE_ORDER_STATUS: (id: number) => `/api/orders/${id}/status`,
   },
   PROMOTION: {
     GET_ALL_PROMOTION: '/admin/api/promotion/',

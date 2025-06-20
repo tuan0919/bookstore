@@ -37,11 +37,6 @@ export function OrderSummary() {
               {discount.toLocaleString('vi')}đ
             </span>
           </div>
-          {/* <Separator />
-          <div className='flex items-center justify-between'>
-            <span className='text-sm font-medium'>Phí vận chuyển:</span>
-            <span className='text-sm text-gray-500'>10.000đ</span>
-          </div> */}
           <Separator />
           <div className='flex items-center justify-between'>
             <span className='text-sm font-medium'>VAT:</span>
@@ -51,11 +46,17 @@ export function OrderSummary() {
           </div>
         </div>
       </CardContent>
-      <CardFooter>
+      <CardFooter className='flex flex-col'>
         <div className='flex w-full items-center justify-between py-2'>
           <span className='text-sm font-medium'>Tổng tiền:</span>
           <span className='text-sm text-gray-500'>
             {(total + vat - discount).toLocaleString('vi')}đ
+          </span>
+        </div>
+        <div className='flex w-full flex-col justify-between gap-2 py-2'>
+          <span className='font-medium'>Hình thức thanh toán:</span>
+          <span className='font-medium text-green-500'>
+            {order?.paymentMethodName}
           </span>
         </div>
       </CardFooter>
