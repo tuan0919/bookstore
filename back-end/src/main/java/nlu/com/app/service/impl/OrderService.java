@@ -175,9 +175,9 @@ public class OrderService implements IOrderService {
     return ordersPage.map(orderMapper::toOrderResponseDTO);
   }
 
-  public Page<OrderResponseDTO> getOrdersWithPagination_ForAdmin(Pageable pageable) {
+  public Page<OrderDetailsResponseDTO> getOrdersWithPagination_ForAdmin(Pageable pageable) {
     Page<Order> ordersPage = orderRepository.findAll(pageable);
-    return ordersPage.map(orderMapper::toOrderResponseDTO);
+    return ordersPage.map(orderMapper::toOrderDetailsResponseDTO);
   }
 
   @Override

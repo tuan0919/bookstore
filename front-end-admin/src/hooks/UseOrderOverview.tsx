@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { getOrders, OrderDTO } from '@/api/order'
+import { OrderDTO } from '@/types/order'
+import { getOrders, updateOrderStatus } from '@/api/order'
 
 export function useOrderOverview(initialPage = 0, initialSize = 5) {
   const [orders, setOrders] = useState<OrderDTO[]>([])
@@ -11,17 +12,29 @@ export function useOrderOverview(initialPage = 0, initialSize = 5) {
   const [totalElements, setTotalElements] = useState(0)
   const [isLastPage, setIsLastPage] = useState(false)
   const [isFirstPage, setIsFirstPage] = useState(false)
+  const loadOrders = async () => {
+    setIsLoading(true)
+    const rs = await getOrders(page, size)
+    setOrders(rs.result.content)
+    setTotalPage(rs.result.totalPages)
+    setTotalElements(rs.result.totalElements)
+    setIsLastPage(rs.result.last)
+    setIsFirstPage(rs.result.first)
+    setIsLoading(false)
+  }
+  const updateStatus = async (
+    orderId: number,
+    status:
+      | 'PENDING_CONFIRMATION'
+      | 'CONFIRMED'
+      | 'SHIPPING'
+      | 'DELIVERED'
+      | 'CANCELED'
+  ) => {
+    await updateOrderStatus(orderId, status)
+    loadOrders()
+  }
   useEffect(() => {
-    const loadOrders = async () => {
-      setIsLoading(true)
-      const rs = await getOrders(page, size)
-      setOrders(rs.result.content)
-      setTotalPage(rs.result.totalPages)
-      setTotalElements(rs.result.totalElements)
-      setIsLastPage(rs.result.last)
-      setIsFirstPage(rs.result.first)
-      setIsLoading(false)
-    }
     loadOrders()
   }, [page, size])
   return {
@@ -34,5 +47,6 @@ export function useOrderOverview(initialPage = 0, initialSize = 5) {
     totalElements,
     isLastPage,
     isFirstPage,
+    updateStatus,
   }
 }
