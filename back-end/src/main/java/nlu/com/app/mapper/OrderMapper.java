@@ -36,6 +36,7 @@ public interface OrderMapper {
   @Mapping(source = "orderItems", target = "items")
   @Mapping(target = "shippingAddress", source = "address")
   @Mapping(target = "customer", source = "order.user", qualifiedByName = "toCustomerDTO")
+  @Mapping(target = "statusCode", source = "status", qualifiedByName = "orderStatusToString_2")
   OrderDetailsResponseDTO toOrderDetailsResponseDTO(Order order);
 
   AddressDto toAddressDTO(Address address);
@@ -80,5 +81,10 @@ public interface OrderMapper {
   @Named("orderStatusToString")
   default String orderStatusToString(EOrderStatus status) {
     return status == null ? null : status.getDescription();
+  }
+
+  @Named("orderStatusToString_2")
+  default String orderStatusToString_2(EOrderStatus status) {
+    return status == null ? null : status.name();
   }
 }
