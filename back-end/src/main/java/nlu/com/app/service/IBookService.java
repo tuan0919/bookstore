@@ -17,6 +17,7 @@ import java.util.List;
 public interface IBookService {
 
   Page<PageBookResponseDTO> getBooksByCategory(BookSearchRequestDTO bookSearchRequestDTO);
+  Page<PageBookResponseDTO> searchBook(BookSearchRequestDTO bookSearchRequestDTO);
   ShopDataInitDTO getShopInitData();
 
   /**

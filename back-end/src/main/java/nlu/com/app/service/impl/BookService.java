@@ -14,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
+import nlu.com.app.constant.ECategory;
 import nlu.com.app.dto.json.BooksJson;
 import nlu.com.app.dto.json.BooksWrapper;
 import nlu.com.app.dto.request.BookDetailsDTO;
@@ -122,7 +123,7 @@ public class BookService implements IBookService {
         bookSearchRequestDTO.getSize());
 
     Category category = categoryRepository.findById(bookSearchRequestDTO.getCategoryId())
-        .orElseThrow(() -> new ApplicationException(ErrorCode.UNKNOWN_EXCEPTION));
+        .orElseThrow(() -> new ApplicationException(ErrorCode.CATEGORY_NOT_FOUND));
 
     List<Category> subCategories = categoryRepository.findByParentCategory(category);
     subCategories.add(category);
@@ -171,6 +172,80 @@ public class BookService implements IBookService {
         .toList();
 
     return new PageImpl<>(result, pageable, books.getTotalElements());
+  }
+
+  @Override
+  public Page<PageBookResponseDTO> searchBook(BookSearchRequestDTO bookSearchRequestDTO) {
+    Pageable pageable = PageRequest.of(bookSearchRequestDTO.getPage(), bookSearchRequestDTO.getSize());
+
+    // Lấy category theo id
+    Category category = categoryRepository.findById(bookSearchRequestDTO.getCategoryId())
+            .orElseThrow(() -> new ApplicationException(ErrorCode.CATEGORY_NOT_FOUND));
+
+    List<Category> searchCategories;
+    if (category.getCategoryName() == ECategory.ALL_CATEGORY) {
+      // Nếu là ALL_CATEGORY thì lấy toàn bộ category
+      searchCategories = categoryRepository.findAll();
+    } else {
+      // Lấy đệ quy tất cả category con và thêm category hiện tại
+      searchCategories = getAllSubCategories(category);
+      searchCategories.add(category);
+    }
+
+    Double minPrice = bookSearchRequestDTO.getMinPrice() != null
+            ? bookSearchRequestDTO.getMinPrice() / 1000
+            : 0.0;
+    Double maxPrice = bookSearchRequestDTO.getMaxPrice() != null
+            ? bookSearchRequestDTO.getMaxPrice() / 1000
+            : Double.MAX_VALUE;
+
+    Page<Book> books = bookRepository.findAllByCategoryInAndPriceBetweenAndTitleContainingIgnoreCase(
+            searchCategories, minPrice, maxPrice, bookSearchRequestDTO.getContext(), pageable
+    );
+
+    List<Long> bookIds = books.stream().map(Book::getBookId).toList();
+    List<Long> categoryIds = searchCategories.stream().map(Category::getCategoryId).toList();
+
+    // Get active promotions for categories
+    List<Promotion> promotions = promotionCategoriesRepository.findActivePromotionsByCategoryIds(categoryIds);
+
+    // Get the highest promotion discount
+    Map<Long, Double> categoryDiscountMap = promotions.stream()
+            .flatMap(promotion -> promotion.getPromotionCategories().stream()
+                    .map(pc -> Map.entry(pc.getCategory().getCategoryId(), promotion.getDiscountPercentage())))
+            .collect(Collectors.toMap(
+                    Map.Entry::getKey,
+                    Map.Entry::getValue,
+                    Math::max
+            ));
+
+    // Get average ratings
+    List<UserReview> reviews = userReviewRepository.findByBookBookIdIn(bookIds);
+    Map<Long, Double> ratingMap = reviews.stream()
+            .collect(Collectors.groupingBy(
+                    r -> r.getBook().getBookId(),
+                    Collectors.averagingDouble(UserReview::getRating)
+            ));
+
+    // MapStruct with injected maps
+    List<PageBookResponseDTO> result = books.stream()
+            .map(book -> bookMapper.toPageDto(book,
+                    categoryDiscountMap.getOrDefault(book.getCategory().getCategoryId(), 0D),
+                    ratingMap.getOrDefault(book.getBookId(), 0D)))
+            .toList();
+
+    return new PageImpl<>(result, pageable, books.getTotalElements());
+  }
+
+  // Hàm đệ quy lấy toàn bộ category con nhiều cấp
+  private List<Category> getAllSubCategories(Category parent) {
+    List<Category> result = new ArrayList<>();
+    List<Category> directSubs = categoryRepository.findByParentCategory(parent);
+    result.addAll(directSubs);
+    for (Category sub : directSubs) {
+      result.addAll(getAllSubCategories(sub));
+    }
+    return result;
   }
 
   /**

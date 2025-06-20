@@ -1,5 +1,8 @@
-import { Category } from "~/pages/Category/filter";
-import {getCategories as getCategoriesFromApi, getGenre} from "~/api/category";
+import { Category } from "~/pages/Category/FilterSidebar";
+import {
+  getCategories as getCategoriesFromApi,
+  getGenre,
+} from "~/api/category";
 interface CategoryItem {
   id: number;
   name: string;
@@ -88,10 +91,10 @@ interface CategoryItem {
 //   },
 // };
 
-export function mapCategories(categories: CategoryItem[]): Category[]{
-  return categories.map((category)=>{
+export function mapCategories(categories: CategoryItem[]): Category[] {
+  return categories.map((category) => {
     let slug = "";
-     switch (category.name) {
+    switch (category.name) {
       case "Sách Tiếng Việt":
         slug = "sach-tieng-viet";
         break;
@@ -107,22 +110,20 @@ export function mapCategories(categories: CategoryItem[]): Category[]{
       case "Art, Anime Character":
         slug = "art-anime-character";
         break;
-      
     }
     return {
-      ... category,
+      ...category,
       slug: slug,
       subCategories: category.children ? mapCategories(category.children) : [],
-    }
-  })
+    };
+  });
 }
-const categories = await  getCategoriesFromApi();
+const categories = await getCategoriesFromApi();
 const genres = await getGenre();
-export   function getCategories() {
+export function getCategories() {
   const mappedCategories = mapCategories(categories);
   return mappedCategories;
 }
 export function getGenres() {
   return genres;
 }
-

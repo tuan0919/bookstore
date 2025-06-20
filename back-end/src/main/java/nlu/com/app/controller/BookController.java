@@ -43,6 +43,13 @@ public class BookController {
         .result(bookService.getBooksByCategory(bookSearchRequestDTO)).build();
   }
 
+  @GetMapping("/search")
+  public AppResponse<Page<PageBookResponseDTO>> searchBook(
+          BookSearchRequestDTO bookSearchRequestDTO) {
+    return AppResponse.<Page<PageBookResponseDTO>>builder()
+            .result(bookService.searchBook(bookSearchRequestDTO)).build();
+  }
+
   @GetMapping("/{bookId}/reviews")
   public AppResponse<Page<CreateReviewResponse>> getBookReviews(
           @PathVariable long bookId,

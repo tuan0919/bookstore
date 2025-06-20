@@ -61,3 +61,19 @@ export interface BookDetailsDTO {
 export interface ListBookDetailsDTO {
   books: BookDetailsDTO[];
 }
+
+export interface CategoryResponseDTO {
+  id: number;
+  name: string;
+  children: CategoryResponseDTO[]; // đệ quy
+}
+
+interface GenreResponseDTO {
+  id: number;
+  name: string;
+}
+
+export interface SummaryAboutBook {
+  categoryResponseDTOs: CategoryResponseDTO;
+  genreResponseDTOs: GenreResponseDTO[];
+}
