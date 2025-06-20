@@ -3,6 +3,7 @@ import { useCart } from "~/providers/CartProvider";
 import CartItem from "../CartItem/";
 import { CartItemPropertyResponseDTO } from "~/types/cart";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 interface ListCartItemProps {
   listBook: CartItemPropertyResponseDTO[];
   onQuantityChange: (bookId: number, newQuantity: number) => void;
@@ -19,6 +20,7 @@ function ListCartItem({
 }: ListCartItemProps) {
   const {  cart, increaseItem, decreaseItem, removeItem } = useCart();
  const [listBookData, setListBook] = useState(listBook);
+ const { t } = useTranslation();
  useEffect(() => {
     setListBook(cart); 
   }, [cart]);
@@ -44,7 +46,7 @@ function ListCartItem({
           onChange={onToggleAll}
         />
         <Typography variant="subtitle1" fontWeight="bold" flex={1}>
-          Chọn tất cả ({listBook.length} sản phẩm)
+          {t("page.cart.listBook.checkbox.item1")} ({listBook.length} {t("page.cart.listBook.checkbox.item2")})
         </Typography>
         <Typography
           variant="subtitle1"
@@ -52,7 +54,7 @@ function ListCartItem({
           width={120}
           textAlign="center"
         >
-          Số lượng
+          {t("page.cart.listBook.amount")}
         </Typography>
         <Typography
           variant="subtitle1"
@@ -60,7 +62,7 @@ function ListCartItem({
           width={120}
           textAlign="right"
         >
-          Thành tiền
+          {t("page.cart.listBook.price")}
         </Typography>
       </Box>
 

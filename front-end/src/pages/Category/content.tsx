@@ -4,19 +4,28 @@ import { BookCard } from "~/components/BookCard";
 import { SelectChangeEvent } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import {PageBookResponseDTO} from "~/types/book";
-const sortOptions = [
-  { label: "Mới nhất", value: "latest" },
-  { label: "Bán chạy", value: "best-seller" },
-  { label: "Giá tăng dần", value: "price-asc" },
-  { label: "Giá giảm dần", value: "price-desc" },
-];
+import { useTranslation } from "react-i18next";
+
 
 const perPageOptions = [12, 24, 48];
 export default function BookList({books,selectedPrices}: { books : PageBookResponseDTO [],selectedPrices?: string[];}) {
   const [sort, setSort] = useState("latest");
   const [perPage, setPerPage] = useState(12);
   const [page, setPage] = useState(1);
+  const {t} = useTranslation();
+  
+  const mapSortOptions = [
+    { key: 'page.search.filterContent.label1.item1', value: 'latest' },
+    { key: 'page.search.filterContent.label1.item2', value: 'best-seller' },
+    { key: 'page.search.filterContent.label1.item3', value: 'price-asc' },
+    { key: 'page.search.filterContent.label1.item4', value: 'price-desc' }
+  ];
 
+  // Map key -> label
+  const sortOptions  = mapSortOptions.map(option => ({
+    label: t(option.key),
+    value: option.value
+  }));
   const handleSortChange = (event: SelectChangeEvent<string>) => {
     setSort(event.target.value);
   };
@@ -86,7 +95,7 @@ const paginatedBooks = filteredBooks.slice(
         >
           {perPageOptions.map((option) => (
             <MenuItem key={option} value={option}>
-              {option} sản phẩm
+              {option} {t("page.search.filterContent.label2")}
             </MenuItem>
           ))}
         </Select>
