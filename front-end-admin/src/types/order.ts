@@ -28,6 +28,12 @@ export interface OrderDTO {
   items: OrderItem[]
   status: string
   shippingAddress: ShippingAddress
+  statusCode:
+    | 'PENDING_CONFIRMATION'
+    | 'CONFIRMED'
+    | 'SHIPPING'
+    | 'DELIVERED'
+    | 'CANCELED'
   customer: {
     user_id: number
     username: string

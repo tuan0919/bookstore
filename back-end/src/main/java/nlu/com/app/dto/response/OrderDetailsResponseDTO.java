@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * @author VuLuu
+ * @author Nguyen Tuan
  */
 @Data
 public class OrderDetailsResponseDTO {
@@ -16,6 +16,7 @@ public class OrderDetailsResponseDTO {
   private LocalDate orderDate;
   private Double totalAmount;
   private String paymentMethodName;
+  private String statusCode;
   private List<OrderItemDTO> items;
   String status;
   private AddressDto shippingAddress;
