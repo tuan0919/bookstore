@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { ReviewList } from "./ReviewList";
 import { addNewReview } from "~/api/review";
-
+import { useTranslation } from "react-i18next";
 export function BookComment({
   sx = undefined,
 }: {
@@ -19,10 +19,11 @@ export function BookComment({
   useEffect(() => {
     fetchReviews(Number(id), page, size);
   }, [id, page]);
+  const {t} = useTranslation();
   return (
     <Box sx={{ ...sx, display: "flex", flexDirection: "column", gap: 3 }}>
       <Typography sx={{ fontWeight: "medium" }} fontSize={"large"}>
-        Bình luận sản phẩm
+        {t("page.bookDetail.bookComment.title")}
       </Typography>
       {localStorage.getItem("access_token") ? (
         <InputBox

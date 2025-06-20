@@ -11,8 +11,10 @@ import {
 } from "@mui/material";
 import { Receipt, Person, MenuBook, Logout } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 export function MenuPopper({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   return (
     <Tippy
       interactive
@@ -38,7 +40,7 @@ export function MenuPopper({ children }: { children: React.ReactNode }) {
               </ListItemIcon>
               <ListItemText
                 primary={
-                  <Typography fontWeight={500}>Thông tin cá nhân</Typography>
+                  <Typography fontWeight={500}>{t('navbar.profile.userInfo')}</Typography>
                 }
               />
             </ListItemButton>
@@ -49,7 +51,7 @@ export function MenuPopper({ children }: { children: React.ReactNode }) {
               </ListItemIcon>
               <ListItemText
                 primary={
-                  <Typography fontWeight={500}>Đơn hàng của t</Typography>
+                  <Typography fontWeight={500}>{t('navbar.profile.orders')}</Typography>
                 }
               />
             </ListItemButton>
@@ -62,7 +64,7 @@ export function MenuPopper({ children }: { children: React.ReactNode }) {
               </ListItemIcon>
               <ListItemText
                 primary={
-                  <Typography fontWeight={500}>Bộ sách của t</Typography>
+                  <Typography fontWeight={500}>{t('navbar.profile.myBooks')}</Typography>
                 }
               />
             </ListItemButton>
@@ -79,7 +81,7 @@ export function MenuPopper({ children }: { children: React.ReactNode }) {
               <ListItemText
                 primary={
                   <Typography fontWeight={500} color="error">
-                    Đăng xuất
+                   {t('navbar.profile.logout')}
                   </Typography>
                 }
               />

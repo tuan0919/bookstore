@@ -11,6 +11,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import OrderStepper from "../OrderProgress";
 import { BookBought } from "../index";
+import { useTranslation } from "react-i18next";
 export interface OrderDetailsProps {
   orderId: string;
   orderDateTime: string;
@@ -32,6 +33,7 @@ export interface OrderDetailsProps {
 }
 
 export default function OrderDetail() {
+  const { t } = useTranslation();
   const { orderId } = useParams();
   const [order, setOrder] = useState<OrderDetailsProps>({
     orderId: "",
@@ -50,6 +52,7 @@ export default function OrderDetail() {
     img:"",
     items: [],
      refreshOrders: () => {},
+      goToAllTab: () => {}
   });
 
   useEffect(() => {
@@ -85,7 +88,7 @@ export default function OrderDetail() {
         <Grid2 container justifyContent="space-between" alignItems="center">
           <Box mt={2} display="flex" alignItems="center" gap={1}>
             <Typography variant="h6" fontWeight="bold">
-              Mã đơn hàng #{order.orderId}
+             {t("page.profileUser.profileSection.orders.orderDetail.item2")} #{order.orderId}
             </Typography>
             <Chip
               label={order.status}
@@ -99,7 +102,7 @@ export default function OrderDetail() {
           </Box>
 
           <Typography color="text.secondary">
-            Ngày mua: {order.orderDateTime}
+            {t("page.profileUser.profileSection.orders.orderDetail.item1")}: {order.orderDateTime}
           </Typography>
         </Grid2>
         <OrderStepper status={order.status} date={order.orderDateTime} />
@@ -118,11 +121,11 @@ export default function OrderDetail() {
             sx={{ p: 2, borderRadius: 2, boxShadow: 1, height: "100%" }}
           >
             <Typography fontWeight="bold" gutterBottom>
-              Thông tin người nhận
+              {t("page.profileUser.profileSection.orders.orderDetail.item7")}
             </Typography>
-            <Typography>{"Họ và tên: " + order.nameUser}</Typography>
-            <Typography>{"Số điện thoại: " + order.phoneNumber}</Typography>
-            <Typography>{"Địa chỉ: " + order.address}</Typography>
+            <Typography>{`${t("page.profileUser.profileSection.orders.orderDetail.item8")}` + order.nameUser}</Typography>
+            <Typography>{`${t("page.profileUser.profileSection.orders.orderDetail.item9")}` + order.phoneNumber}</Typography>
+            <Typography>{`${t("page.profileUser.profileSection.orders.orderDetail.item10")}` + order.address}</Typography>
           </Paper>
         </Grid2>
 
@@ -133,7 +136,7 @@ export default function OrderDetail() {
             sx={{ p: 2, borderRadius: 2, boxShadow: 1, height: "100%" }}
           >
             <Typography fontWeight="bold" gutterBottom>
-              Phương thức thanh toán
+              {t("page.profileUser.profileSection.orders.orderDetail.item11")}
             </Typography>
             <Typography>{order.paymentMethod}</Typography>
           </Paper>
@@ -146,19 +149,19 @@ export default function OrderDetail() {
             sx={{ p: 2, borderRadius: 2, boxShadow: 1, height: "100%" }}
           >
             <Typography fontWeight="bold" gutterBottom>
-              Tổng tiền
+              {t("page.profileUser.profileSection.orders.orderDetail.item12")}
             </Typography>
             <Typography>
-              Tạm tính: {order.price.toLocaleString("vi-VN")} ₫
+              {t("page.profileUser.profileSection.orders.orderDetail.item13")} {order.price.toLocaleString("vi-VN")} ₫
             </Typography>
             <Typography>
-              Phí vận chuyển: {order.feeShip.toLocaleString("vi-VN")} ₫
+              {t("page.profileUser.profileSection.orders.orderDetail.item14")} {order.feeShip.toLocaleString("vi-VN")} ₫
             </Typography>
             <Typography color="error" fontWeight="bold" mt={1}>
-              Tổng cộng: {total.toLocaleString("vi-VN")} ₫
+             {t("page.profileUser.profileSection.orders.orderDetail.item15")} {total.toLocaleString("vi-VN")} ₫
             </Typography>
             <Button variant="contained" color="error" sx={{ mt: 1 }}>
-              Mua lại
+            {t("page.profileUser.profileSection.orders.orderDetail.item20")}
             </Button>
           </Paper>
         </Grid2>
@@ -177,7 +180,7 @@ export default function OrderDetail() {
             sx={{ p: 2, borderRadius: 2, boxShadow: 1, height: "100%" }}
           >
             <Typography fontWeight="bold" gutterBottom>
-              Phương thức vận chuyển
+              {t("page.profileUser.profileSection.orders.orderDetail.item16")}
             </Typography>
             <Typography>{order.shipmentMethod}</Typography>
           </Paper>
@@ -190,7 +193,7 @@ export default function OrderDetail() {
             sx={{ p: 2, borderRadius: 2, boxShadow: 1, height: "100%" }}
           >
             <Typography fontWeight="bold" gutterBottom>
-              Ghi chú
+              {t("page.profileUser.profileSection.orders.orderDetail.item17")}
             </Typography>
             <Typography color="text.secondary">
               {order.note || "(Không có)"}
@@ -202,7 +205,7 @@ export default function OrderDetail() {
       {/* Danh sách sản phẩm */}
       <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
         <Typography fontWeight="bold" gutterBottom>
-          Sản phẩm ({amount})
+          {t("page.profileUser.profileSection.orders.orderDetail.item18")} ({amount})
         </Typography>
 
         {order.items.map((item, index) => (
@@ -228,7 +231,7 @@ export default function OrderDetail() {
             </Grid2>
             <Grid2>
               <Typography color="text.secondary">
-                Giá: {item.price.toLocaleString("vi-VN")} ₫ × {item.quantity}
+                 {t("page.profileUser.profileSection.orders.orderDetail.item18")} {item.price.toLocaleString("vi-VN")} ₫ × {item.quantity}
               </Typography>
             </Grid2>
             <Grid2>
@@ -243,7 +246,7 @@ export default function OrderDetail() {
 
         <Box display="flex" justifyContent="flex-end">
           <Typography fontWeight="bold" color="error">
-            Tổng tiền: {total.toLocaleString("vi-VN")} ₫
+             {t("page.profileUser.profileSection.orders.orderDetail.item19")} {total.toLocaleString("vi-VN")} ₫
           </Typography>
         </Box>
       </Paper>

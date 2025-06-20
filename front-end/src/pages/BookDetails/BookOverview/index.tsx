@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { blue, grey, red, yellow } from "@mui/material/colors";
 import { useBookDetailsContext } from "~/context/BookDetailsContext";
-
+import { useTranslation } from "react-i18next";
 const LabelText = styled(Typography)(() => ({
   fontSize: 14,
   fontWeight: "medium",
@@ -39,6 +39,7 @@ const WrapText = styled(Box)(({ theme }) => ({
 
 export function BookOverview({ sx = undefined }: { sx?: SxProps<Theme> }) {
   const { bookDetails, isLoading, reviewOverall } = useBookDetailsContext();
+  const { t } = useTranslation();
   return (
     <Stack sx={sx} spacing={1}>
       {isLoading ? (
@@ -58,7 +59,7 @@ export function BookOverview({ sx = undefined }: { sx?: SxProps<Theme> }) {
               </>
             ) : (
               <>
-                <LabelText>Nhà phát hành:</LabelText>
+                <LabelText>{t('page.bookDetail.overview.item1')}</LabelText>
                 <StrongText>{bookDetails?.publisher}</StrongText>
               </>
             )}
@@ -71,7 +72,7 @@ export function BookOverview({ sx = undefined }: { sx?: SxProps<Theme> }) {
               </>
             ) : (
               <>
-                <LabelText>Nhà xuất bản:</LabelText>
+                <LabelText>{t('page.bookDetail.overview.item2')}</LabelText>
                 <StrongText>{bookDetails?.supplier}</StrongText>
               </>
             )}
@@ -86,7 +87,7 @@ export function BookOverview({ sx = undefined }: { sx?: SxProps<Theme> }) {
               </>
             ) : (
               <>
-                <LabelText>Tác giả:</LabelText>
+                <LabelText>{t('page.bookDetail.overview.item3')}</LabelText>
                 <LinkText href="#">{bookDetails?.author}</LinkText>
               </>
             )}
@@ -99,7 +100,7 @@ export function BookOverview({ sx = undefined }: { sx?: SxProps<Theme> }) {
               </>
             ) : (
               <>
-                <LabelText>Hình thức bìa:</LabelText>
+                <LabelText>{t('page.bookDetail.overview.item4')}</LabelText>
                 <StrongText>{bookDetails?.format}</StrongText>
               </>
             )}
@@ -163,7 +164,7 @@ export function BookOverview({ sx = undefined }: { sx?: SxProps<Theme> }) {
           <Skeleton variant="rectangular" width={200} height={20} />
         ) : (
           <Typography sx={{ color: blue["700"], fontWeight: "medium" }}>
-            Số lượng còn trong kho: {bookDetails?.qtyInStock}
+            {t('page.bookDetail.overview.item5')} {bookDetails?.qtyInStock}
           </Typography>
         )}
       </Box>

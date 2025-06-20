@@ -35,6 +35,7 @@ import { CartItemPropertyResponseDTO } from "~/types/cart";
 import { useState, useEffect } from "react";
 import { addUserAddress, getUserAddresses } from "~/api/user/userAddress";
 import { AddressResponseDTO } from "~/types/user";
+import { useTranslation } from "react-i18next";
 const Section = styled(Box)(({ theme }) => ({
   backgroundColor: "white",
   padding: `0 ${theme.spacing(2)}`,
@@ -79,6 +80,7 @@ export function Checkout() {
   const selectBooks = JSON.parse(localStorage.getItem("selectedBooks") || "[]");
   const [paymentMethod, setPaymentMethod] = useState("");
   const [listAddress, setListAddress] = useState<AddressResponseDTO[]>([]);
+  const { t } = useTranslation();
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -144,7 +146,7 @@ export function Checkout() {
           <Section>
             <UnderlineBox>
               <Typography sx={{ textTransform: "uppercase", fontWeight: 700 }}>
-                Địa chỉ giao hàng
+                {t("page.checkout.content.address.section")}
               </Typography>
             </UnderlineBox>
             <RadioGroup  name="radio-buttons-group">
@@ -170,7 +172,7 @@ export function Checkout() {
                         }
                       />
                       <Link marginRight={5} sx={{ cursor: "pointer" }}>
-                        Sửa
+                        {t("page.checkout.content.address.button")}
                       </Link>
                     </Box>
                   ))
@@ -180,7 +182,7 @@ export function Checkout() {
               onClick={handleClickOpen}
               control={<SpecialRadio />}
               checked
-              label={<RadioLabel>Giao hàng đến địa chỉ khác</RadioLabel>}
+              label={<RadioLabel>{t('page.checkout.content.address.radioLabel')}</RadioLabel>}
             />
           </Section>
         </Container>
@@ -188,7 +190,7 @@ export function Checkout() {
           <Section>
             <UnderlineBox>
               <Typography sx={{ textTransform: "uppercase", fontWeight: 700 }}>
-                Phương thức thanh toán
+               {t("page.checkout.content.payment.section")}
               </Typography>
             </UnderlineBox>
             <RadioGroup name="payment-method" sx={{ py: 1 }}>
@@ -208,7 +210,7 @@ export function Checkout() {
                         backgroundPosition: "center center",
                       }}
                     />
-                    <RadioLabel>Thanh toán bằng ví Paypal.</RadioLabel>
+                    <RadioLabel>{t('page.checkout.content.payment.item1')}</RadioLabel>
                   </Box>
                 }
               />
@@ -228,7 +230,7 @@ export function Checkout() {
                         backgroundPosition: "center center",
                       }}
                     />
-                    <RadioLabel>Thanh toán bằng cổng VNPay.</RadioLabel>
+                    <RadioLabel>{t('page.checkout.content.payment.item2')}</RadioLabel>
                   </Box>
                 }
               />
@@ -248,7 +250,7 @@ export function Checkout() {
                         backgroundPosition: "center center",
                       }}
                     />
-                    <RadioLabel>Thanh toán khi nhận hàng.</RadioLabel>
+                    <RadioLabel>{t('page.checkout.content.payment.item3')}</RadioLabel>
                   </Box>
                 }
               />
@@ -259,7 +261,7 @@ export function Checkout() {
           <Section>
             <UnderlineBox>
               <Typography sx={{ textTransform: "uppercase", fontWeight: 700 }}>
-                Kiểm tra lại đơn hàng
+                {t("page.checkout.content.check.section")}
               </Typography>
             </UnderlineBox>
             <TableContainer>
@@ -320,11 +322,11 @@ export function Checkout() {
           >
             <UnderlineBox>
               <Typography sx={{ textTransform: "uppercase", fontWeight: 700 }}>
-                Mã khuyến mãi / mã quà tặng
+                {t("page.checkout.content.discount.section")}
               </Typography>
             </UnderlineBox>
             <Box display={"flex"} alignItems={"center"} gap={2} my={1}>
-              <Typography>Mã KM / Quà tặng</Typography>
+              <Typography>{t("page.checkout.content.discount.section")}</Typography>
               <Paper sx={{ p: "4px 8px" }} variant="outlined">
                 <InputBase />
                 <Button
@@ -336,14 +338,14 @@ export function Checkout() {
                   disableTouchRipple
                   disableRipple
                 >
-                  Áp dụng
+                  {t("page.checkout.content.discount.section")}
                 </Button>
               </Paper>
               <Link
                 sx={{ cursor: "pointer" }}
                 onClick={() => setOpenDiscount(true)}
               >
-                Chọn mã khuyến mãi
+                {t("page.checkout.content.discount.item2")}
               </Link>
             </Box>
           </Section>

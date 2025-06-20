@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { cancelOrder } from "~/api/order";
 import CustomSnackbar from "~/components/Popup/Snackbar";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 function onBuyAgain() {
   console.log("Buy again clicked");
 }
@@ -71,7 +72,7 @@ export default function Order({
   const amount = items.reduce((total, item) => total + item.quantity, 0);
   const [isOpenSnackbar, setIsOpenSnackbar] = useState(false);
   const [confirmCancel, setConfirmCancel] = useState(false);
-
+  const { t } = useTranslation();
   // Xử lý hủy đơn
   const handleCancelOrder = async () => {
     // Ngăn chặn sự kiện click lan truyền lên Card
@@ -177,7 +178,7 @@ export default function Order({
               {items.map((item) => item.bookTitle).join(", ")}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-              {amount} sản phẩm
+              {amount} {t('page.profileUser.profileSection.orders.orderItem.product')}
             </Typography>
           </Box>
         </Grid2>
@@ -193,7 +194,7 @@ export default function Order({
       >
         <Grid2>
           <Typography variant="body2" color="text.secondary">
-            Tổng tiền:{" "}
+            {t('page.profileUser.profileSection.orders.orderItem.total')}{" "}
             <span style={{ color: "red", fontWeight: "bold", fontSize: 16 }}>
               {price.toLocaleString()} ₫
             </span>
@@ -211,7 +212,7 @@ export default function Order({
                 onBuyAgain();
               }}
             >
-              Mua lại
+              {t('page.profileUser.profileSection.orders.orderItem.button')}
             </Button>
             {status === "PENDING_CONFIRMATION" && (
               <Button

@@ -10,7 +10,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-
+import { useTranslation } from "react-i18next";
 interface RegisterPopupProps {
     open: boolean;
     onClose: () => void;
@@ -31,6 +31,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({ open, onClose,onRegisterS
   const [isValidPassword, setIsValidPassword] = useState(false);
   const loginRegisterRef = useRef<HTMLButtonElement | null>(null);
   const forgotPasswordButtonRef = useRef<HTMLButtonElement | null>(null);
+  const { t } = useTranslation();
   // Cập nhập lại data account khi người dùng nhập và reset lỗi
   const handleChangeAccount = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAccountInfo(event.target.value);
@@ -113,7 +114,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({ open, onClose,onRegisterS
         color="#c92127"
         fontFamily={"sans-serif"}
       >
-       Đăng ký
+       {t("navbar.buttonLogin.register.label")}
       </DialogTitle>
       <DialogContent>
        
@@ -166,7 +167,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({ open, onClose,onRegisterS
               onClick={handleProccessRegister}
               disabled={!isValidAccount || !isValidPassword} //  Vô hiệu hóa nếu tài khoản chưa hợp lệ
             >
-              Đăng ký
+              {t("navbar.buttonLogin.register.label")}
             </Button>
           </Box>
         
