@@ -9,9 +9,12 @@ import { useMemo } from "react";
 import { Section } from "~/components/Section";
 import { SectionBody } from "~/components/Section/SectionBody";
 import { useBookDetailsContext } from "~/context/BookDetailsContext";
+import { useNavigate } from "react-router-dom";
 
 export function BookRelated() {
-  const { relatedBooks, isLoading, error } = useBookDetailsContext();
+  const { relatedBooks, isLoading, categoryChain, error } =
+    useBookDetailsContext();
+  const navigate = useNavigate();
   const headerIcon = useMemo(
     () => <AutoStoriesIcon sx={{ color: grey["100"], fontSize: 20 }} />,
     []
@@ -53,6 +56,13 @@ export function BookRelated() {
               borderColor: red["800"],
               textTransform: "capitalize",
             }}
+            onClick={() =>
+              navigate(
+                `/category?categoryId=${
+                  categoryChain?.list[categoryChain.list.length - 1]?.id
+                }&page=1&size=12`
+              )
+            }
           >
             Xem Thêm
           </Button>
