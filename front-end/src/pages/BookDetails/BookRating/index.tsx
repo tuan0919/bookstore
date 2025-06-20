@@ -12,7 +12,7 @@ import LinearProgress, {
   linearProgressClasses,
 } from "@mui/material/LinearProgress";
 import { useBookDetailsContext } from "~/context/BookDetailsContext";
-
+import { useTranslation } from "react-i18next";
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 5,
   borderRadius: 5,
@@ -47,10 +47,11 @@ const RatingBox = styled(Box)(({ theme }) => ({
 
 export function BookRating({ sx = undefined }: { sx?: SxProps<Theme> }) {
   const { reviewOverall } = useBookDetailsContext();
+  const { t } = useTranslation();
   return (
     <Stack sx={sx}>
       <Typography sx={{ fontWeight: "medium", fontSize: "large" }}>
-        Đánh giá sản phẩm
+        {t("page.bookDetail.rating.title")}
       </Typography>
       <Box display={"flex"} gap={3} alignItems={"center"}>
         <Stack display={"flex"} alignItems={"center"} spacing={0.5}>
@@ -80,7 +81,7 @@ export function BookRating({ sx = undefined }: { sx?: SxProps<Theme> }) {
               textWrap: "nowrap",
             }}
           >
-            ({reviewOverall?.total} lượt đánh giá)
+            ({reviewOverall?.total} {t("page.bookDetail.rating.item1")})
           </Typography>
         </Stack>
         <Stack
@@ -95,7 +96,7 @@ export function BookRating({ sx = undefined }: { sx?: SxProps<Theme> }) {
         >
           {[1, 2, 3, 4, 5].map((value, index) => (
             <RatingBox>
-              <LabelText>{value} sao</LabelText>
+              <LabelText>{value} {t("page.bookDetail.rating.item2")}</LabelText>
               <BorderLinearProgress
                 variant="determinate"
                 value={

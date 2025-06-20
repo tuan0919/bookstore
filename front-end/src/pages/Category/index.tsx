@@ -7,6 +7,7 @@ import Link from "@mui/material/Link";
 import { yellow } from "@mui/material/colors";
 import { useSearchContext } from "~/providers/SearchProvider";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 function CategoryPage() {
   const location = useLocation();
   const path = location.pathname.replace("/category", "").trim();
@@ -17,7 +18,7 @@ function CategoryPage() {
     navigate(fullPath); // Dùng navigate để chuyển hướng mà không reload trang
   };
   const [selectedPrices, setSelectedPrices] = useState<string[]>([]);
-
+  const { t } = useTranslation();
   return (
     <>
       <Container
@@ -39,7 +40,7 @@ function CategoryPage() {
             color="black"
             onClick={() => handleBreadcrumbClick("/category")}
           >
-            TẤT CẢ NHÓM SẢN PHẨM
+            {t('page.search.Breadcrumbs')}
           </Link>
           {categories.map((category, index) => {
             const fullPath = `/category/${categories

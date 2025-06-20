@@ -12,7 +12,9 @@ import AddLocationIcon from "@mui/icons-material/AddLocation";
 import MarkunreadIcon from "@mui/icons-material/Markunread";
 import CallIcon from "@mui/icons-material/Call";
 import logoImage from '~/assets/logo.png';
+import { useTranslation } from "react-i18next";
 function Footer() {
+  const {t} = useTranslation();
   const socialLinks = [
     {
       href: "",
@@ -68,12 +70,10 @@ function Footer() {
               sx={{ width: 226, height: 41 }}
             ></Box>
             <p style={{ fontSize: 13 }}>
-              Lầu 5, 387-389 Hai Bà Trưng Quận 3 TP HCMCông Ty Cổ Phần Phát Hành
-              Sách TP HCM - FAHASA60 - 62 Lê Lợi, Quận 1, TP. HCM, Việt Nam.
+              {t("footer.info.first")}
               <br />
-              Fahasa.com nhận đặt hàng trực tuyến và giao hàng tận nơi. KHÔNG hỗ
-              trợ đặt mua và nhận hàng trực tiếp tại văn phòng cũng như tất cả
-              Hệ Thống Fahasa trên toàn quốc.
+              {t("footer.info.second")}
+             
             </p>
             <Box
               component={"img"}
@@ -137,7 +137,7 @@ function Footer() {
                 <Container
                   sx={{ fontWeight: "bold", fontSize: 16, marginBottom: 1 }}
                 >
-                  DỊCH VỤ
+                  {t("footer.anotherInfo.column1.title")}
                 </Container>
                 <div style={{ marginBottom: 10 }}>
                   <Link
@@ -146,7 +146,7 @@ function Footer() {
                     underline="hover"
                     fontSize={13}
                   >
-                    Điều khoản sử dụng
+                   {t("footer.anotherInfo.column1.item1")}
                   </Link>
                 </div>
                 <div style={{ marginBottom: 10 }}>
@@ -156,7 +156,7 @@ function Footer() {
                     underline="hover"
                     fontSize={13}
                   >
-                    Chính sách bảo mật thông tin cá nhân
+                    {t("footer.anotherInfo.column1.item2")}
                   </Link>
                 </div>
                 <div style={{ marginBottom: 10 }}>
@@ -166,7 +166,7 @@ function Footer() {
                     underline="hover"
                     fontSize={13}
                   >
-                    Chính sách bảo mật thanh toán
+                   {t("footer.anotherInfo.column1.item3")}
                   </Link>
                 </div>
                 <div style={{ marginBottom: 10 }}>
@@ -176,7 +176,7 @@ function Footer() {
                     underline="hover"
                     fontSize={13}
                   >
-                    Giới thiệu Fahasa
+                  {t("footer.anotherInfo.column1.item4")}
                   </Link>
                 </div>
                 <div style={{ marginBottom: 10 }}>
@@ -186,7 +186,7 @@ function Footer() {
                     underline="hover"
                     fontSize={13}
                   >
-                    Hệ thống trung tâm - nhà sách
+                   {t("footer.anotherInfo.column1.item5")}
                   </Link>
                 </div>
               </Stack>
@@ -194,7 +194,7 @@ function Footer() {
                 <Container
                   sx={{ fontWeight: "bold", fontSize: 16, marginBottom: 1 }}
                 >
-                  HỖ TRỢ
+                  {t("footer.anotherInfo.column2.title")}
                 </Container>
                 <div style={{ marginBottom: 10 }}>
                   <Link
@@ -203,7 +203,7 @@ function Footer() {
                     underline="hover"
                     fontSize={13}
                   >
-                    Chính sách đổi - trả - hoàn tiền
+                   {t("footer.anotherInfo.column2.item1")}
                   </Link>
                 </div>
                 <div style={{ marginBottom: 10 }}>
@@ -213,7 +213,7 @@ function Footer() {
                     underline="hover"
                     fontSize={13}
                   >
-                    Chính sách bảo hành - bồi hoàn
+                   {t("footer.anotherInfo.column2.item2")}
                   </Link>
                 </div>
                 <div style={{ marginBottom: 10 }}>
@@ -223,7 +223,7 @@ function Footer() {
                     underline="hover"
                     fontSize={13}
                   >
-                    Chính sách vận chuyển
+                  {t("footer.anotherInfo.column2.item3")}
                   </Link>
                 </div>
                 <div style={{ marginBottom: 10 }}>
@@ -233,7 +233,7 @@ function Footer() {
                     underline="hover"
                     fontSize={13}
                   >
-                    Chính sách khách sỉ
+                    {t("footer.anotherInfo.column2.item4")}
                   </Link>
                 </div>
               </Stack>
@@ -241,7 +241,7 @@ function Footer() {
                 <Container
                   sx={{ fontWeight: "bold", fontSize: 16, marginBottom: 1 }}
                 >
-                  TÀI KHOẢN CỦA TÔI
+                  {t("footer.anotherInfo.column3.title")}
                 </Container>
                 <div style={{ marginBottom: 10 }}>
                   <Link
@@ -250,7 +250,7 @@ function Footer() {
                     underline="hover"
                     fontSize={13}
                   >
-                    Đăng nhập/Tạo mới tài khoản
+                    {t("footer.anotherInfo.column3.item1")}
                   </Link>
                 </div>
                 <div style={{ marginBottom: 10 }}>
@@ -260,7 +260,7 @@ function Footer() {
                     underline="hover"
                     fontSize={13}
                   >
-                    Thay đổi địa chỉ khách hàng
+                   {t("footer.anotherInfo.column3.item2")}
                   </Link>
                 </div>
                 <div style={{ marginBottom: 10 }}>
@@ -270,7 +270,7 @@ function Footer() {
                     underline="hover"
                     fontSize={13}
                   >
-                    Chi tiết tài khoản
+                   {t("footer.anotherInfo.column3.item3")}
                   </Link>
                 </div>
                 <div style={{ marginBottom: 10 }}>
@@ -280,19 +280,19 @@ function Footer() {
                     underline="hover"
                     fontSize={13}
                   >
-                    Lịch sử mua hàng
+                  {t("footer.anotherInfo.column3.item4")}
                   </Link>
                 </div>
               </Stack>
             </Stack>
             <Stack>
               <Container sx={{ fontWeight: "bold", fontSize: 16, marginBottom: 1 }}>
-                LIÊN HỆ
+              {t("footer.anotherInfo.column4.title")}
               </Container>
               <Stack direction="row" spacing={5.7} alignItems="center" >
                 <Box minWidth={220} fontSize={13} display="flex">
                   <AddLocationIcon sx={{ fontSize: 16, marginRight: 0.5 }} />
-                  60-62 Lê Lợi, Q.1, TP. HCM
+                 {t("footer.anotherInfo.column4.item1")}
                 </Box>
                 <Box minWidth={200} fontSize={13} display="flex">
                   <MarkunreadIcon sx={{ fontSize: 16, marginRight: 0.5 }} />
@@ -323,7 +323,7 @@ function Footer() {
         {/* Dòng bản quyền */}
         <Box mt={3} textAlign="center">
           <Typography color="#adadad" fontSize={12} marginBottom={1} variant="body2">
-            Giấy chứng nhận Đăng ký Kinh doanh số 0304132047 do Sở Kế hoạch và Đầu tư Thành phố Hồ Chí Minh cấp ngày 20/12/2005, đăng ký thay đổi lần thứ 10, ngày 20/05/2022.
+            {t("footer.anotherInfo.copyrightInfo")}
           </Typography>
         </Box>
       </Container>

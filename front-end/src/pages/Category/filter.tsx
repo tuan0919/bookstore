@@ -7,6 +7,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { getCategories } from "../../mapper/CategoryMapper";
 import { getGenres } from "../../mapper/CategoryMapper";
 import { useSearchContext } from "~/providers/SearchProvider";
+import { useTranslation } from "react-i18next";
 export interface Category {
   id: number;
   name: string;
@@ -15,8 +16,9 @@ export interface Category {
 }
 
 const categories: Category[] = getCategories();
-const priceRanges = ["Dưới 100K", "100K - 300K", "300K - 500K", "Trên 500K"];
+
 const genres = getGenres();
+
 interface FilterSidebarProps {
   currentSlug?: string;
   onPriceFilterChange?: (selectedPrices: string[]) => void;
@@ -26,6 +28,7 @@ export default function FilterSidebar({
   currentSlug,
   onPriceFilterChange,
 }: FilterSidebarProps) {
+  const { t } = useTranslation();
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
     new Set()
   );
@@ -57,7 +60,15 @@ export default function FilterSidebar({
       setExpandedCategories(new Set());
     }
   }, [currentSlug]);
+  const priceKeys = [
+    'page.search.filter.price.item1',
+    'page.search.filter.price.item2',
+    'page.search.filter.price.item3',
+    'page.search.filter.price.item4'
+  ];
 
+  // Map sang mảng đã dịch
+  const priceRanges = priceKeys.map(key => t(key));
   const handleCategoryClick = (fullSlug: string, categoryId: number) => {
     navigate(`/category/${fullSlug}`);
     setFilters((prev) => ({ ...prev, categoryId: categoryId }));
@@ -130,7 +141,7 @@ export default function FilterSidebar({
       {/* Nhóm sản phẩm */}
       <Box p={2} border={1} borderColor={grey[300]} borderRadius={2}>
         <Typography fontWeight={700} fontSize={16} color={grey[800]}>
-          NHÓM SẢN PHẨM
+          {t("page.search.filter.label")}
         </Typography>
 
         <Link
@@ -149,7 +160,7 @@ export default function FilterSidebar({
             navigate("/category");
           }}
         >
-          Tất Cả Nhóm Sản Phẩm
+          {t("page.search.filter.category")}
         </Link>
 
         {showAllCategories
@@ -164,7 +175,7 @@ export default function FilterSidebar({
       {/* Giá Tiền */}
       <Box>
         <Typography fontWeight={700} fontSize={16} color={grey[800]}>
-          GIÁ TIỀN
+          {t("page.search.filter.price.title")}
         </Typography>
         {priceRanges.map((price) => (
           <FormControlLabel
@@ -184,7 +195,7 @@ export default function FilterSidebar({
       {/* Thể Loại */}
       <Box>
         <Typography fontWeight={700} fontSize={16} color={grey[800]}>
-          THỂ LOẠI
+          {t("page.search.filter.genre")}
         </Typography>
         {genres.map((genre) => (
           <FormControlLabel

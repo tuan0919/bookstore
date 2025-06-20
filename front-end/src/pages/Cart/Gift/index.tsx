@@ -1,9 +1,10 @@
-import { Box, Typography, Chip, IconButton, Badge } from "@mui/material";
+import { Box, Typography, IconButton, Badge } from "@mui/material";
 import RedeemIcon from "@mui/icons-material/Redeem";
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-
+import { useTranslation } from "react-i18next";
 function Gift() {
+  const {t} = useTranslation();
   return (
     <Box
       p={2}
@@ -19,13 +20,13 @@ function Gift() {
         <Box display="flex" alignItems="center" gap={1}>
           <RedeemIcon sx={{ color: "#6b4fe2" }} />
           <Typography fontWeight="bold">
-            Nhận quà <Typography component="span" color="text.secondary">(1/1)</Typography>
+            {t("page.cart.gift.item1")} <Typography component="span" color="text.secondary">(1/1)</Typography>
           </Typography>
         </Box>
 
         <Box display="flex" alignItems="center" gap={1}>
           <Typography color="primary" fontWeight="medium" sx={{ cursor: "pointer" }}>
-            Chọn quà
+           {t("page.cart.gift.item2")}
           </Typography>
           <Badge badgeContent={1} color="error">
             <ArrowForwardIosIcon fontSize="small" />
@@ -50,7 +51,7 @@ function Gift() {
           sx={{ width: 24, height: 24, borderRadius: 0.5, mr: 1 }}
         />
         <Typography variant="body2" color="primary">
-          Quà Tặng E-...
+          {t("page.cart.gift.item3")}
         </Typography>
         <IconButton size="small">
           <CloseIcon fontSize="small" />

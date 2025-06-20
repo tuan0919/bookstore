@@ -16,7 +16,7 @@ import {getUserDetails} from "~/api/user/userDetails";
 import { login } from "~/api/login";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-
+import { useTranslation } from "react-i18next";
 interface LoginPopupProps {
   open: boolean;
   onClose: () => void;
@@ -38,6 +38,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
   const forgotPasswordButtonRef = useRef<HTMLButtonElement | null>(null);
   const { setJwtToken } = useAuthContext();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   // Cập nhập lại data account khi người dùng nhập và reset lỗi
   const handleChangeAccount = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAccountInfo(event.target.value);
@@ -152,15 +153,15 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
         color="#c92127"
         fontFamily={"sans-serif"}
       >
-        {mode === "login" ? "Đăng Nhập" : "Quên Mật Khẩu"}
+        {mode === "login" ? `${t('navbar.buttonLogin.login.popup.item1')}` : `${t('navbar.buttonLogin.login.popup.item4')}`}
       </DialogTitle>
       <DialogContent>
         {mode === "login" ? (
           <Box>
             <TextField
               fullWidth
-              label="Tài khoản"
-              placeholder="Nhập tên tài khoản"
+              label={t('navbar.buttonLogin.login.popup.item2')}
+             
               margin="dense"
               variant="outlined"
               value={accountInfo}
@@ -194,8 +195,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
                   ),
                 },
               }}
-              label="Mật khẩu"
-              placeholder="Nhập mật khẩu"
+              label={t('navbar.buttonLogin.login.popup.item3')}
               fullWidth
             />
             <Button
@@ -205,13 +205,13 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ open, onClose }) => {
               onClick={handleProccessLogin}
               disabled={!isValidAccount || !isValidPassword} //  Vô hiệu hóa nếu tài khoản chưa hợp lệ
             >
-              Đăng nhập
+              {t('navbar.buttonLogin.login.popup.item1')}
             </Button>
             <Typography
               sx={{ mt: 1, cursor: "pointer", color: "#c92127" }}
               onClick={toggleMode}
             >
-              Quên mật khẩu?
+              {t('navbar.buttonLogin.login.popup.item4')}
             </Typography>
           </Box>
         ) : (

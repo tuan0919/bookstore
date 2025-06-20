@@ -32,6 +32,7 @@ import {
   useBookDetailsContext,
 } from "~/context/BookDetailsContext";
 import CustomSnackbar from "~/components/Popup/Snackbar";
+import { useTranslation } from "react-i18next";
 const CustomizeBox = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -64,6 +65,7 @@ export function BookDetails() {
     severity: "success",
     duration: 800,
   });
+  const {t} = useTranslation();
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -102,7 +104,7 @@ export function BookDetails() {
                   });
                 }}
               >
-                <Typography fontWeight={"bold"}>Thêm vào giỏ hàng</Typography>
+                <Typography fontWeight={"bold"}>{t('page.bookDetail.buttonAddToCart')}</Typography>
               </Button>
               {/* Popup thông báo thêm sách  */}
               <CustomSnackbar
@@ -121,7 +123,7 @@ export function BookDetails() {
                 startIcon={<AddCardRoundedIcon />}
                 sx={{ textTransform: "none" }}
               >
-                <Typography fontWeight={"bold"}>Mua ngay</Typography>
+                <Typography fontWeight={"bold"}>{t('page.bookDetail.buttonBuyNow')}</Typography>
               </Button>
               <IconButton onClick={handleClickOpen}>
                 <BookmarkBorderRoundedIcon />

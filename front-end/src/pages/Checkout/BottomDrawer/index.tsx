@@ -17,6 +17,7 @@ import {createOrder} from "~/api/order";
 import { useNavigate } from "react-router-dom";
 import {useCart} from "~/providers/CartProvider";
 import {  CartItemPropertyResponseDTO } from "~/types/cart";
+import { useTranslation } from "react-i18next";
 export function BottomDrawer({
   sx = undefined,
   totalPrice = 0,
@@ -30,6 +31,7 @@ export function BottomDrawer({
   const selectBooks = JSON.parse(localStorage.getItem("selectedBooks") || "[]");
   const navigate = useNavigate();
  const { removeItem } = useCart();
+ const { t } = useTranslation();
   function handelCreateOrder() {
       createOrder({
         paymentMethodId: 1,
@@ -58,7 +60,7 @@ export function BottomDrawer({
         <Stack gap={0.5}>
           <Box display={"flex"} justifyContent={"flex-end"}>
             <Box width={400} textAlign={"right"}>
-              <Typography sx={{ fontSize: 14 }}>Thành tiền</Typography>
+              <Typography sx={{ fontSize: 14 }}>{t('page.checkout.content.bottomDrawer.item1')}</Typography>
             </Box>
             <Box width={200} textAlign={"right"}>
               <Typography sx={{ fontSize: 14 }}>
@@ -68,7 +70,7 @@ export function BottomDrawer({
           </Box>
           <Box display={"flex"} justifyContent={"flex-end"}>
             <Box width={400} textAlign={"right"}>
-              <Typography sx={{ fontSize: 14 }}>Phí vận chuyển</Typography>
+              <Typography sx={{ fontSize: 14 }}>{t('page.checkout.content.bottomDrawer.item2')}</Typography>
             </Box>
             <Box width={200} textAlign={"right"}>
               <Typography sx={{ fontSize: 14 }}>
@@ -78,7 +80,7 @@ export function BottomDrawer({
           </Box>
           <Box display={"flex"} justifyContent={"flex-end"}>
             <Box width={400} textAlign={"right"}>
-              <Typography sx={{ fontWeight: 700 }}>Tổng tiền</Typography>
+              <Typography sx={{ fontWeight: 700 }}>{t('page.checkout.content.bottomDrawer.item3')}</Typography>
             </Box>
             <Box width={200} textAlign={"right"}>
               <Typography
@@ -93,7 +95,7 @@ export function BottomDrawer({
         <Box display={"flex"} mt={2}>
           <FormControlLabel
             control={<Checkbox defaultChecked />}
-            label="Tôi đồng ý với điều khoản sử dụng của trang web"
+            label={t('page.checkout.content.bottomDrawer.item4')}
           />
           {(() => {
             switch (paymentMethod) {
@@ -119,7 +121,7 @@ export function BottomDrawer({
                       handelCreateOrder();
                     }}
                   >
-                    Xác nhận thanh toán
+                    {t('page.checkout.content.bottomDrawer.item5')}
                   </Button>
                 );
               default:

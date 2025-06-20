@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Paper, Typography, Tabs, Tab, Box, Pagination } from "@mui/material";
 import { getOrder } from "~/api/order";
 import Order from "~/components/Order";
-
+import { useTranslation } from "react-i18next";
 const OrderList = () => {
   const [tab, setTab] = useState<string>("ALL");
   const [allOrders, setAllOrders] = useState<any[]>([]);
@@ -12,7 +12,7 @@ const OrderList = () => {
   const itemsPerPage = 10;
 
   const userDetails = JSON.parse(localStorage.getItem("userDetails") || "{}");
-
+  const { t } = useTranslation();
   // API lấy đơn hàng theo trang (chỉ dùng cho tab ALL)
   const fetchOrders = async (page: number) => {
     try {
@@ -152,12 +152,12 @@ const OrderList = () => {
         scrollButtons="auto"
         sx={{ marginBottom: "10px" }}
       >
-        <Tab value="ALL" label="Tất cả" />
-        <Tab value="PENDING_CONFIRMATION" label="Chờ xác nhận" />
-        <Tab value="CONFIRMED" label="Đã xác nhận" />
-        <Tab value="SHIPPING" label="Đang vận chuyển" />
-        <Tab value="DELIVERED" label="Đã chuyển đến" />
-        <Tab value="CANCELED" label="Đã hủy" />
+        <Tab value="ALL" label={t('page.profileUser.profileSection.orders.status.item1')} />
+        <Tab value="PENDING_CONFIRMATION" label={t('page.profileUser.profileSection.orders.status.item2')} />
+        <Tab value="CONFIRMED" label={t('page.profileUser.profileSection.orders.status.item3')} />
+        <Tab value="SHIPPING" label={t('page.profileUser.profileSection.orders.status.item4')} />
+        <Tab value="DELIVERED" label={t('page.profileUser.profileSection.orders.status.item5')} />
+        <Tab value="CANCELED" label={t('page.profileUser.profileSection.orders.status.item6')} />
       </Tabs>
 
       {/* Danh sách hóa đơn */}

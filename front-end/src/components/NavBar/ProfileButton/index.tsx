@@ -7,6 +7,7 @@ import VerifyPopup from "~/components/Popup/verifyOTP"; // Import popup xác min
 import { useState, useEffect } from "react";
 import { MenuPopper } from "~/components/Popup/menu";
 import { useAuthContext } from "~/context/AuthContext";
+import { useTranslation } from "react-i18next";
 export function ProfileButton() {
   const [isPopupLoginOpen, setPopupLoginOpen] = useState(false);
   const [isPopupRegisterOpen, setPopupRegisterOpen] = useState(false);
@@ -14,6 +15,7 @@ export function ProfileButton() {
   const [email, setEmail] = useState(""); //
   const [password, setPassword] = useState("");
    const [userName, setUserName] = useState<string | null>(localStorage.getItem("userName"));
+   const {t} = useTranslation();
   // Mở popup login
   const handleOpenPopup = () => {
     setPopupLoginOpen(true);
@@ -115,7 +117,7 @@ export function ProfileButton() {
                 display: { xs: "none", md: "block" },
               }}
             >
-              Tài khoản
+              {t("navbar.buttonLogin.label")}
             </Typography>
           </>
         )}
@@ -145,7 +147,7 @@ export function ProfileButton() {
           }}
         >
           <Button variant="contained" color="error" onClick={handleOpenPopup}>
-            Đăng nhập
+           {t("navbar.buttonLogin.login.label")}
           </Button>
           <LoginPopup open={isPopupLoginOpen} onClose={handleClosePopup} />
 
@@ -154,7 +156,7 @@ export function ProfileButton() {
             color="error"
             onClick={handleOpenPopupRegister}
           >
-            Đăng ký
+            {t("navbar.buttonLogin.register.label")}
           </Button>
           <RegisterPopup
             open={isPopupRegisterOpen}
