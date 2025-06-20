@@ -1,68 +1,56 @@
-import React, { useState } from "react";
+import React from "react";
 import { Box, MenuItem, Select, Pagination } from "@mui/material";
 import { BookCard } from "~/components/BookCard";
 import { SelectChangeEvent } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import {PageBookResponseDTO} from "~/types/book";
 import { useTranslation } from "react-i18next";
-
+import { useCategoryContext } from "~/context/CategoryContext";
 
 const perPageOptions = [12, 24, 48];
-export default function BookList({books,selectedPrices}: { books : PageBookResponseDTO [],selectedPrices?: string[];}) {
-  const [sort, setSort] = useState("latest");
-  const [perPage, setPerPage] = useState(12);
-  const [page, setPage] = useState(1);
-  const {t} = useTranslation();
-  
+
+export default function BookList() {
+  const { books, page, setPage, size, setSize, totalPages } =
+    useCategoryContext();
+  const [sort, setSort] = React.useState("latest");
+  const { t } = useTranslation();
+
   const mapSortOptions = [
-    { key: 'page.search.filterContent.label1.item1', value: 'latest' },
-    { key: 'page.search.filterContent.label1.item2', value: 'best-seller' },
-    { key: 'page.search.filterContent.label1.item3', value: 'price-asc' },
-    { key: 'page.search.filterContent.label1.item4', value: 'price-desc' }
+    { key: "page.search.filterContent.label1.item1", value: "latest" },
+    { key: "page.search.filterContent.label1.item2", value: "best-seller" },
+    { key: "page.search.filterContent.label1.item3", value: "price-asc" },
+    { key: "page.search.filterContent.label1.item4", value: "price-desc" },
   ];
 
-  // Map key -> label
-  const sortOptions  = mapSortOptions.map(option => ({
+  const sortOptions = mapSortOptions.map((option) => ({
     label: t(option.key),
-    value: option.value
+    value: option.value,
   }));
+
   const handleSortChange = (event: SelectChangeEvent<string>) => {
     setSort(event.target.value);
   };
 
   const handlePerPageChange = (event: SelectChangeEvent<string>) => {
-    setPerPage(Number(event.target.value));
-    setPage(1);
+    setSize(Number(event.target.value));
+    setPage(1); // Reset về trang 1 khi đổi số sản phẩm/trang
   };
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
-  const listBooks : PageBookResponseDTO[] = [...books]
-  const filterByPrice = (book: PageBookResponseDTO) => {
-  const price = book.discountedPrice ;
-  if (!selectedPrices || selectedPrices.length === 0) return true;
 
-  return selectedPrices.some((range) => {
-    switch (range) {
-      case "Dưới 100K":
-        return price < 100000;
-      case "100K - 300K":
-        return price >= 100000 && price <= 300000;
-      case "300K - 500K":
-        return price > 300000 && price <= 500000;
-      case "Trên 500K":
-        return price > 500000;
-      default:
-        return true;
-    }
-  });
-};
-const filteredBooks = books.filter(filterByPrice);
-const paginatedBooks = filteredBooks.slice(
-  (page - 1) * perPage,
-  page * perPage
-);
+  // Sắp xếp sách theo sort
+  const sortedBooks = [...books];
+  switch (sort) {
+    case "price-asc":
+      sortedBooks.sort((a, b) => a.discountedPrice - b.discountedPrice);
+      break;
+    case "price-desc":
+      sortedBooks.sort((a, b) => b.discountedPrice - a.discountedPrice);
+      break;
+    default:
+      break;
+  }
 
   return (
     <Box
@@ -89,7 +77,7 @@ const paginatedBooks = filteredBooks.slice(
         </Select>
 
         <Select
-          value={String(perPage)}
+          value={String(size)}
           onChange={handlePerPageChange}
           size="small"
         >
@@ -103,16 +91,17 @@ const paginatedBooks = filteredBooks.slice(
 
       {/* Danh sách sách */}
       <Box display="grid" gridTemplateColumns="repeat(4, 1fr)" gap={2}>
-        {paginatedBooks.map((book) => (
-          <BookCard key={book.bookId} card={
-            {
+        {sortedBooks.map((book) => (
+          <BookCard
+            key={book.bookId}
+            card={{
               thumbnail: book.imageUrl,
               title: book.title,
               discountPrice: book.discountedPrice,
               originallPrice: book.price,
               bookId: book.bookId,
-            }
-          } />
+            }}
+          />
         ))}
       </Box>
 
@@ -120,7 +109,7 @@ const paginatedBooks = filteredBooks.slice(
       <Box display="flex" justifyContent="center" mt={3}>
         <Pagination
           color={"primary"}
-          count={Math.ceil(listBooks.length / perPage)}
+          count={totalPages}
           page={page}
           onChange={handlePageChange}
         />

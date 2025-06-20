@@ -2,9 +2,11 @@
 
 const API_ENDPOINTS = {
   BOOK: {
+    SUMMARY_ABOUT_BOOK: "/api/book",
     SEARCH: "/api/book/category",
     TOP_WEEKLY: "/api/book/top-weekly",
     DETAILS: (bookId: number) => `/api/book/${bookId}`,
+    SEARCH_V2: "/api/book/search",
   },
   CATEGORY: {
     CHAIN_FOR_BOOK: `/api/category/chain`,

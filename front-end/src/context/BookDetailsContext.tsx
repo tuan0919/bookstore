@@ -61,6 +61,7 @@ export const BookDetailsProvider = ({ children }: BookDetailsProviderProps) => {
         const detailsRes = await getBookDetails(bookId);
         setBookDetails(detailsRes.result);
         const chainRes = await getCategoryChainOfBook(detailsRes.result.bookId);
+        console.log("chain res: ", chainRes);
         setCategoryChain(chainRes.result);
         const relatedRes = await searchBooks({
           categoryId: chainRes.result.list[chainRes.result.list.length - 1].id,

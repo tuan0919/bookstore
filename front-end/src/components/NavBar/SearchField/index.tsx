@@ -62,11 +62,7 @@ export function SearchField() {
         console.error("Error fetching search results:", error);
         setLoading(false);
       });
-    if (location.pathname.startsWith("/category")) {
-      navigate(location.pathname);
-    } else {
-      navigate("/category");
-    }
+    navigate(`/category?categoryId=1&page=1&size=12&context=${searchKeyword}`);
   };
   return (
     <Box
@@ -136,17 +132,15 @@ export function SearchField() {
           }, 100); // Delay nhẹ để đợi autofill xong
         }}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          
           setSearchKeyword(e.target.value);
         }}
-      onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
-      const inputValue = (e.target as HTMLInputElement).value;
-      setSearchKeyword(inputValue.trim());
-      searchingBook();
-    }
-  }}
-
+        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+          if (e.key === "Enter") {
+            const inputValue = (e.target as HTMLInputElement).value;
+            setSearchKeyword(inputValue.trim());
+            searchingBook();
+          }
+        }}
         value={searchKeyword ?? ""}
       />
       <Button

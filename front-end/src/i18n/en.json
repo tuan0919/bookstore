@@ -90,6 +90,8 @@
           "item3": "300K - 500K",
           "item4": "Above 500K"
         },
+        "context": "BOOK TITLE",
+        "placeholder": "Enter book's title to search",
         "genre": "GENRE"
       },
       "filterContent": {

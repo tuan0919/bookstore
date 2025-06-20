@@ -12,7 +12,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { IconCircleDashed } from '@tabler/icons-react'
-import { OrderItem } from '@/api/order'
+import { OrderItem } from '@/types/order'
 import { useOrderDetailsContext } from '@/context/OrderDetailsContext'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
