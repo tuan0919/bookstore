@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * @author VuLuu
@@ -39,6 +40,7 @@ public class Promotion {
   private LocalDate startDate;
   @Column(name = "end_date")
   private LocalDate endDate;
+  @ToString.Exclude
   @OneToMany(mappedBy = "promotion", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<PromotionCategories> promotionCategories = new ArrayList<>();
 }

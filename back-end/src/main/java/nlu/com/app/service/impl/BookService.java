@@ -2,14 +2,12 @@ package nlu.com.app.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,7 +19,14 @@ import nlu.com.app.dto.request.BookDetailsDTO.ReviewDTO;
 import nlu.com.app.dto.request.BookSearchRequestDTO;
 import nlu.com.app.dto.request.CreateBookRequest;
 import nlu.com.app.dto.request.UpdateBookRequest;
-import nlu.com.app.dto.response.*;
+import nlu.com.app.dto.response.BookOverviewDTO;
+import nlu.com.app.dto.response.CategoryResponseDTO;
+import nlu.com.app.dto.response.CreateBookResponse;
+import nlu.com.app.dto.response.GenreResponseDTO;
+import nlu.com.app.dto.response.ListBookDetailsDTO;
+import nlu.com.app.dto.response.PageBookResponseDTO;
+import nlu.com.app.dto.response.ShopDataInitDTO;
+import nlu.com.app.dto.response.UpdateBookResponse;
 import nlu.com.app.entity.Book;
 import nlu.com.app.entity.BookImage;
 import nlu.com.app.entity.Category;
@@ -165,9 +170,18 @@ public class BookService implements IBookService {
 
     // MapStruct with injected maps
     List<PageBookResponseDTO> result = books.stream()
-        .map(book -> bookMapper.toPageDto(book,
-            categoryDiscountMap.getOrDefault(book.getCategory().getCategoryId(), 0D),
-            ratingMap.getOrDefault(book.getBookId(), 0D)))
+        .map(book -> {
+          List<Long> relatedCategoryIds = getAllRelatedCategoryIds(book.getCategory());
+
+          double maxDiscount = relatedCategoryIds.stream()
+              .map(id -> categoryDiscountMap.getOrDefault(id, 0D))
+              .max(Double::compareTo)
+              .orElse(0D);
+
+          double rating = ratingMap.getOrDefault(book.getBookId(), 0D);
+
+          return bookMapper.toPageDto(book, maxDiscount, rating);
+        })
         .toList();
 
     return new PageImpl<>(result, pageable, books.getTotalElements());
@@ -187,9 +201,6 @@ public class BookService implements IBookService {
         .build();
   }
 
-  /**
-   * {{@inheritDoc}}
-   */
   @Override
   public BookDetailsDTO getBookDetails(Long bookId) {
     Book book = bookRepository.findById(bookId)
@@ -208,13 +219,19 @@ public class BookService implements IBookService {
             .build())
         .collect(Collectors.toList());
 
+    List<Long> relatedCategoryIds = new ArrayList<>();
+    Category current = book.getCategory();
+    while (current != null) {
+      relatedCategoryIds.add(current.getCategoryId());
+      current = current.getParentCategory();
+    }
+
     List<Promotion> promotions = promotionCategoriesRepository.findActivePromotionsByCategoryIds(
-        List.of(book.getCategory().getCategoryId()));
+        relatedCategoryIds);
 
     Double discount = promotions.stream()
         .flatMap(promotion -> promotion.getPromotionCategories().stream()
-            .filter(
-                pc -> pc.getCategory().getCategoryId().equals(book.getCategory().getCategoryId()))
+            .filter(pc -> relatedCategoryIds.contains(pc.getCategory().getCategoryId()))
             .map(pc -> promotion.getDiscountPercentage()))
         .max(Double::compare)
         .orElse(0D);
@@ -225,6 +242,7 @@ public class BookService implements IBookService {
     return bookMapper.toBookDetailsDTO(book, imageUrls, reviews, originalPrice, discountedPrice);
   }
 
+
   /**
    * {{@inheritDoc}}
    */
@@ -234,33 +252,34 @@ public class BookService implements IBookService {
     var list = new ArrayList<BookDetailsDTO>();
     for (var book : topBooks) {
       List<String> imageUrls = book.getImages().stream()
-              .map(BookImage::getImageUrl)
-              .collect(Collectors.toList());
+          .map(BookImage::getImageUrl)
+          .collect(Collectors.toList());
 
       List<ReviewDTO> reviews = userReviewRepository.findAllByBook(book).stream()
-              .map(review -> ReviewDTO.builder()
-                      .userName(review.getUser().getUsername())
-                      .rating(review.getRating())
-                      .reviewText(review.getReviewText())
-                      .reviewDate(review.getReviewDate().toString())
-                      .build())
-              .collect(Collectors.toList());
+          .map(review -> ReviewDTO.builder()
+              .userName(review.getUser().getUsername())
+              .rating(review.getRating())
+              .reviewText(review.getReviewText())
+              .reviewDate(review.getReviewDate().toString())
+              .build())
+          .collect(Collectors.toList());
 
       List<Promotion> promotions = promotionCategoriesRepository.findActivePromotionsByCategoryIds(
-              List.of(book.getCategory().getCategoryId()));
+          List.of(book.getCategory().getCategoryId()));
 
       Double discount = promotions.stream()
-              .flatMap(promotion -> promotion.getPromotionCategories().stream()
-                      .filter(
-                              pc -> pc.getCategory().getCategoryId().equals(book.getCategory().getCategoryId()))
-                      .map(pc -> promotion.getDiscountPercentage()))
-              .max(Double::compare)
-              .orElse(0D);
+          .flatMap(promotion -> promotion.getPromotionCategories().stream()
+              .filter(
+                  pc -> pc.getCategory().getCategoryId().equals(book.getCategory().getCategoryId()))
+              .map(pc -> promotion.getDiscountPercentage()))
+          .max(Double::compare)
+          .orElse(0D);
 
       Double originalPrice = book.getPrice() * 1000;
       Double discountedPrice = originalPrice * (1 - discount / 100);
 
-      var dto = bookMapper.toBookDetailsDTO(book, imageUrls, reviews, originalPrice, discountedPrice);
+      var dto = bookMapper.toBookDetailsDTO(book, imageUrls, reviews, originalPrice,
+          discountedPrice);
       list.add(dto);
     }
     return ListBookDetailsDTO.builder().books(list).build();
@@ -269,40 +288,43 @@ public class BookService implements IBookService {
   @Override
   @Transactional
   public CreateBookResponse createBook(CreateBookRequest metadata,
-                                       MultipartFile thumbnail,
-                                       MultipartFile[] gallery) {
+      MultipartFile thumbnail,
+      MultipartFile[] gallery) {
     try {
-      String key_thumbnail = String.format("%s/%s", metadata.getProduct_code(), thumbnail.getOriginalFilename());
+      String key_thumbnail = String.format("%s/%s", metadata.getProduct_code(),
+          thumbnail.getOriginalFilename());
       // write to temp folder first
-      fileService.writeToTempFolder(thumbnail, tmp+"/"+metadata.getProduct_code());
+      fileService.writeToTempFolder(thumbnail, tmp + "/" + metadata.getProduct_code());
       // only upload which file was sucessfully cached
-      String link_thumbnail = fileService.uploadFile(new File(tmp+"/"+key_thumbnail), key_thumbnail);
+      String link_thumbnail = fileService.uploadFile(new File(tmp + "/" + key_thumbnail),
+          key_thumbnail);
       List<String> link_gallery = new ArrayList<>();
-      for (MultipartFile image: gallery) {
-        String key_image = String.format("%s/%s", metadata.getProduct_code(), image.getOriginalFilename());
-        fileService.writeToTempFolder(image, tmp+"/"+metadata.getProduct_code());
-        String link = fileService.uploadFile(new File(tmp+"/"+key_image), key_image);
+      for (MultipartFile image : gallery) {
+        String key_image = String.format("%s/%s", metadata.getProduct_code(),
+            image.getOriginalFilename());
+        fileService.writeToTempFolder(image, tmp + "/" + metadata.getProduct_code());
+        String link = fileService.uploadFile(new File(tmp + "/" + key_image), key_image);
         link_gallery.add(link);
       }
       // vailidate if metadata is valid
       Long categoryId = metadata.getCategory_id();
       var category = categoryRepository.findById(categoryId)
-              .orElseThrow(() -> new ApplicationException(ErrorCode.CATEGORY_NOT_FOUND));
+          .orElseThrow(() -> new ApplicationException(ErrorCode.CATEGORY_NOT_FOUND));
       var genre = genreRepository.findById(metadata.getGenre_id())
-              .orElseThrow(() -> new ApplicationException(ErrorCode.GENRE_NOT_FOUND));
+          .orElseThrow(() -> new ApplicationException(ErrorCode.GENRE_NOT_FOUND));
       var book = bookMapper.metadataToEntity(metadata);
       book.setGenre(genre);
       book.setCategory(category);
       // add thumbnail
       var bookImages = new ArrayList<>(List.of(BookImage.builder()
-              .book(book)
-              .isThumbnail(true)
-              .build()
+          .book(book)
+          .isThumbnail(true)
+          .build()
       ));
       // add gallery
       link_gallery.forEach(link -> {
         bookImages.add(BookImage.builder().book(book)
-                .imageUrl(link).isThumbnail(false).build());
+            .imageUrl(link).isThumbnail(false).build());
       });
       book.setImages(bookImages);
       // save book
@@ -316,14 +338,14 @@ public class BookService implements IBookService {
   @Transactional
   @Override
   public UpdateBookResponse updateBook(Long bookId,
-          UpdateBookRequest metadata,
-                            MultipartFile newThumbnail,
-                            String oldThumbnail,
-                            MultipartFile[] newGallery, String[] oldGallery
+      UpdateBookRequest metadata,
+      MultipartFile newThumbnail,
+      String oldThumbnail,
+      MultipartFile[] newGallery, String[] oldGallery
   ) {
     try {
       var book = bookRepository.findById(bookId)
-              .orElseThrow(() -> new ApplicationException(ErrorCode.BOOK_NOT_FOUND));
+          .orElseThrow(() -> new ApplicationException(ErrorCode.BOOK_NOT_FOUND));
 
       // Cập nhật metadata
       book.setTitle(metadata.getTitle());
@@ -334,14 +356,14 @@ public class BookService implements IBookService {
       book.setPrice(metadata.getPrice());
       book.setAge(metadata.getAge());
       book.setQtyInStock(metadata.getQty_in_stock());
-      book.setPublishYear(metadata.getPublish_year()+"");
+      book.setPublishYear(metadata.getPublish_year() + "");
       book.setWeight(metadata.getWeight());
       book.setProductCode(metadata.getProduct_code());
 
       var category = categoryRepository.findById(metadata.getCategory_id())
-              .orElseThrow(() -> new ApplicationException(ErrorCode.CATEGORY_NOT_FOUND));
+          .orElseThrow(() -> new ApplicationException(ErrorCode.CATEGORY_NOT_FOUND));
       var genre = genreRepository.findById(metadata.getGenre_id())
-              .orElseThrow(() -> new ApplicationException(ErrorCode.GENRE_NOT_FOUND));
+          .orElseThrow(() -> new ApplicationException(ErrorCode.GENRE_NOT_FOUND));
       book.setCategory(category);
       book.setGenre(genre);
 
@@ -350,53 +372,56 @@ public class BookService implements IBookService {
 
       // Xử lý thumbnail mới
       if (newThumbnail != null && !newThumbnail.isEmpty()) {
-        String keyThumbnail = String.format("%s/%s", metadata.getProduct_code(), newThumbnail.getOriginalFilename());
+        String keyThumbnail = String.format("%s/%s", metadata.getProduct_code(),
+            newThumbnail.getOriginalFilename());
         fileService.writeToTempFolder(newThumbnail, tmp + "/" + metadata.getProduct_code());
-        String uploadedThumbnail = fileService.uploadFile(new File(tmp + "/" + keyThumbnail), keyThumbnail);
+        String uploadedThumbnail = fileService.uploadFile(new File(tmp + "/" + keyThumbnail),
+            keyThumbnail);
 
         updatedImages.add(BookImage.builder()
-                .book(book)
-                .imageUrl(uploadedThumbnail)
-                .isThumbnail(true)
-                .build());
+            .book(book)
+            .imageUrl(uploadedThumbnail)
+            .isThumbnail(true)
+            .build());
       } else if (oldThumbnail != null && !oldThumbnail.isBlank()) {
         updatedImages.add(BookImage.builder()
-                .book(book)
-                .imageUrl(oldThumbnail)
-                .isThumbnail(true)
-                .build());
+            .book(book)
+            .imageUrl(oldThumbnail)
+            .isThumbnail(true)
+            .build());
       }
 
       // Xử lý gallery cũ
       if (oldGallery != null) {
         for (String oldUrl : oldGallery) {
           updatedImages.add(BookImage.builder()
-                  .book(book)
-                  .imageUrl(oldUrl)
-                  .isThumbnail(false)
-                  .build());
+              .book(book)
+              .imageUrl(oldUrl)
+              .isThumbnail(false)
+              .build());
         }
       }
 
       if (newGallery != null) {
         for (MultipartFile image : newGallery) {
           if (image != null && !image.isEmpty()) {
-            String key = String.format("%s/%s", metadata.getProduct_code(), image.getOriginalFilename());
+            String key = String.format("%s/%s", metadata.getProduct_code(),
+                image.getOriginalFilename());
             fileService.writeToTempFolder(image, tmp + "/" + metadata.getProduct_code());
             String link = fileService.uploadFile(new File(tmp + "/" + key), key);
 
             updatedImages.add(BookImage.builder()
-                    .book(book)
-                    .imageUrl(link)
-                    .isThumbnail(false)
-                    .build());
+                .book(book)
+                .imageUrl(link)
+                .isThumbnail(false)
+                .build());
           }
         }
       }
 
       // Xóa tất cả image hiện tại trước khi cập nhật
       long result = bookImageRepository.deleteAllByBook_BookId(bookId);
-      System.out.println("count deleted old images: "+result);
+      System.out.println("count deleted old images: " + result);
 
       book.getImages().clear();
       for (BookImage newImage : updatedImages) {
@@ -414,7 +439,8 @@ public class BookService implements IBookService {
 
   @Override
   public UpdateBookResponse getBookInfoForUpdate(Long bookId) {
-    var book = bookRepository.findById(bookId).orElseThrow(() -> new ApplicationException(ErrorCode.BOOK_NOT_FOUND));
+    var book = bookRepository.findById(bookId)
+        .orElseThrow(() -> new ApplicationException(ErrorCode.BOOK_NOT_FOUND));
     return bookMapper.toUpdateBookResponse(book);
   }
 
@@ -422,11 +448,19 @@ public class BookService implements IBookService {
   public Page<BookOverviewDTO> getBookOverviews(Pageable pageable) {
     var pageResult = bookRepository.findAllBy(pageable);
     var result = pageResult
-            .stream().map(b -> bookMapper.toBookOverviewDTO(b, userReviewService, bookImageRepository))
-            .toList();
+        .stream().map(b -> bookMapper.toBookOverviewDTO(b, userReviewService, bookImageRepository))
+        .toList();
 
     return new PageImpl<>(result, pageable, pageResult.getTotalElements());
   }
 
+  private List<Long> getAllRelatedCategoryIds(Category category) {
+    List<Long> ids = new ArrayList<>();
+    while (category != null) {
+      ids.add(category.getCategoryId());
+      category = category.getParentCategory();
+    }
+    return ids;
+  }
 
 }
