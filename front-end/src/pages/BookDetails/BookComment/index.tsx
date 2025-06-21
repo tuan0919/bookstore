@@ -19,7 +19,7 @@ export function BookComment({
   useEffect(() => {
     fetchReviews(Number(id), page, size);
   }, [id, page]);
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   return (
     <Box sx={{ ...sx, display: "flex", flexDirection: "column", gap: 3 }}>
       <Typography sx={{ fontWeight: "medium" }} fontSize={"large"}>
@@ -32,7 +32,7 @@ export function BookComment({
             if (page === 0) {
               fetchReviews(Number(id), page, size);
             } else {
-              setPage(0); // will automatically fetch reviews
+              setPage(1); // will automatically fetch reviews
             }
           }}
         />

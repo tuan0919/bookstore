@@ -101,12 +101,14 @@ const OrderList = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (tab === "ALL") {
-        setPage(0); // Reset page khi đổi tab
+        setPage(1); // Reset page khi đổi tab
         fetchOrders(0);
       } else {
-        setPage(0); // Reset page khi đổi tab
+        setPage(1); // Reset page khi đổi tab
         const allFetchedOrders = await fetchAllOrders();
-        const filtered = allFetchedOrders.filter((order) => order.status === tab);
+        const filtered = allFetchedOrders.filter(
+          (order) => order.status === tab
+        );
 
         setAllOrders(filtered);
         setFilteredOrders(filtered);
@@ -129,16 +131,16 @@ const OrderList = () => {
     setTab(newValue);
   };
 
-  // Danh sách đơn hàng hiện tại 
+  // Danh sách đơn hàng hiện tại
   const currentOrders =
     tab === "ALL"
       ? filteredOrders
       : filteredOrders.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
-      // Tự động chuyển về tab ALL
-      const handleGoToAllTab = () => {
-  setTab("ALL");
-  setPage(0);
-};
+  // Tự động chuyển về tab ALL
+  const handleGoToAllTab = () => {
+    setTab("ALL");
+    setPage(1);
+  };
 
   return (
     <Paper sx={{ padding: 3, minWidth: 700, margin: "auto" }}>
@@ -152,12 +154,30 @@ const OrderList = () => {
         scrollButtons="auto"
         sx={{ marginBottom: "10px" }}
       >
-        <Tab value="ALL" label={t('page.profileUser.profileSection.orders.status.item1')} />
-        <Tab value="PENDING_CONFIRMATION" label={t('page.profileUser.profileSection.orders.status.item2')} />
-        <Tab value="CONFIRMED" label={t('page.profileUser.profileSection.orders.status.item3')} />
-        <Tab value="SHIPPING" label={t('page.profileUser.profileSection.orders.status.item4')} />
-        <Tab value="DELIVERED" label={t('page.profileUser.profileSection.orders.status.item5')} />
-        <Tab value="CANCELED" label={t('page.profileUser.profileSection.orders.status.item6')} />
+        <Tab
+          value="ALL"
+          label={t("page.profileUser.profileSection.orders.status.item1")}
+        />
+        <Tab
+          value="PENDING_CONFIRMATION"
+          label={t("page.profileUser.profileSection.orders.status.item2")}
+        />
+        <Tab
+          value="CONFIRMED"
+          label={t("page.profileUser.profileSection.orders.status.item3")}
+        />
+        <Tab
+          value="SHIPPING"
+          label={t("page.profileUser.profileSection.orders.status.item4")}
+        />
+        <Tab
+          value="DELIVERED"
+          label={t("page.profileUser.profileSection.orders.status.item5")}
+        />
+        <Tab
+          value="CANCELED"
+          label={t("page.profileUser.profileSection.orders.status.item6")}
+        />
       </Tabs>
 
       {/* Danh sách hóa đơn */}
@@ -181,7 +201,7 @@ const OrderList = () => {
             note={order.note}
             img={order.img}
             refreshOrders={() => fetchOrders(page)}
-             goToAllTab={handleGoToAllTab}
+            goToAllTab={handleGoToAllTab}
           />
         ))}
       </Box>

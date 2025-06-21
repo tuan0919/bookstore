@@ -56,7 +56,7 @@ export function useCategory() {
       context,
       maxPrice,
       minPrice,
-      page,
+      page: page - 1 < 0 ? 0 : page - 1,
       size,
     });
     setBooks(resp.result.content);
@@ -85,7 +85,7 @@ export function useCategory() {
   // Hàm cập nhật từng param
   const setCategoryId = useCallback((v: number) => {
     setCategoryIdState(v);
-    setPageState(1); // Reset page về 1 khi đổi category
+    setPageState(0); // Reset page về 1 khi đổi category
   }, []);
   const setMinPrice = useCallback(
     (v: number | undefined) => setMinPriceState(v),

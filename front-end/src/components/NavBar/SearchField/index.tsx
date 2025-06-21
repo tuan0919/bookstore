@@ -62,7 +62,15 @@ export function SearchField() {
         console.error("Error fetching search results:", error);
         setLoading(false);
       });
-    navigate(`/category?categoryId=1&page=1&size=12&context=${searchKeyword}`);
+
+    const url = `/category?categoryId=1&page=1&size=12&context=${searchKeyword}`;
+    if (location.pathname === "/category") {
+      // Nếu đang ở category, refresh lại trang với URL mới
+      window.location.href = url;
+    } else {
+      // Nếu không, chuyển hướng như bình thường
+      navigate(url);
+    }
   };
   return (
     <Box
