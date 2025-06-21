@@ -29,6 +29,8 @@ export function BottomDrawer({
 }) {
   const selectedBooksId = JSON.parse(localStorage.getItem("selectedBooksId") || "[]" );
   const selectBooks = JSON.parse(localStorage.getItem("selectedBooks") || "[]");
+  console.log("selectBooks", selectBooks);
+  console.log("selectedBooksId", selectedBooksId);
   const navigate = useNavigate();
  const { removeItem } = useCart();
  const { t } = useTranslation();

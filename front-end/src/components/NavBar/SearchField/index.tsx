@@ -62,7 +62,6 @@ export function SearchField() {
         console.error("Error fetching search results:", error);
         setLoading(false);
       });
-
     const url = `/category?categoryId=1&page=1&size=12&context=${searchKeyword}`;
     if (location.pathname === "/category") {
       // Nếu đang ở category, refresh lại trang với URL mới
