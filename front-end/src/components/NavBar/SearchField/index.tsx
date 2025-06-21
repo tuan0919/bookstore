@@ -62,7 +62,7 @@ export function SearchField() {
         console.error("Error fetching search results:", error);
         setLoading(false);
       });
-    navigate(`/category?categoryId=1&page=1&size=12&context=${searchKeyword}`);
+    navigate(`/category?categoryId=1&page=0&size=12&context=${searchKeyword}`);
   };
   return (
     <Box
