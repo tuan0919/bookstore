@@ -23,11 +23,11 @@ public class AdminOrderController {
     private final IOrderService orderService;
 
     @GetMapping({"", "/"})
-    public AppResponse<Page<OrderResponseDTO>> getOrders(
+    public AppResponse<Page<OrderDetailsResponseDTO>> getOrders(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return AppResponse.<Page<OrderResponseDTO>>builder()
+        return AppResponse.<Page<OrderDetailsResponseDTO>>builder()
                 .result(orderService.getOrdersWithPagination_ForAdmin(pageable))
                 .build();
     }

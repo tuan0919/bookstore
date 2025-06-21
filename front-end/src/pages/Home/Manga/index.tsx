@@ -9,9 +9,11 @@ import { useMemo } from "react";
 import { Section } from "~/components/Section";
 import { SectionBody } from "~/components/Section/SectionBody";
 import { useHomeContext } from "~/context/HomeContext";
+import { useNavigate } from "react-router-dom";
 
 export function Manga() {
   const { mangaBooks, isLoading, error } = useHomeContext();
+  const navigate = useNavigate();
   const bookCards = mangaBooks.map((book, index) => (
     <SwiperSlide key={index}>
       <BookCard
@@ -50,6 +52,7 @@ export function Manga() {
               borderColor: red["800"],
               textTransform: "capitalize",
             }}
+            onClick={() => navigate(`/category?categoryId=${5}`)}
           >
             Xem Thêm
           </Button>

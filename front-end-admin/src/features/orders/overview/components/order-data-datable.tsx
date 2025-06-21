@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link, useNavigate } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -12,40 +12,9 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import {
-  IconCash,
-  IconCircleDashed,
-  IconClockHour2,
-  IconCreditCardRefund,
-  IconEdit,
-  IconEye,
-  IconMessage,
-  IconMoodCheck,
-  IconMoodSad2,
-  IconTrash,
-  IconTruckDelivery,
-  IconTruckReturn,
-  IconUser,
-} from '@tabler/icons-react'
-import { Route as OrderDetailsRoute } from '@/routes/_authenticated/orders/$id/details'
-import { MoreHorizontal } from 'lucide-react'
-import { OrderDTO } from '@/api/order'
+import { OrderDTO } from '@/types/order'
 import { useOrderOverviewContext } from '@/context/OrderOverviewContext'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import {
   Table,
   TableBody,
@@ -54,6 +23,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { OrderActionsCell } from './cells/order-action-cells'
+import { CustomerCell } from './cells/order-customer-cells'
+import { OrderDateCell } from './cells/order-date-cells'
+import { OrderIdCell } from './cells/order-id-cells'
+import { PaymentMethodCell } from './cells/order-payment-cells'
+import { QuantityCell } from './cells/order-quantity-cells'
+import { StatusCell } from './cells/order-status-cells'
+import { TotalAmountCell } from './cells/order-total-amount-cells'
 import { FilterNav } from './filter-nav'
 
 function getColumns(
@@ -61,210 +38,52 @@ function getColumns(
 ): ColumnDef<OrderDTO>[] {
   return [
     {
-      id: 'select',
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && 'indeterminate')
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label='Select all'
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label='Select row'
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
       header: 'Mã đơn hàng',
-      cell: ({ row }) => {
-        const { orderId } = row.original as OrderDTO
-        return (
-          <div className='flex items-center gap-2'>
-            <div className='capitalize'>{orderId}</div>
-          </div>
-        )
-      },
+      cell: ({ row }) => <OrderIdCell orderId={row.original.orderId} />,
     },
     {
       header: 'Ngày đặt',
-      cell: ({ row }) => {
-        const { orderDate } = row.original as OrderDTO
-        return (
-          <div className='flex justify-start'>
-            <span>{orderDate}</span>
-          </div>
-        )
-      },
+      cell: ({ row }) => <OrderDateCell orderDate={row.original.orderDate} />,
     },
     {
       header: 'Khách hàng',
-      cell: ({ row }) => {
-        const { items } = row.original as OrderDTO
-        return (
-          <div className='flex flex-col gap-1'>
-            <Link to={'/orders/overview?id=' + 0}>
-              <span className='font-light'>{'user-test'}</span>
-            </Link>
-          </div>
-        )
-      },
+      cell: ({ row }) => (
+        <CustomerCell
+          customerId={row.original.customer.user_id}
+          customerName={row.original.customer.username}
+        />
+      ),
     },
     {
       header: 'Tổng tiền',
-      cell: ({ row }) => {
-        const { totalAmount } = row.original as OrderDTO
-        return (
-          <div className='flex items-center gap-2'>
-            <span className='font-light'>
-              {totalAmount.toLocaleString('Vi') + 'đ'}
-            </span>
-          </div>
-        )
-      },
+      cell: ({ row }) => (
+        <TotalAmountCell totalAmount={row.original.totalAmount} />
+      ),
     },
     {
       header: 'Thanh toán',
-      cell: ({ row }) => {
-        const { paymentMethodName } = row.original as OrderDTO
-        return (
-          <Badge>
-            <span className='font-bold text-green-500'>
-              {paymentMethodName}
-            </span>
-          </Badge>
-        )
-      },
+      cell: ({ row }) => (
+        <PaymentMethodCell paymentMethodName={row.original.paymentMethodName} />
+      ),
     },
     {
       header: 'Số lượng',
-      cell: ({ row }) => {
-        const { items } = row.original as OrderDTO
-        return (
-          <span className='font-light'>
-            {items.reduce((prev, cur) => {
-              return prev + cur.quantity
-            }, 0)}
-          </span>
-        )
-      },
+      cell: ({ row }) => <QuantityCell items={row.original.items} />,
     },
     {
       header: 'Trạng thái',
-      cell: ({ row }) => {
-        const { status } = row.original as OrderDTO
-        return (
-          <Badge>
-            <span className='font-bold text-green-500'>
-              {status.toUpperCase()}
-            </span>
-          </Badge>
-        )
-      },
+      cell: ({ row }) => <StatusCell status={row.original.status} />,
     },
     {
       id: 'actions',
       enableHiding: false,
-      cell: ({ row }) => {
-        const { orderId } = row.original as OrderDTO
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant='ghost' className='h-8 w-8 p-0'>
-                <span className='sr-only'>Open menu</span>
-                <MoreHorizontal />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align='end'>
-              <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-              <DropdownMenuItem>
-                <IconEdit />
-                <span>Chỉnh sửa thông tin</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconMessage />
-                <span>Liên hệ khách hàng</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconTrash />
-                <span>Xóa đơn</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuLabel>Cập nhật đơn</DropdownMenuLabel>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>Thanh toán</DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                  <DropdownMenuSubContent>
-                    <DropdownMenuItem>
-                      <IconCash />
-                      <span>Đã thanh toán</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <IconClockHour2 />
-                      <span>Chờ thanh toán</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <IconCreditCardRefund />
-                      <span>Chờ hoàn tiền</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-              </DropdownMenuSub>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>Trạng thái</DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                  <DropdownMenuSubContent>
-                    <DropdownMenuItem>
-                      <IconCircleDashed />
-                      <span>Đang xử lý</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <IconTruckDelivery />
-                      <span>Đang giao</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <IconTruckReturn />
-                      <span>Đang hoàn trả</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <IconMoodCheck />
-                      <span>Hoàn thành</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <IconMoodSad2 />
-                      <span>Đã hủy</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-              </DropdownMenuSub>
-              <DropdownMenuSeparator />
-              <DropdownMenuLabel>Xem</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() =>
-                  navigate({
-                    to: OrderDetailsRoute.to,
-                    params: { id: orderId.toString() },
-                  })
-                }
-              >
-                <IconEye />
-                <span>Chi tiết đơn hàng</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconUser />
-                <span>Chi tiết khách hàng</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )
-      },
+      cell: ({ row }) => (
+        <OrderActionsCell
+          orderId={row.original.orderId}
+          statusCode={row.original.statusCode}
+          navigate={navigate}
+        />
+      ),
     },
   ]
 }

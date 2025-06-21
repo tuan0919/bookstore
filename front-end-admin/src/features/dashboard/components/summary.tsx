@@ -75,19 +75,23 @@ export function DashboardSummary() {
           </svg>
         </CardHeader>
         <CardContent>
-          <div className='flex items-center gap-2'>
-            <img
-              src={summary?.mostSellInMonth.thumbnail}
-              alt={summary?.mostSellInMonth.title}
-              className='h-15 w-15 rounded-sm border object-contain p-1'
-            />
-            <div className='flex w-[400px] flex-col gap-2 truncate capitalize'>
-              {summary?.mostSellInMonth.title}
-              <div className='text-sm'>
-                Số lượng bán: {summary?.mostSellInMonth.soldAmount}
+          {summary?.mostSellInMonth ? (
+            <div className='flex items-center gap-2'>
+              <img
+                src={summary?.mostSellInMonth.thumbnail}
+                alt={summary?.mostSellInMonth.title}
+                className='h-15 w-15 rounded-sm border object-contain p-1'
+              />
+              <div className='flex w-[400px] flex-col gap-2 truncate capitalize'>
+                {summary?.mostSellInMonth.title}
+                <div className='text-sm'>
+                  Số lượng bán: {summary?.mostSellInMonth.soldAmount}
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            'Chưa có sản phẩm nào'
+          )}
         </CardContent>
       </Card>
     </div>

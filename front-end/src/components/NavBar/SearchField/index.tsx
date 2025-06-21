@@ -62,10 +62,13 @@ export function SearchField() {
         console.error("Error fetching search results:", error);
         setLoading(false);
       });
-    if (location.pathname.startsWith("/category")) {
-      navigate(location.pathname);
+    const url = `/category?categoryId=1&page=1&size=12&context=${searchKeyword}`;
+    if (location.pathname === "/category") {
+      // Nếu đang ở category, refresh lại trang với URL mới
+      window.location.href = url;
     } else {
-      navigate("/category");
+      // Nếu không, chuyển hướng như bình thường
+      navigate(url);
     }
   };
   return (
@@ -136,17 +139,15 @@ export function SearchField() {
           }, 100); // Delay nhẹ để đợi autofill xong
         }}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          
           setSearchKeyword(e.target.value);
         }}
-      onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
-      const inputValue = (e.target as HTMLInputElement).value;
-      setSearchKeyword(inputValue.trim());
-      searchingBook();
-    }
-  }}
-
+        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+          if (e.key === "Enter") {
+            const inputValue = (e.target as HTMLInputElement).value;
+            setSearchKeyword(inputValue.trim());
+            searchingBook();
+          }
+        }}
         value={searchKeyword ?? ""}
       />
       <Button
