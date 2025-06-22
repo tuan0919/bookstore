@@ -73,8 +73,7 @@ const SpecialRadio = styled((props) => (
     {...props}
   />
 ))(() => ({}));
-const userDetails = JSON.parse(localStorage.getItem("userDetails") || "{}");
-console.log("userDetails", userDetails);
+
 export function Checkout() {
   const [open, setOpen] = React.useState(false);
   const [openDiscount, setOpenDiscount] = React.useState(false);
@@ -82,7 +81,9 @@ export function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [listAddress, setListAddress] = useState<AddressResponseDTO[]>([]);
   const { t } = useTranslation();
-  const [reloadAddresses, setReloadAddresses] = useState(false);
+  const [userDetails, setUserDetails] = useState(() => {
+  return JSON.parse(localStorage.getItem("userDetails") || "{}");
+});
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -109,12 +110,10 @@ export function Checkout() {
     fetchAddresses();
   }, []);
 
-  useEffect(() => {
-  fetchAddresses();
-}, [reloadAddresses]); 
+
 
   // Xử lý thêm mới địa chỉ giao hàng
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData(event.currentTarget);
     const address = {
       unitNumber: formData.get("unitNumber") as string,
@@ -125,33 +124,25 @@ export function Checkout() {
       region: formData.get("region") as string,
       postalCode: formData.get("postalCode") as string,
     };
-
+  try {
     console.log("Data sắp gửi lên API:", address);
+    await addUserAddress(address);
+    await fetchAddresses();
 
-    addUserAddress(address)
-  .then(() => {
-    return fetchAddresses();
-  })
-  .then(() => {
-    return addUserDetails(
+    await addUserDetails(
       formData.get("fullName") as string,
       formData.get("phoneNumber") as string,
       null
     );
-  })
-  .then(() => {
-    // Giả sử getUserDetails là Promise, bạn cần return ở đây
-    return getUserDetails();
-  })
-  .then((userDetails) => {
-    // Sau khi getUserDetails thành công, lưu vào localStorage
-    localStorage.setItem("userDetails", JSON.stringify(userDetails.result));
-    setReloadAddresses(prev => !prev);
+
+    const userDetailsResponse = await getUserDetails();
+    localStorage.setItem("userDetails", JSON.stringify(userDetailsResponse.result));
+    setUserDetails(userDetailsResponse.result); // ⚡ Cập nhật lại state userDetails để re-render
+
     handleClose();
-  })
-  .catch((error) => {
+  } catch (error) {
     console.error("Lỗi khi thêm địa chỉ:", error);
-  });
+  }
       
   };
   // Lưu id của các book được mua vào localStorage
