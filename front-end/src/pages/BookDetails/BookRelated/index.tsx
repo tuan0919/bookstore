@@ -33,6 +33,7 @@ export function BookRelated() {
               <SwiperSlide key={index}>
                 <BookCard
                   card={{
+                    discountPercentage: book.discountPercentage,
                     bookId: book.bookId,
                     title: book.title,
                     discountPrice: book.discountedPrice,

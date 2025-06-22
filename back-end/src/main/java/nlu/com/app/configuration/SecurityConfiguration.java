@@ -45,7 +45,8 @@ public class SecurityConfiguration {
                 "/api/orders/*/status",
                 "/api/orders/*/timeline",
                 "/api/category/**",
-                "/api/review/*/overall"
+                "/api/review/*/overall",
+                "/api/promotion/*"
             )
             .permitAll()
             .requestMatchers(
@@ -53,7 +54,8 @@ public class SecurityConfiguration {
                     "/admin/api/order",
                     "/admin/api/order/*",
                     "/admin/api/promotion/*",
-                    "/admin/api/chart/*")
+                    "/admin/api/chart/*",
+                    "/admin/api/user/*")
                 .hasAuthority("ADMIN")
             .anyRequest().authenticated()
         )

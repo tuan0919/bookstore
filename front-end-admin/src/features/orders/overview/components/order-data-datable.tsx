@@ -82,6 +82,7 @@ function getColumns(
           orderId={row.original.orderId}
           statusCode={row.original.statusCode}
           navigate={navigate}
+          customerId={row.original.customer.user_id}
         />
       ),
     },

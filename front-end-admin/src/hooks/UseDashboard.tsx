@@ -3,11 +3,13 @@ import {
   RecentlyOrderResponseDTO,
   SalesMonthlyReportResponseDTO,
   SummaryDashboardResponseDTO,
+  TopSellingProductsResponseDTO,
 } from '@/types/chart'
 import {
   getRecentlyOrder,
   getSalesMonthlyReport,
   getSummaryDashboard,
+  getTopSellingProducts,
 } from '@/api/chart'
 
 export function useDashboard() {
@@ -18,17 +20,30 @@ export function useDashboard() {
   const [summary, setSummary] = useState<SummaryDashboardResponseDTO | null>(
     null
   )
+  const [topSell, setTopSell] = useState<TopSellingProductsResponseDTO | null>(
+    null
+  )
+
   useEffect(() => {
     const fetchChart = async () => {
-      const mSale = await getSalesMonthlyReport()
-      const rOrder = await getRecentlyOrder()
-      const sum = await getSummaryDashboard()
-      setMonthlySales(mSale.result)
-      setRecentlyOrder(rOrder.result)
-      setSummary(sum.result)
+      try {
+        const [mSale, rOrder, sum, topSelling] = await Promise.all([
+          getSalesMonthlyReport(),
+          getRecentlyOrder(),
+          getSummaryDashboard(),
+          getTopSellingProducts(),
+        ])
+        setMonthlySales(mSale.result)
+        setRecentlyOrder(rOrder.result)
+        setSummary(sum.result)
+        setTopSell(topSelling.result)
+      } catch (error) {
+        console.error('Failed to fetch dashboard data:', error)
+      }
     }
     fetchChart()
   }, [])
+
   return {
     summary,
     setSummary,
@@ -36,5 +51,7 @@ export function useDashboard() {
     setMonthlySales,
     recentlyOrder,
     setRecentlyOrder,
+    topSell,
+    setTopSell,
   }
 }

@@ -3,10 +3,8 @@ import {
   IconUsers,
   IconBooks,
   IconShoppingBag,
-  IconCategory,
   IconDeviceDesktopAnalytics,
   IconTicket,
-  IconAddressBook,
 } from '@tabler/icons-react'
 import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react'
 import { type SidebarData } from '../types'
@@ -57,11 +55,11 @@ export const sidebarData: SidebarData = {
           ],
           icon: IconBooks,
         },
-        {
-          title: 'Danh mục',
-          url: '/categories/overview',
-          icon: IconCategory,
-        },
+        // {
+        //   title: 'Danh mục',
+        //   url: '/categories/overview',
+        //   icon: IconCategory,
+        // },
         {
           title: 'Đơn hàng',
           url: '/orders/overview',
@@ -80,16 +78,6 @@ export const sidebarData: SidebarData = {
             },
           ],
           icon: IconTicket,
-        },
-        {
-          title: 'Khách hàng',
-          items: [
-            {
-              title: 'Chi tiết',
-              url: '/customers/details',
-            },
-          ],
-          icon: IconAddressBook,
         },
         {
           title: 'Chats',

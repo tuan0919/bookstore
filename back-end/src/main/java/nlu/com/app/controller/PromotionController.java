@@ -27,4 +27,11 @@ public class PromotionController {
                 .result(promotionService.findAllByPage(PageRequest.of(page, size)))
                 .build();
     }
+
+    @GetMapping("/active")
+    public AppResponse<Page<PromotionResponseDTO>> getAllActiveByPage(@RequestParam int page, @RequestParam int size) {
+        return AppResponse.<Page<PromotionResponseDTO>>builder()
+                .result(promotionService.getActivePromotions(PageRequest.of(page, size)))
+                .build();
+    }
 }

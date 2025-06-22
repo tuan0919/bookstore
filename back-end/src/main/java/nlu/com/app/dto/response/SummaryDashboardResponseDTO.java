@@ -8,6 +8,7 @@ public class SummaryDashboardResponseDTO {
     Profit profit;
     Customer customer;
     Product mostSellInMonth;
+    Order order;
 
     @Data @Builder
     public static class Product {
@@ -28,5 +29,12 @@ public class SummaryDashboardResponseDTO {
         Long total; // tổng lượng khách đang có
         Long thisMonth; // tổng lượng khách mới trong tháng này
         Float diffPercent; // tỉ lệ chênh lệch giữa tháng này và tổng
+    }
+
+    @Data @Builder
+    public static class Order {
+        Long total;
+        Long thisMonth;
+        Float diffPercent;
     }
 }

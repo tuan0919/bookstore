@@ -75,6 +75,7 @@ public class BookService implements IBookService {
   GenreService genreService;
   FileService fileService;
   UserReviewService userReviewService;
+  PromotionService promotionService;
   @Value("${app.temp-folder}")
   @NonFinal
   String tmp;
@@ -240,12 +241,15 @@ public class BookService implements IBookService {
                     r -> r.getBook().getBookId(),
                     Collectors.averagingDouble(UserReview::getRating)
             ));
-
     // MapStruct with injected maps
     List<PageBookResponseDTO> result = books.stream()
-            .map(book -> bookMapper.toPageDto(book,
-                    categoryDiscountMap.getOrDefault(book.getCategory().getCategoryId(), 0D),
-                    ratingMap.getOrDefault(book.getBookId(), 0D)))
+            .map(book -> {
+              double totalDiscounts = promotionService.getPromotionsAppliedForCategory(book.getCategory().getCategoryId())
+                      .stream().map(promotion -> promotion.getDiscountPercentage())
+                      .reduce((prev, cur) -> prev + cur).get();
+              double rating = userReviewService.getReviewOverall(book.getBookId()).getAvgScore();
+              return bookMapper.toPageDto(book, totalDiscounts, rating);
+            })
             .toList();
 
     return new PageImpl<>(result, pageable, books.getTotalElements());

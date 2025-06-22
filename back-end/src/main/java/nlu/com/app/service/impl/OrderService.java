@@ -14,10 +14,13 @@ import lombok.experimental.FieldDefaults;
 import nlu.com.app.constant.EOrderStatus;
 import nlu.com.app.dto.cart.Cart;
 import nlu.com.app.dto.cart.CartItem;
+import nlu.com.app.dto.filter.OrderFilter;
 import nlu.com.app.dto.request.UpdateOrderStatus;
 import nlu.com.app.dto.response.OrderDetailsResponseDTO;
 import nlu.com.app.dto.response.OrderResponseDTO;
 import nlu.com.app.dto.response.TimelineOrderResponseDTO;
+import nlu.com.app.dto.response.TopSellingProductDTO;
+import nlu.com.app.dto.spec.OrderSpecifications;
 import nlu.com.app.entity.*;
 import nlu.com.app.exception.ApplicationException;
 import nlu.com.app.exception.ErrorCode;
@@ -27,6 +30,7 @@ import nlu.com.app.service.IOrderService;
 import nlu.com.app.util.SecurityUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -277,5 +281,12 @@ public class OrderService implements IOrderService {
     return TimelineOrderResponseDTO.builder()
             .timelines(dtoTimelines)
             .build();
+  }
+
+  @Override
+  public Page<OrderDetailsResponseDTO> getFilteredOrders(Pageable pageable, OrderFilter filter) {
+    Specification<Order> spec = OrderSpecifications.combineFilters(filter);
+    Page<Order> ordersPage = orderRepository.findAll(spec, pageable);
+    return ordersPage.map(orderMapper::toOrderDetailsResponseDTO);
   }
 }

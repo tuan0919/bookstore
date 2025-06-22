@@ -34,7 +34,7 @@ export const searchBooks = async (
   if (page !== undefined) queryParams.append("page", page.toString());
   if (size !== undefined) queryParams.append("size", size.toString());
 
-  const url = `${API_ENDPOINTS.BOOK.SEARCH}?${queryParams.toString()}`;
+  const url = `${API_ENDPOINTS.BOOK.SEARCH_V2}?${queryParams.toString()}`;
   const res = await axiosInstance.get<ApiResponse<PageBookResponse>>(url);
   return res.data;
 };

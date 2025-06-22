@@ -1,20 +1,7 @@
 const API_ENDPOINTS = {
   USER: {
     LOGIN: '/api/v1/auth/login',
-    DETAILS: {
-      GET: '/api/user-details',
-    },
-    ADDRESS: {
-      ADD: '/api/user/addresses',
-      UPDATE: (userAddressId: number, makeDefault?: boolean) => {
-        let url = `/api/user/addresses/${userAddressId}`
-        if (makeDefault !== undefined) {
-          url += `?makeDefault=${makeDefault}`
-        }
-        return url
-      },
-      GET: '/api/user/addresses',
-    },
+    DETAILS: (userId: number) => `/admin/api/user/${userId}/details`,
   },
   BOOK: {
     GET_DETAILS: (id: number) => `/admin/api/book/${id}`,
@@ -23,6 +10,7 @@ const API_ENDPOINTS = {
     OVERVIEW: '/admin/api/book/overview',
   },
   ORDER: {
+    SEARCH_ALL_ORDER: `/admin/api/order/search`,
     GET_ALL_ORDER: `/admin/api/order`,
     GET_ORDER_BY_ID: (id: number) => `/admin/api/order/${id}`,
     GET_ORDER_TIMELINE: (id: number) => `/api/orders/${id}/timeline`,
@@ -36,6 +24,8 @@ const API_ENDPOINTS = {
     GET_SALES_MONTHLY: '/admin/api/chart/monthly-sales',
     GET_RECENTLY_ORDERS: '/admin/api/chart/recently-order',
     GET_SUMMARY_DASHBOARD: '/admin/api/chart/summary-dashboard',
+    GET_SUMMARY_ABOUT_CUSTOMER: '/admin/api/chart/summary-about-customer',
+    GET_TOP_SELLING_PRODUCT: '/admin/api/chart/top-selling',
   },
 }
 

@@ -11,4 +11,7 @@ public interface IChartService {
   SalesMonthlyReportResponseDTO getSalesMonthlyReport();
   RecentlyOrderResponseDTO getRecentlyOrder();
   SummaryDashboardResponseDTO getSummaryDashboard();
+  UserDetailsSummaryChartDTO getUserDetailsSummaryChart(Long userId);
+
+  TopSellingProductDTO getTopSellingProducts();
 }

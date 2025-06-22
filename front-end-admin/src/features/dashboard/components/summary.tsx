@@ -1,3 +1,9 @@
+import {
+  IconShoppingBag,
+  IconCurrencyDollar,
+  IconUsers,
+  IconBook2,
+} from '@tabler/icons-react'
 import { useDashboardContext } from '@/context/DashboardContext'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
@@ -8,18 +14,7 @@ export function DashboardSummary() {
       <Card>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
           <CardTitle className='text-sm font-medium'>Tổng doanh thu</CardTitle>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            strokeWidth='2'
-            className='text-muted-foreground h-4 w-4'
-          >
-            <path d='M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' />
-          </svg>
+          <IconCurrencyDollar />
         </CardHeader>
         <CardContent>
           <div className='text-2xl font-bold'>
@@ -33,23 +28,12 @@ export function DashboardSummary() {
       <Card>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
           <CardTitle className='text-sm font-medium'>Khách hàng mới</CardTitle>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            strokeWidth='2'
-            className='text-muted-foreground h-4 w-4'
-          >
-            <path d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2' />
-            <circle cx='9' cy='7' r='4' />
-            <path d='M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75' />
-          </svg>
+          <IconUsers />
         </CardHeader>
         <CardContent>
-          <div className='text-2xl font-bold'>+{summary?.customer.total}</div>
+          <div className='text-2xl font-bold'>
+            +{summary?.customer.thisMonth} tháng này
+          </div>
           <p className='text-muted-foreground text-xs'>
             +{summary?.customer.diffPercent}% kể từ tháng trước
           </p>
@@ -60,19 +44,7 @@ export function DashboardSummary() {
           <CardTitle className='text-sm font-medium'>
             Bán chạy nhất tháng này
           </CardTitle>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            strokeWidth='2'
-            className='text-muted-foreground h-4 w-4'
-          >
-            <rect width='20' height='14' x='2' y='5' rx='2' />
-            <path d='M2 10h20' />
-          </svg>
+          <IconBook2 />
         </CardHeader>
         <CardContent>
           {summary?.mostSellInMonth ? (
@@ -92,6 +64,20 @@ export function DashboardSummary() {
           ) : (
             'Chưa có sản phẩm nào'
           )}
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+          <CardTitle className='text-sm font-medium'>Đơn hàng mới</CardTitle>
+          <IconShoppingBag />
+        </CardHeader>
+        <CardContent>
+          <div className='text-2xl font-bold'>
+            +{summary?.order.thisMonth} tháng này
+          </div>
+          <p className='text-muted-foreground text-xs'>
+            +{summary?.order.diffPercent}% kể từ tháng trước
+          </p>
         </CardContent>
       </Card>
     </div>
