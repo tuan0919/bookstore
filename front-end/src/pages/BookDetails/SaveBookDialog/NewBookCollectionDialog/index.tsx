@@ -32,13 +32,6 @@ const handleSubmit = async () => {
 
   setLoading(true);
 
-  // 🧪 DÒNG NÀY: In ra payload gửi lên
-  console.log("📦 Payload gửi lên:", {
-    name: title.trim(),
-    description: description.trim(),
-    bookIds: selectedBookId ? [selectedBookId] : [],
-  });
-
   try {
     const res = await axios.post("/api/collections", {
       name: title.trim(),
@@ -51,20 +44,15 @@ const handleSubmit = async () => {
       throw new Error("Không nhận được ID từ server");
     }
 
-    setSnackbar({ message: "✅ Tạo bộ sách thành công!", severity: "success" });
+    setSnackbar({ message: "Tạo bộ sách thành công!", severity: "success" });
     setTitle("");
     setDescription("");
     onClose();
     onCreated?.(newCollection);
   } catch (err) {
-    console.error("❌ Lỗi tạo bộ sách:", err);
+    console.error("Lỗi tạo bộ sách:", err);
 
-    // 🧪 DÒNG NÀY: In ra lỗi chi tiết từ server (nếu có)
-    if (axios.isAxiosError(err)) {
-      console.error("📥 Response từ BE:", err.response?.data);
-    }
-
-    setSnackbar({ message: "❌ Lỗi khi tạo bộ sách", severity: "error" });
+    setSnackbar({ message: "Lỗi khi tạo bộ sách", severity: "error" });
   } finally {
     setLoading(false);
   }

@@ -29,7 +29,7 @@ export default function SaveBookDialog({ open, onClose, selectedBookId }) {
     setLoading(true);
     try {
       const res = await axios.get("/api/collections");
-      const data = res.data?.content || []; // 👉 lấy content từ Page
+      const data = res.data?.content || []; 
       setCollections(data);
       setNoCollection(data.length === 0);
     } catch (err) {
