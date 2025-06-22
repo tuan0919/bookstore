@@ -47,6 +47,11 @@ public class PromotionService implements IPromotionService {
                 .map(p -> promotionMapper.mapToResponseDTO(p, categoryRepository));
     }
 
+    public Page<PromotionResponseDTO> getActivePromotions(Pageable pageable) {
+        var promotions = promotionRepository.findActivePromotions(pageable, LocalDate.now());
+        return promotions.map(p -> promotionMapper.mapToResponseDTO(p, categoryRepository));
+    }
+
     @Override
     public List<PromotionResponseDTO> getPromotionsAppliedForCategory(Long categoryId) {
         Set<Long> allCategoryIds = collectAllParentCategoryIds(categoryId);

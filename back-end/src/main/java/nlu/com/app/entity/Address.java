@@ -40,4 +40,9 @@ public class Address {
   private String region;
   @Column(name = "postal_code")
   private String postalCode;
+
+  @Override
+  public String toString() {
+    return String.format("%s, %s, %s",this.addressLine1, this.city, this.region);
+  }
 }
