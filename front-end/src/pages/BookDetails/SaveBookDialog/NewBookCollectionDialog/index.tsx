@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -6,113 +7,121 @@ import {
   Button,
   TextField,
   Box,
-  InputLabel,
-  MenuItem,
-  Select,
-  Typography,
-  FormControl,
-  styled,
+  Snackbar,
+  Alert,
+  CircularProgress,
 } from "@mui/material";
-import PublicRoundedIcon from "@mui/icons-material/PublicRounded";
-import LockRoundedIcon from "@mui/icons-material/LockRounded";
-export interface NewBookCollectionDialogProps {
-  open: boolean;
-  onClose: () => void;
-}
+import axios from "axios";
 
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});
+export default function NewBookCollectionDialog({
+  open,
+  onClose,
+  onCreated,
+  selectedBookId,
+}) {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [snackbar, setSnackbar] = useState({ message: "", severity: null });
 
-export function NewBookCollectionDialog(props: NewBookCollectionDialogProps) {
-  const { onClose, open } = props;
-  const handleClose = () => {
+const handleSubmit = async () => {
+  if (!title.trim()) {
+    setSnackbar({ message: "Vui lòng nhập tiêu đề", severity: "error" });
+    return;
+  }
+
+  setLoading(true);
+
+  // 🧪 DÒNG NÀY: In ra payload gửi lên
+  console.log("📦 Payload gửi lên:", {
+    name: title.trim(),
+    description: description.trim(),
+    bookIds: selectedBookId ? [selectedBookId] : [],
+  });
+
+  try {
+    const res = await axios.post("/api/collections", {
+      name: title.trim(),
+      description: description.trim(),
+      bookIds: selectedBookId ? [selectedBookId] : [],
+    });
+
+    const newCollection = res.data?.result;
+    if (!newCollection?.id) {
+      throw new Error("Không nhận được ID từ server");
+    }
+
+    setSnackbar({ message: "✅ Tạo bộ sách thành công!", severity: "success" });
+    setTitle("");
+    setDescription("");
     onClose();
-  };
+    onCreated?.(newCollection);
+  } catch (err) {
+    console.error("❌ Lỗi tạo bộ sách:", err);
+
+    // 🧪 DÒNG NÀY: In ra lỗi chi tiết từ server (nếu có)
+    if (axios.isAxiosError(err)) {
+      console.error("📥 Response từ BE:", err.response?.data);
+    }
+
+    setSnackbar({ message: "❌ Lỗi khi tạo bộ sách", severity: "error" });
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
-      <DialogTitle id="alert-dialog-title">{"Bộ sách mới"}</DialogTitle>
-      <DialogContent>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            width: "20rem",
-          }}
-        >
-          <Box
-            sx={{ width: "100%", display: "flex", justifyContent: "center" }}
-          >
-            <Button
-              component="label"
-              disableElevation
-              disableFocusRipple
-              disableRipple
-              disableTouchRipple
-              role={undefined}
-              tabIndex={-1}
-              sx={{
-                width: "15rem",
-                height: "15rem",
-                backgroundSize: "100% 100%",
-                backgroundPosition: "",
-                backgroundImage:
-                  'url("https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=")',
-                "&:hover": {
-                  backgroundColor: "transparent",
-                },
-              }}
-            >
-              <VisuallyHiddenInput
-                type="file"
-                onChange={(event) => console.log(event.target.files)}
-                multiple
-              />
-            </Button>
+    <>
+      <Dialog open={open} onClose={onClose} fullWidth>
+        <DialogTitle> Tạo bộ sách mới</DialogTitle>
+        <DialogContent>
+          <Box display="flex" flexDirection="column" gap={2} mt={1}>
+            <TextField
+              label="Tiêu đề bộ sách"
+              variant="standard"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              fullWidth
+              autoFocus
+            />
+            <TextField
+              label="Mô tả"
+              variant="standard"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              fullWidth
+              multiline
+              rows={3}
+            />
           </Box>
-          <TextField label="Tiêu đề bộ sách" variant="standard" />
-          <TextField label="Mô tả" variant="standard" />
-          <FormControl variant="standard">
-            <InputLabel id="demo-simple-select-label">
-              Chế độ hiển thị
-            </InputLabel>
-            <Select labelId="demo-simple-select-label" id="demo-simple-select">
-              <MenuItem value={10}>
-                <Box display={"flex"} gap={2}>
-                  <PublicRoundedIcon />
-                  <Typography>Công khai</Typography>
-                </Box>
-              </MenuItem>
-              <MenuItem value={5}>
-                <Box display={"flex"} gap={2}>
-                  <LockRoundedIcon />
-                  <Typography>Riêng tư</Typography>
-                </Box>
-              </MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose}>Hủy</Button>
-        <Button onClick={handleClose} autoFocus>
-          Tạo
-        </Button>
-      </DialogActions>
-    </Dialog>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose}>Hủy</Button>
+          <Button
+            onClick={handleSubmit}
+            variant="contained"
+            disabled={loading}
+          >
+            {loading ? <CircularProgress size={20} /> : "Tạo"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar
+        open={!!snackbar.severity}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar({ message: "", severity: null })}
+      >
+        <Alert
+          severity={snackbar.severity}
+          onClose={() => setSnackbar({ message: "", severity: null })}
+          variant="filled"
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }

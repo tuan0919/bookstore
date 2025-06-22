@@ -1,3 +1,4 @@
+import { useParams } from "react-router-dom";
 import {
   Box,
   Breadcrumbs,
@@ -25,10 +26,10 @@ import { BookRating } from "../BookRating";
 import { BookComment } from "../BookComment";
 import { BookRelated } from "../BookRelated";
 import { useState } from "react";
-import { SaveBookDialog } from "../SaveBookDialog";
-import { NewBookCollectionDialog } from "../SaveBookDialog/NewBookCollectionDialog";
+import SaveBookDialog from "../SaveBookDialog";
+// import { NewBookCollectionDialog } from "../SaveBookDialog/NewBookCollectionDialog";
 import {
-  
+
   useBookDetailsContext,
 } from "~/context/BookDetailsContext";
 import CustomSnackbar from "~/components/Popup/Snackbar";
@@ -45,6 +46,9 @@ const CustomizeBox = styled(Box)(({ theme }) => ({
 
 export function BookDetails() {
   const { addToCart } = useBookDetailsContext();
+  const { id: bookIdParam } = useParams();
+  const bookId = parseInt(bookIdParam ?? "0", 10);
+
   const breadcrumbs = [
     <Link underline="hover" key="1" color="inherit" href="/">
       Foreign books
@@ -153,14 +157,7 @@ export function BookDetails() {
       <SaveBookDialog
         onClose={handleClose}
         open={open}
-        onClickAddBtn={() => {
-          setOpen(false);
-          setOpenSubDialog(true);
-        }}
-      />
-      <NewBookCollectionDialog
-        onClose={() => setOpenSubDialog(false)}
-        open={openSubDialog}
+        selectedBookId={bookId}
       />
     </>
   );
