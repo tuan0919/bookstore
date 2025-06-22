@@ -25,6 +25,26 @@ export const getOrderTimeline = async (orderId: number) => {
   return res.data
 }
 
+export interface SearchOrderParams {
+  page?: number
+  size?: number
+  status?: string
+  username?: string
+  startDate?: string
+  endDate?: string
+  minAmount?: number
+  maxAmount?: number
+  userId?: number
+}
+
+export const searchOrder = async (params?: SearchOrderParams) => {
+  const res = await axiosInstance.get<PageApiResponse<OrderDTO>>(
+    API_ENDPOINTS.ORDER.SEARCH_ALL_ORDER,
+    { params }
+  )
+  return res.data
+}
+
 export async function updateOrderStatus(
   orderId: number,
   status:

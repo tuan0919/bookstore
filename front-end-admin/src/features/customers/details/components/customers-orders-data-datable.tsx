@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useNavigate } from '@tanstack/react-router'
 import {
   ColumnDef,
   getCoreRowModel,
@@ -6,7 +6,8 @@ import {
   useReactTable,
   flexRender,
 } from '@tanstack/react-table'
-import { invoices, Invoice } from '@/resources/customer_invoices.ts'
+import { OrderDTO } from '@/types/order'
+import { useCustomerDetailsContext } from '@/context/CustomerDetailsContext'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -19,34 +20,39 @@ import {
 } from '@/components/ui/table'
 
 export function CustomersOrdersTable() {
-  const columns: ColumnDef<Invoice>[] = [
+  const { orders } = useCustomerDetailsContext()
+  const navigate = useNavigate()
+  const columns: ColumnDef<OrderDTO>[] = [
     {
-      header: 'Mã hóa đơn',
-      accessorKey: 'id',
+      header: 'Mã',
+      accessorKey: 'orderId',
     },
     {
       header: 'Trạng thái',
       cell: ({ row }) => {
-        const { status } = row.original as Invoice
+        const { status } = row.original as OrderDTO
         return <Badge>{status}</Badge>
       },
     },
     {
       header: 'Tổng tiền',
-      accessorKey: 'total',
+      cell: ({ row }) => {
+        const { totalAmount } = row.original as OrderDTO
+        return <div>{totalAmount.toLocaleString('vi')}đ</div>
+      },
     },
     {
-      header: 'Hạn thanh toán',
-      accessorKey: 'dueDate',
+      header: 'Ngày đặt hàng',
+      accessorKey: 'orderDate',
     },
     {
       header: 'Phương thức',
-      accessorKey: 'paymentMethod',
+      accessorKey: 'paymentMethodName',
     },
   ]
 
   const table = useReactTable({
-    data: invoices,
+    data: orders,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -75,7 +81,15 @@ export function CustomersOrdersTable() {
           <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow
+                  key={row.id}
+                  onClick={() =>
+                    navigate({
+                      to: '/orders/$id/details',
+                      params: { id: row.original.orderId + '' },
+                    })
+                  }
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(

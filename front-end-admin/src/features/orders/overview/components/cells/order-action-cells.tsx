@@ -7,6 +7,7 @@ import {
   IconTruckReturn,
   IconUser,
 } from '@tabler/icons-react'
+import { Route as CustomersDetailsRoute } from '@/routes/_authenticated/customers/$id/details'
 import { Route as OrderDetailsRoute } from '@/routes/_authenticated/orders/$id/details'
 import { MoreHorizontal } from 'lucide-react'
 import { useOrderOverviewContext } from '@/context/OrderOverviewContext'
@@ -33,12 +34,14 @@ type StatusCode =
 
 interface OrderActionsCellProps {
   orderId: number
+  customerId: number
   navigate: ReturnType<typeof useNavigate>
   statusCode: StatusCode
 }
 
 export function OrderActionsCell({
   orderId,
+  customerId,
   navigate,
   statusCode,
 }: OrderActionsCellProps) {
@@ -137,7 +140,16 @@ export function OrderActionsCell({
           <IconEye />
           <span>Chi tiết đơn hàng</span>
         </DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            navigate({
+              to: CustomersDetailsRoute.to,
+              params: {
+                id: customerId.toString(),
+              },
+            })
+          }}
+        >
           <IconUser />
           <span>Chi tiết khách hàng</span>
         </DropdownMenuItem>

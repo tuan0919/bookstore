@@ -7,8 +7,9 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { Overview } from './components/overview'
+import { Piechart } from './components/pie-chart'
 import { RecentSales } from './components/recent-sales'
+import { SaleChart } from './components/sale-chart'
 import { DashboardSummary } from './components/summary'
 
 export default function Dashboard() {
@@ -34,37 +35,42 @@ export default function Dashboard() {
           </div>
           <Tabs
             orientation='vertical'
-            defaultValue='overview'
+            defaultValue='monthly'
             className='space-y-4'
           >
             <div className='w-full overflow-x-auto pb-2'>
               <TabsList>
-                <TabsTrigger value='overview'>Tổng quan</TabsTrigger>
-                <TabsTrigger value='analytics' disabled>
-                  Phân tích
-                </TabsTrigger>
-                <TabsTrigger value='reports' disabled>
-                  Báo cáo
-                </TabsTrigger>
-                <TabsTrigger value='notifications' disabled>
-                  Thông báo
-                </TabsTrigger>
+                <TabsTrigger value='monthly'>Doanh thu tháng</TabsTrigger>
+                <TabsTrigger value='piechart'>Tỉ lệ mua hàng</TabsTrigger>
               </TabsList>
             </div>
-            <TabsContent value='overview' className='space-y-4'>
-              <DashboardSummary />
-              <div className='grid grid-cols-1 gap-4 lg:grid-cols-7'>
-                <Card className='col-span-1 lg:col-span-4'>
+            <DashboardSummary />
+            <div className='grid grid-cols-1 gap-4 lg:grid-cols-7'>
+              <TabsContent value='monthly' className='col-span-1 lg:col-span-4'>
+                <Card>
                   <CardHeader>
-                    <CardTitle>Tổng quan</CardTitle>
+                    <CardTitle>Doanh thu tháng</CardTitle>
                   </CardHeader>
-                  <CardContent className='pl-2'>
-                    <Overview />
+                  <CardContent>
+                    <SaleChart />
                   </CardContent>
                 </Card>
-                <RecentSales />
-              </div>
-            </TabsContent>
+              </TabsContent>
+              <TabsContent
+                value='piechart'
+                className='col-span-1 lg:col-span-4'
+              >
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Tỉ lệ mua hàng</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Piechart />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <RecentSales />
+            </div>
           </Tabs>
         </DashboardContextProvider>
       </Main>

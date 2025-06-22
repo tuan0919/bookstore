@@ -9,14 +9,14 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { useCustomerDetailsContext } from '@/context/CustomerDetailsContext'
+import { useDashboardContext } from '@/context/DashboardContext'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function CustomTooltip({ active, payload, label }: TooltipProps<any, any>) {
   if (active && payload && payload.length) {
     return (
       <div className='rounded-md border border-gray-200 bg-white p-3 text-sm shadow dark:border-neutral-700 dark:bg-neutral-900'>
-        <p className='font-normal'>Tháng {String(label).replace('th', '')}</p>
+        <p className='font-normal'>Tháng {String(label).replace('Th', '')}</p>
         <p>
           Đã mua{' '}
           <span className='font-normal text-[#8884d8]'>
@@ -31,22 +31,19 @@ function CustomTooltip({ active, payload, label }: TooltipProps<any, any>) {
 }
 
 export function SaleChart() {
-  const { summary } = useCustomerDetailsContext()
+  const { monthlySales } = useDashboardContext()
   return (
-    <div className='h-[300px]'>
+    <div className='flex h-[300px]'>
       <ResponsiveContainer width='100%' height='100%'>
         <LineChart
-          width={500}
-          height={300}
-          data={summary?.frequency || []}
+          data={monthlySales?.sales}
           margin={{
             top: 5,
-            right: 30,
-            left: 20,
+            left: 30,
             bottom: 5,
           }}
         >
-          <CartesianGrid strokeDasharray='3 3' />
+          <CartesianGrid strokeDasharray='5 5' />
           <XAxis dataKey='name' />
           <YAxis
             tickFormatter={(v: number) => `${v.toLocaleString('vi')}đ`}
@@ -58,8 +55,8 @@ export function SaleChart() {
           <Line
             yAxisId='left'
             type='monotone'
-            name='Chi tiêu'
-            dataKey='amount'
+            name='Doanh thu'
+            dataKey='total'
             stroke='#8884d8'
             activeDot={{ r: 8 }}
           />
