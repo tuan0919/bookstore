@@ -9,6 +9,7 @@ import nlu.com.app.repository.UserDetailsRepository;
 import nlu.com.app.repository.UserRepository;
 import nlu.com.app.service.IUserDetailsService;
 import nlu.com.app.util.SecurityUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,13 +36,25 @@ public class UserDetailsService implements IUserDetailsService {
 
 
     @Override
-    public boolean updateUserDetails(UserDetails userDetails) {
-        return false;
+    public boolean updateUserDetails(UserDetails userDetails, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.USER_NOT_EXISTED));
+
+        UserDetails userDetailSaved = userDetailsRepository.save(userDetails);
+        return userDetailSaved != null;
     }
 
     @Override
-    public boolean addUserDetails( UserDetails userDetails) {
-        UserDetails userDetailSaved = userDetailsRepository.save(userDetails);
-        return userDetailSaved != null;
+    public boolean addUserDetails( UserDetails userDetails, Long userId) {
+        try {
+            UserDetails userDetailSaved = userDetailsRepository.save(userDetails);
+            return userDetailSaved != null;
+        } catch (DataIntegrityViolationException ex){
+            if (ex.getMessage().contains("Duplicate entry")) {
+                return updateUserDetails(userDetails, userId);
+            } else {
+                throw ex;
+            }
+        }
     }
 }
