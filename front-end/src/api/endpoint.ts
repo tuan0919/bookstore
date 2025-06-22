@@ -22,6 +22,7 @@ const API_ENDPOINTS = {
     LOGIN: "/api/v1/auth/login",
     DETAILS: {
       GET: "/api/user-details",
+      ADD: "/api/user-details/add",
     },
     ADDRESS: {
       ADD: "/api/user/addresses",

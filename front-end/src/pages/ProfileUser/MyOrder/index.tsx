@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Paper, Typography, Tabs, Tab, Box, Pagination } from "@mui/material";
 import { getOrder } from "~/api/order";
 import Order from "~/components/Order";
-import { useTranslation } from "react-i18next";
+
 const OrderList = () => {
   const [tab, setTab] = useState<string>("ALL");
   const [allOrders, setAllOrders] = useState<any[]>([]);
@@ -12,7 +12,7 @@ const OrderList = () => {
   const itemsPerPage = 10;
 
   const userDetails = JSON.parse(localStorage.getItem("userDetails") || "{}");
-  const { t } = useTranslation();
+
   // API lấy đơn hàng theo trang (chỉ dùng cho tab ALL)
   const fetchOrders = async (page: number) => {
     try {
@@ -101,14 +101,12 @@ const OrderList = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (tab === "ALL") {
-        setPage(1); // Reset page khi đổi tab
+        setPage(0); // Reset page khi đổi tab
         fetchOrders(0);
       } else {
-        setPage(1); // Reset page khi đổi tab
+        setPage(0); // Reset page khi đổi tab
         const allFetchedOrders = await fetchAllOrders();
-        const filtered = allFetchedOrders.filter(
-          (order) => order.status === tab
-        );
+        const filtered = allFetchedOrders.filter((order) => order.status === tab);
 
         setAllOrders(filtered);
         setFilteredOrders(filtered);
@@ -131,16 +129,16 @@ const OrderList = () => {
     setTab(newValue);
   };
 
-  // Danh sách đơn hàng hiện tại
+  // Danh sách đơn hàng hiện tại 
   const currentOrders =
     tab === "ALL"
       ? filteredOrders
       : filteredOrders.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
-  // Tự động chuyển về tab ALL
-  const handleGoToAllTab = () => {
-    setTab("ALL");
-    setPage(1);
-  };
+      // Tự động chuyển về tab ALL
+      const handleGoToAllTab = () => {
+  setTab("ALL");
+  setPage(0);
+};
 
   return (
     <Paper sx={{ padding: 3, minWidth: 700, margin: "auto" }}>
@@ -154,30 +152,12 @@ const OrderList = () => {
         scrollButtons="auto"
         sx={{ marginBottom: "10px" }}
       >
-        <Tab
-          value="ALL"
-          label={t("page.profileUser.profileSection.orders.status.item1")}
-        />
-        <Tab
-          value="PENDING_CONFIRMATION"
-          label={t("page.profileUser.profileSection.orders.status.item2")}
-        />
-        <Tab
-          value="CONFIRMED"
-          label={t("page.profileUser.profileSection.orders.status.item3")}
-        />
-        <Tab
-          value="SHIPPING"
-          label={t("page.profileUser.profileSection.orders.status.item4")}
-        />
-        <Tab
-          value="DELIVERED"
-          label={t("page.profileUser.profileSection.orders.status.item5")}
-        />
-        <Tab
-          value="CANCELED"
-          label={t("page.profileUser.profileSection.orders.status.item6")}
-        />
+        <Tab value="ALL" label="Tất cả" />
+        <Tab value="PENDING_CONFIRMATION" label="Chờ xác nhận" />
+        <Tab value="CONFIRMED" label="Đã xác nhận" />
+        <Tab value="SHIPPING" label="Đang vận chuyển" />
+        <Tab value="DELIVERED" label="Đã chuyển đến" />
+        <Tab value="CANCELED" label="Đã hủy" />
       </Tabs>
 
       {/* Danh sách hóa đơn */}
@@ -201,7 +181,7 @@ const OrderList = () => {
             note={order.note}
             img={order.img}
             refreshOrders={() => fetchOrders(page)}
-            goToAllTab={handleGoToAllTab}
+             goToAllTab={handleGoToAllTab}
           />
         ))}
       </Box>

@@ -36,6 +36,7 @@ import { useState, useEffect } from "react";
 import { addUserAddress, getUserAddresses } from "~/api/user/userAddress";
 import { AddressResponseDTO } from "~/types/user";
 import { useTranslation } from "react-i18next";
+import {addUserDetails, getUserDetails} from "~/api/user/userDetails";
 const Section = styled(Box)(({ theme }) => ({
   backgroundColor: "white",
   padding: `0 ${theme.spacing(2)}`,
@@ -73,7 +74,7 @@ const SpecialRadio = styled((props) => (
   />
 ))(() => ({}));
 const userDetails = JSON.parse(localStorage.getItem("userDetails") || "{}");
-
+console.log("userDetails", userDetails);
 export function Checkout() {
   const [open, setOpen] = React.useState(false);
   const [openDiscount, setOpenDiscount] = React.useState(false);
@@ -81,6 +82,8 @@ export function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [listAddress, setListAddress] = useState<AddressResponseDTO[]>([]);
   const { t } = useTranslation();
+  const [reloadAddresses, setReloadAddresses] = useState(false);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -105,6 +108,11 @@ export function Checkout() {
   useEffect(() => {
     fetchAddresses();
   }, []);
+
+  useEffect(() => {
+  fetchAddresses();
+}, [reloadAddresses]); 
+
   // Xử lý thêm mới địa chỉ giao hàng
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData(event.currentTarget);
@@ -121,15 +129,30 @@ export function Checkout() {
     console.log("Data sắp gửi lên API:", address);
 
     addUserAddress(address)
-      .then(() => {
-        return fetchAddresses();
-      })
-      .then(() => {
-        handleClose();
-      })
-      .catch((error) => {
-        console.error("Lỗi khi thêm địa chỉ:", error);
-      });
+  .then(() => {
+    return fetchAddresses();
+  })
+  .then(() => {
+    return addUserDetails(
+      formData.get("fullName") as string,
+      formData.get("phoneNumber") as string,
+      null
+    );
+  })
+  .then(() => {
+    // Giả sử getUserDetails là Promise, bạn cần return ở đây
+    return getUserDetails();
+  })
+  .then((userDetails) => {
+    // Sau khi getUserDetails thành công, lưu vào localStorage
+    localStorage.setItem("userDetails", JSON.stringify(userDetails.result));
+    setReloadAddresses(prev => !prev);
+    handleClose();
+  })
+  .catch((error) => {
+    console.error("Lỗi khi thêm địa chỉ:", error);
+  });
+      
   };
   // Lưu id của các book được mua vào localStorage
   const selectedBooksId= selectBooks.map(
@@ -150,8 +173,8 @@ export function Checkout() {
               </Typography>
             </UnderlineBox>
             <RadioGroup  name="radio-buttons-group">
-              {listAddress.length > 0
-                ? listAddress.map((address) => (
+              {listAddress?.length > 0
+                ? listAddress?.map((address) => (
                     <Box
                       display={"flex"}
                       alignItems={"center"}
@@ -354,6 +377,7 @@ export function Checkout() {
           sx={{ position: "fixed", bottom: 0 }}
           totalPrice={totalPrice}
           paymentMethod={paymentMethod}
+          listAddress={listAddress}
         />
       </Box>
 
