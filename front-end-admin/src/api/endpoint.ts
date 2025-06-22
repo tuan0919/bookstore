@@ -1,9 +1,26 @@
 const API_ENDPOINTS = {
+  USER: {
+    LOGIN: '/api/v1/auth/login',
+    DETAILS: {
+      GET: '/api/user-details',
+    },
+    ADDRESS: {
+      ADD: '/api/user/addresses',
+      UPDATE: (userAddressId: number, makeDefault?: boolean) => {
+        let url = `/api/user/addresses/${userAddressId}`
+        if (makeDefault !== undefined) {
+          url += `?makeDefault=${makeDefault}`
+        }
+        return url
+      },
+      GET: '/api/user/addresses',
+    },
+  },
   BOOK: {
     GET_DETAILS: (id: number) => `/admin/api/book/${id}`,
     CREATE: '/api/book/upload',
     UPDATE: (id: number) => `/api/book/${id}/update`,
-    OVERVIEW: '/api/book/overview',
+    OVERVIEW: '/admin/api/book/overview',
   },
   ORDER: {
     GET_ALL_ORDER: `/admin/api/order`,

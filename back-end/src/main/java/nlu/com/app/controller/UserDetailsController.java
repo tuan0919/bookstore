@@ -30,12 +30,13 @@ public class UserDetailsController {
                 .fullname(userDetails.getFullName())
                 .dob(userDetails.getDateOfBirth())
                 .phoneNum(userDetails.getPhoneNum())
-                    .user(user)
+                .user(user)
                 .build());
 
         return AppResponse.<String>builder().result("Add success").build();
 
     }
+
     @GetMapping
     public AppResponse<UserDetailsDTO> getUserDetails() {
         User user = getUser();
@@ -47,6 +48,7 @@ public class UserDetailsController {
 
         return AppResponse.<UserDetailsDTO>builder().result(userDetailsDTO).build();
     }
+
     private User getUser() {
         String username = SecurityUtils.getCurrentUsername();
         if (username == null) {

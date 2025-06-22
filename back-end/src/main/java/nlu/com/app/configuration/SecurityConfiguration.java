@@ -45,15 +45,16 @@ public class SecurityConfiguration {
                 "/api/orders/*/status",
                 "/api/orders/*/timeline",
                 "/api/category/**",
-                "/api/review/*/overall",
-//                    admin endpoints, temporary public for easier testing
-                "/admin/api/book/*",
-                "/admin/api/order",
-                "/admin/api/order/*",
-                    "/admin/api/promotion/*",
-                    "/admin/api/chart/*"
+                "/api/review/*/overall"
             )
             .permitAll()
+            .requestMatchers(
+                    "/admin/api/book/*",
+                    "/admin/api/order",
+                    "/admin/api/order/*",
+                    "/admin/api/promotion/*",
+                    "/admin/api/chart/*")
+                .hasAuthority("ADMIN")
             .anyRequest().authenticated()
         )
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -2,8 +2,9 @@ import { HTMLAttributes, useState } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { IconBrandFacebook, IconBrandGithub } from '@tabler/icons-react'
+import { login } from '@/api/auth'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
@@ -20,27 +21,18 @@ import { PasswordInput } from '@/components/password-input'
 type UserAuthFormProps = HTMLAttributes<HTMLFormElement>
 
 const formSchema = z.object({
-  email: z
-    .string()
-    .min(1, { message: 'Please enter your email' })
-    .email({ message: 'Invalid email address' }),
-  password: z
-    .string()
-    .min(1, {
-      message: 'Please enter your password',
-    })
-    .min(7, {
-      message: 'Password must be at least 7 characters long',
-    }),
+  username: z.string().min(1, { message: 'Please enter your username' }),
+  password: z.string().min(1, {
+    message: 'Please enter your password',
+  }),
 })
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = useState(false)
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
+      username: '',
       password: '',
     },
   })
@@ -55,6 +47,19 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     }, 3000)
   }
 
+  const handleProccessLogin = async (username: string, password: string) => {
+    try {
+      const response = await login(username, password)
+
+      if (response.code === 1000) {
+        await localStorage.setItem('access_token', response.result)
+        window.location.href = '/'
+      }
+    } catch (error) {
+      console.error('Đăng nhập thất bại:', error)
+    }
+  }
+
   return (
     <Form {...form}>
       <form
@@ -64,10 +69,10 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       >
         <FormField
           control={form.control}
-          name='email'
+          name='username'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Username</FormLabel>
               <FormControl>
                 <Input placeholder='name@example.com' {...field} />
               </FormControl>
@@ -94,7 +99,16 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             </FormItem>
           )}
         />
-        <Button className='mt-2' disabled={isLoading}>
+        <Button
+          className='mt-2'
+          disabled={isLoading}
+          onClick={() =>
+            handleProccessLogin(
+              form.getValues('username'),
+              form.getValues('password')
+            )
+          }
+        >
           Login
         </Button>
 

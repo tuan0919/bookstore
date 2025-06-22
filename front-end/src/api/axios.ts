@@ -27,7 +27,7 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     // handle 401, 403, etc. globally here
-    return Promise.reject(error);
+    return window;
   }
 );
 

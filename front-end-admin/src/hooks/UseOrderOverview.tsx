@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { OrderDTO } from '@/types/order'
 import { getOrders, updateOrderStatus } from '@/api/order'
 
-export function useOrderOverview(initialPage = 0, initialSize = 5) {
+export function useOrderOverview(initialPage = 0, initialSize = 99) {
   const [orders, setOrders] = useState<OrderDTO[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
