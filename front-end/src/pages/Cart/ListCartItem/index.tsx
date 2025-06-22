@@ -13,7 +13,7 @@ interface ListCartItemProps {
 }
 
 function ListCartItem({
-  listBook ,
+  listBook =[] ,
   onToggleCheckbox,
   checkedItems,
   onToggleAll,
@@ -79,7 +79,7 @@ function ListCartItem({
         maxHeight:"calc(100vh - 200px)"
        }}
       >
-        {listBookData.length > 0 &&  listBookData.map((item) => (
+        {listBookData?.length > 0 &&  listBookData.map((item) => (
           <Box key={item.productId}>
             <CartItem
              book={item}

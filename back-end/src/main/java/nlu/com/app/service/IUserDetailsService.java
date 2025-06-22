@@ -6,9 +6,7 @@ import nlu.com.app.entity.UserDetails;
 
 public interface IUserDetailsService {
     UserDetails getUserDetailsByUserId(Long userId);
-
+    boolean updateUserDetails(UserDetails userDetails, Long userId);
+    boolean addUserDetails( UserDetails userDetails, Long userId);
     UserDetailsResponseDTO getUserDetails(Long userId);
-
-    boolean updateUserDetails(UserDetails userDetails);
-    boolean addUserDetails( UserDetails userDetails);
 }

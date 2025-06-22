@@ -44,17 +44,12 @@ public class UserAddressService implements IUserAddressService {
     Address address = addressMapper.toEntity(addressDto);
     Address savedAddress = addressRepository.save(address);
 
-    List<UserAddress> existingAddresses = userAddressRepository.findByUser(user);
-    for (UserAddress ua : existingAddresses) {
-      ua.setDefault(false);
-    }
-    userAddressRepository.saveAll(existingAddresses);
-
+    boolean hasDefault = userAddressRepository.existsByUserAndIsDefaultTrue(user);
     UserAddress ua = UserAddress.builder()
-            .user(user)
-            .address(savedAddress)
-            .isDefault(true)
-            .build();
+        .user(user)
+        .address(savedAddress)
+        .isDefault(!hasDefault)
+        .build();
 
     return userAddressMapper.toDto(userAddressRepository.save(ua));
   }

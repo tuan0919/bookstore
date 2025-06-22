@@ -1,22 +1,28 @@
 import React from "react";
 import { Typography, Box, Button, Paper } from "@mui/material";
 import { useState, useEffect } from "react";
-import {Dialog, DialogTitle, DialogContent, DialogActions, TextField} from "@mui/material";
-import {addUserAddress, getUserAddresses} from "~/api/user/userAddress";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+} from "@mui/material";
+import { addUserAddress, getUserAddresses } from "~/api/user/userAddress";
 import { AddressResponseDTO } from "~/types/user";
 export default function AddressBook() {
   const [open, setOpen] = useState(false);
   const [listAddress, setListAddress] = useState<AddressResponseDTO[]>([]);
   const userDetails = JSON.parse(localStorage.getItem("userDetails") || "{}");
   // console.log("userDetails", userDetails);
-   const fetchAddresses = async () => {
-      try {
-        const addresses = await getUserAddresses();
-        setListAddress(addresses.result);
-      } catch (error) {
-        console.error("Lỗi khi lấy danh sách địa chỉ:", error);
-      }
-    };
+  const fetchAddresses = async () => {
+    try {
+      const addresses = await getUserAddresses();
+      setListAddress(addresses.result);
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách địa chỉ:", error);
+    }
+  };
   useEffect(() => {
     fetchAddresses();
     console.log("Kích thước của listAddress:", listAddress);
@@ -28,41 +34,36 @@ export default function AddressBook() {
   const handleClose = () => {
     setOpen(false);
   };
-  
-const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const formData = new FormData(event.currentTarget);
+    const address = {
+      unitNumber: formData.get("unitNumber") as string,
+      streetNumber: formData.get("streetNumber") as string,
+      addressLine1: formData.get("addressLine1") as string,
+      addressLine2: formData.get("addressLine2") as string,
+      city: formData.get("city") as string,
+      region: formData.get("region") as string,
+      postalCode: formData.get("postalCode") as string,
+    };
 
-  const formData = new FormData(event.currentTarget);
- const address = {
-    unitNumber: formData.get("unitNumber") as string,
-    streetNumber: formData.get("streetNumber") as string,
-    addressLine1: formData.get("addressLine1") as string,
-    addressLine2: formData.get("addressLine2") as string,
-    city: formData.get("city") as string,
-    region: formData.get("region") as string,
-    postalCode: formData.get("postalCode") as string,
+    console.log("Data sắp gửi lên API:", address);
+
+    addUserAddress(address)
+      .then(() => {
+        return fetchAddresses();
+      })
+      .then(() => {
+        handleClose();
+      })
+      .catch((error) => {
+        console.error("Lỗi khi thêm địa chỉ:", error);
+      });
   };
-
-  console.log("Data sắp gửi lên API:", address);
-
-   addUserAddress(address)
-    .then(() => {
-      return fetchAddresses();
-    })
-    .then(() => {
-      handleClose(); 
-    })
-    .catch((error) => {
-      console.error("Lỗi khi thêm địa chỉ:", error);
-    });
-};
-
-
 
   return (
     <Box>
-   
-        <Dialog
+      <Dialog
         open={open}
         onClose={handleClose}
         slotProps={{
@@ -76,7 +77,10 @@ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
           },
         }}
       >
-        <DialogTitle textAlign={"center"} component={"button"} onClick={handleClickOpen}
+        <DialogTitle
+          textAlign={"center"}
+          component={"button"}
+          onClick={handleClickOpen}
         >
           Thêm mới địa chỉ giao hàng
         </DialogTitle>
@@ -100,7 +104,7 @@ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
             fullWidth
             variant="standard"
           />
-            <TextField
+          <TextField
             margin="dense"
             name="unitNumber"
             label="Số căn hộ, số phòng hoặc số tầng (nếu có)"
@@ -109,7 +113,7 @@ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
             fullWidth
             variant="standard"
           />
-            <TextField
+          <TextField
             margin="dense"
             name="streetNumber"
             label="Số đường (nếu có)"
@@ -136,7 +140,7 @@ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
             fullWidth
             variant="standard"
           />
-            <TextField
+          <TextField
             required
             margin="dense"
             name="city"
@@ -145,7 +149,7 @@ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
             fullWidth
             variant="standard"
           />
-           <TextField
+          <TextField
             required
             margin="dense"
             name="region"
@@ -179,13 +183,12 @@ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
             disableFocusRipple
             disableTouchRipple
             disableRipple
-           
           >
             Lưu địa chỉ
           </Button>
         </DialogActions>
       </Dialog>
-     
+
       <Box
         display="flex"
         justifyContent="space-between"
@@ -193,44 +196,55 @@ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         mb={2}
       >
         <Typography variant="h6">Sổ địa chỉ</Typography>
-        <Button size="small" sx={{ textTransform: "none", color: "#1976d2" }}
-        onClick={handleClickOpen} 
+        <Button
+          size="small"
+          sx={{ textTransform: "none", color: "#1976d2" }}
+          onClick={handleClickOpen}
         >
           + Thêm địa chỉ mới
         </Button>
       </Box>
-      {
-     listAddress.length > 0 ?   listAddress.map((addr, index) => (
-        <Paper key={index} sx={{ p: 2, mb: 2 }}>
-          <Box display="flex" justifyContent="space-between">
-            <Typography>
-              <strong>{userDetails.fullName}</strong> | {userDetails.phoneNum}
-            </Typography>
-            <Box>
-              <Button
-                size="small"
-                sx={{ textTransform: "none", color: "#1976d2" }}
+      {listAddress.length > 0
+        ? listAddress.map((addr, index) => (
+            <Paper key={index} sx={{ p: 2, mb: 2 }}>
+              <Box display="flex" justifyContent="space-between">
+                {userDetails?.fullName && userDetails?.phoneNum && (
+                  <Typography>
+                    <strong>{userDetails.fullName}</strong> |{" "}
+                    {userDetails.phoneNum}
+                  </Typography>
+                )}
+                <Box>
+                  <Button
+                    size="small"
+                    sx={{ textTransform: "none", color: "#1976d2" }}
+                  >
+                    Sửa
+                  </Button>
+                  {addr.default !== true && (
+                    <Button size="small" sx={{ ml: 1, color: "#999" }}>
+                      Xóa
+                    </Button>
+                  )}
+                </Box>
+              </Box>
+              <Typography variant="body2" color="text.secondary" mb={1}>
+                {addr.address.addressLine1}
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{
+                  bgcolor: "#e3f2fd",
+                  px: 0.5,
+                  py: 0.25,
+                  borderRadius: 0.5,
+                }}
               >
-                Sửa
-              </Button>
-              {addr.default !== true && (
-                <Button size="small" sx={{ ml: 1, color: "#999" }}>
-                  Xóa
-                </Button>
-              )}
-            </Box>
-          </Box>
-          <Typography variant="body2" color="text.secondary" mb={1}>
-            {addr.address.addressLine1}
-          </Typography>
-          <Typography
-            variant="caption"
-            sx={{ bgcolor: "#e3f2fd", px: 0.5, py: 0.25, borderRadius: 0.5 }}
-          >
-            {addr.default ? "Địa chỉ thanh toán mặc định" : "Địa chỉ khác"}
-          </Typography>
-        </Paper>
-      )): null}
+                {addr.default ? "Địa chỉ thanh toán mặc định" : "Địa chỉ khác"}
+              </Typography>
+            </Paper>
+          ))
+        : null}
     </Box>
   );
 }

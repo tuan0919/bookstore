@@ -36,6 +36,7 @@ import { useState, useEffect } from "react";
 import { addUserAddress, getUserAddresses } from "~/api/user/userAddress";
 import { AddressResponseDTO } from "~/types/user";
 import { useTranslation } from "react-i18next";
+import {addUserDetails, getUserDetails} from "~/api/user/userDetails";
 const Section = styled(Box)(({ theme }) => ({
   backgroundColor: "white",
   padding: `0 ${theme.spacing(2)}`,
@@ -72,7 +73,6 @@ const SpecialRadio = styled((props) => (
     {...props}
   />
 ))(() => ({}));
-const userDetails = JSON.parse(localStorage.getItem("userDetails") || "{}");
 
 export function Checkout() {
   const [open, setOpen] = React.useState(false);
@@ -81,6 +81,10 @@ export function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [listAddress, setListAddress] = useState<AddressResponseDTO[]>([]);
   const { t } = useTranslation();
+  const [userDetails, setUserDetails] = useState(() => {
+  return JSON.parse(localStorage.getItem("userDetails") || "{}");
+});
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -105,8 +109,11 @@ export function Checkout() {
   useEffect(() => {
     fetchAddresses();
   }, []);
+
+
+
   // Xử lý thêm mới địa chỉ giao hàng
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData(event.currentTarget);
     const address = {
       unitNumber: formData.get("unitNumber") as string,
@@ -117,19 +124,26 @@ export function Checkout() {
       region: formData.get("region") as string,
       postalCode: formData.get("postalCode") as string,
     };
-
+  try {
     console.log("Data sắp gửi lên API:", address);
+    await addUserAddress(address);
+    await fetchAddresses();
 
-    addUserAddress(address)
-      .then(() => {
-        return fetchAddresses();
-      })
-      .then(() => {
-        handleClose();
-      })
-      .catch((error) => {
-        console.error("Lỗi khi thêm địa chỉ:", error);
-      });
+    await addUserDetails(
+      formData.get("fullName") as string,
+      formData.get("phoneNumber") as string,
+      null
+    );
+
+    const userDetailsResponse = await getUserDetails();
+    localStorage.setItem("userDetails", JSON.stringify(userDetailsResponse.result));
+    setUserDetails(userDetailsResponse.result); // ⚡ Cập nhật lại state userDetails để re-render
+
+    handleClose();
+  } catch (error) {
+    console.error("Lỗi khi thêm địa chỉ:", error);
+  }
+      
   };
   // Lưu id của các book được mua vào localStorage
   const selectedBooksId= selectBooks.map(
@@ -150,8 +164,8 @@ export function Checkout() {
               </Typography>
             </UnderlineBox>
             <RadioGroup  name="radio-buttons-group">
-              {listAddress.length > 0
-                ? listAddress.map((address) => (
+              {listAddress?.length > 0
+                ? listAddress?.map((address) => (
                     <Box
                       display={"flex"}
                       alignItems={"center"}
@@ -354,6 +368,7 @@ export function Checkout() {
           sx={{ position: "fixed", bottom: 0 }}
           totalPrice={totalPrice}
           paymentMethod={paymentMethod}
+          listAddress={listAddress}
         />
       </Box>
 

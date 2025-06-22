@@ -25,16 +25,23 @@ public class UserDetailsController {
     @PostMapping("/add")
     public AppResponse<String> add(@RequestBody UserDetailsDTO userDetails) {
         User user = getUser();
+        try {
 
-        boolean result = userDetailsService.addUserDetails(UserDetails.builder()
-                .fullname(userDetails.getFullName())
-                .dob(userDetails.getDateOfBirth())
-                .phoneNum(userDetails.getPhoneNum())
-                .user(user)
-                .build());
 
-        return AppResponse.<String>builder().result("Add success").build();
+           boolean result = userDetailsService.addUserDetails(UserDetails.builder()
+                   .fullname(userDetails.getFullName())
+                   .dob(userDetails.getDateOfBirth())
+                   .phoneNum(userDetails.getPhoneNum())
+                   .user(user)
+                   .build(), user.getUserId());
 
+           return AppResponse.<String>builder().result("Add success").build();
+       }catch (Exception ex) {
+            ex.printStackTrace();
+           return AppResponse.<String>builder()
+                   .result("Thêm chi tiết thông tin người dùng thất bại: " + ex.getMessage())
+                   .build();
+       }
     }
 
     @GetMapping
@@ -47,6 +54,18 @@ public class UserDetailsController {
         userDetailsDTO.setPhoneNum(userDetails.getPhoneNum());
 
         return AppResponse.<UserDetailsDTO>builder().result(userDetailsDTO).build();
+    }
+
+    @PutMapping
+    public AppResponse<String> update(@RequestBody UserDetailsDTO userDetails) {
+        User user = getUser();
+        boolean result = userDetailsService.updateUserDetails(UserDetails.builder()
+                .fullname(userDetails.getFullName())
+                .dob(userDetails.getDateOfBirth())
+                .phoneNum(userDetails.getPhoneNum())
+                .user(user)
+                .build(), user.getUserId());
+        return AppResponse.<String>builder().result("Update success").build();
     }
 
     private User getUser() {
