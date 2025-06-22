@@ -18,4 +18,6 @@ public interface UserAddressRepository extends JpaRepository<UserAddress, Long> 
   boolean existsByUserAndIsDefaultTrue(User user);
 
   Optional<UserAddress> findByUserAndIsDefaultTrue(User user);
+
+  Optional<UserAddress> findByUserAndIsDefault(User user, Boolean isDefault);
 }

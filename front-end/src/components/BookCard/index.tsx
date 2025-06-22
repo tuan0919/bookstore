@@ -6,13 +6,16 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "~/providers/CartProvider";
 import CustomSnackbar from "~/components/Popup/Snackbar";
 import { useState } from "react";
+
 export interface BookCard {
   thumbnail: string;
   title: string;
   discountPrice: number;
+  discountPercentage: number;
   originallPrice: number;
   bookId: number;
 }
+
 export function BookCard({ card }: { card?: BookCard }) {
   const navigate = useNavigate();
   const { increaseItem } = useCart();
@@ -22,6 +25,7 @@ export function BookCard({ card }: { card?: BookCard }) {
     severity: "success",
     duration: 800,
   });
+
   return (
     <Box
       sx={{
@@ -91,6 +95,27 @@ export function BookCard({ card }: { card?: BookCard }) {
             zIndex: 1,
           }}
         />
+
+        {/* Label giảm giá */}
+        {card?.discountPercentage && card.discountPercentage > 0 && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: 8,
+              left: 8,
+              backgroundColor: red[600],
+              color: "#fff",
+              padding: "2px 6px",
+              borderRadius: 1,
+              fontSize: 12,
+              fontWeight: "bold",
+              zIndex: 3,
+              userSelect: "none",
+            }}
+          >
+            {`-${card.discountPercentage}%`}
+          </Box>
+        )}
 
         <Tooltip title="Thêm vào giỏ">
           <IconButton

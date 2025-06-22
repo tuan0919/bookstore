@@ -95,6 +95,7 @@ export default function BookList() {
           <BookCard
             key={book.bookId}
             card={{
+              discountPercentage: book.discountPercentage,
               thumbnail: book.imageUrl,
               title: book.title,
               discountPrice: book.discountedPrice,

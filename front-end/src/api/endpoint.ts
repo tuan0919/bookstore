@@ -12,6 +12,9 @@ const API_ENDPOINTS = {
     CHAIN_FOR_BOOK: `/api/category/chain`,
     CATEGORY: "api/book",
   },
+  PROMOTION: {
+    GET_ACTIVE: "/api/promotion/active",
+  },
   REVIEW: {
     GET_BOOK_REVIEWS: (bookId: number) => `/api/book/${bookId}/reviews`,
     CREATE_REVIEW_FOR_BOOK: `/api/review/create`,

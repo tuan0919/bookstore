@@ -14,6 +14,8 @@ import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { Details } from './components/customer-details'
+import { CustomerOverview } from './components/customer-overview'
 import { CustomersOrdersTable } from './components/customers-orders-data-datable'
 import { PurchaseSummary } from './components/purchase-summary'
 import { SaleChart } from './components/sale-chart'
@@ -35,64 +37,8 @@ export default function CustomerDetails() {
           <div className='grid grid-cols-3 items-start gap-8'>
             {/* Column 1 */}
             <div className='grid gap-6'>
-              <Card className='h-fit overflow-hidden p-0'>
-                <div className='relative mb-10 h-[3rem] w-full overflow-visible bg-gray-900'>
-                  <div className='bg absolute -bottom-12 left-5 h-20 w-20 overflow-hidden rounded-full border-4 border-white'>
-                    <img
-                      src='https://techzaa.in/larkon/admin/assets/images/users/avatar-2.jpg'
-                      alt=''
-                    />
-                  </div>
-                </div>
-                <div className='grid gap-1 ps-2'>
-                  <div className='mb-2 font-medium'>Nguyễn Quốc Anh Tuấn</div>
-                  <div className='font-manrope text-sm text-orange-400'>
-                    <a href='#'>@nqta0919.dev</a>
-                  </div>
-                  <div className='flex gap-1'>
-                    <span className='text-sm font-medium'>Email:</span>
-                    <span className='text-sm font-light'>
-                      nqat0919@gmail.com
-                    </span>
-                  </div>
-                  <div className='flex gap-1'>
-                    <span className='text-sm font-medium'>Số điện thoại:</span>
-                    <span className='text-sm font-light'>
-                      (+84) 0936 565 5257
-                    </span>
-                  </div>
-                </div>
-                <Separator />
-                <div className='ps-2 pb-2'>
-                  <Button>Gửi tin nhắn</Button>
-                </div>
-              </Card>
-              <Card className='px-6 py-4'>
-                <div className='flex justify-between'>
-                  <div className='font-medium'>Chi tiết khách hàng</div>
-                  <Badge>Đã xác thực</Badge>
-                </div>
-                <div className='grid grid-cols-2 gap-2'>
-                  <span className='text-sm font-medium'>Mã khách hàng:</span>
-                  <span className='font-manrope text-sm font-light'>
-                    #AC-278699
-                  </span>
-                  <span className='text-sm font-medium'>Địa chỉ email:</span>
-                  <span className='font-manrope text-sm font-light'>
-                    nqat0919@gmail.com
-                  </span>
-                  <span className='text-sm font-medium'>Địa chỉ cá nhân:</span>
-                  <span className='font-manrope text-sm font-light'>
-                    31/8B Khu phố 4 thị trấn Hòa Thành Tây Ninh
-                  </span>
-                  <span className='text-sm font-medium'>
-                    Mã đơn hàng gần nhất:
-                  </span>
-                  <span className='font-manrope text-sm font-light'>
-                    #INV2540
-                  </span>
-                </div>
-              </Card>
+              <CustomerOverview />
+              <Details />
               <Card className='py-3'>
                 <div className='flex items-center justify-between px-6'>
                   <div className='font-medium'>Bộ truyện đã tạo</div>

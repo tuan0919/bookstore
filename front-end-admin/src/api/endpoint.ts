@@ -1,20 +1,7 @@
 const API_ENDPOINTS = {
   USER: {
     LOGIN: '/api/v1/auth/login',
-    DETAILS: {
-      GET: '/api/user-details',
-    },
-    ADDRESS: {
-      ADD: '/api/user/addresses',
-      UPDATE: (userAddressId: number, makeDefault?: boolean) => {
-        let url = `/api/user/addresses/${userAddressId}`
-        if (makeDefault !== undefined) {
-          url += `?makeDefault=${makeDefault}`
-        }
-        return url
-      },
-      GET: '/api/user/addresses',
-    },
+    DETAILS: (userId: number) => `/admin/api/user/${userId}/details`,
   },
   BOOK: {
     GET_DETAILS: (id: number) => `/admin/api/book/${id}`,
