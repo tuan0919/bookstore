@@ -2,15 +2,15 @@
 
 const API_ENDPOINTS = {
   BOOK: {
-    SUMMARY_ABOUT_BOOK: "/api/book",
+    SUMMARY_ABOUT_BOOK: "/api/shop",
     SEARCH: "/api/book/category",
-    TOP_WEEKLY: "/api/book/top-weekly",
-    DETAILS: (bookId: number) => `/api/book/${bookId}`,
-    SEARCH_V2: "/api/book/search",
+    TOP_WEEKLY: "/api/books/top_weekly",
+    DETAILS: (bookId: number) => `/api/books/${bookId}`,
+    SEARCH_V2: "/api/books/search",
   },
   CATEGORY: {
     CHAIN_FOR_BOOK: `/api/category/chain`,
-    CATEGORY: "api/book",
+    CATEGORY: "api/shop",
   },
   PROMOTION: {
     GET_ACTIVE: "/api/promotion/active",
@@ -42,7 +42,7 @@ const API_ENDPOINTS = {
   CART: {
     ADD: "/api/cart/add",
     REMOVE: "/api/cart/delete",
-    GET: "/api/cart",
+    GET: "/api/carts",
   },
   PAYPAL: {
     CREATE_ORDER: "/paypal/api/orders",

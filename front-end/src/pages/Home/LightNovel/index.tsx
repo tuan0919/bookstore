@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 export function LightNovel() {
   const { lnBooks, isLoading, error } = useHomeContext();
   const navigate = useNavigate();
-  const bookCards = lnBooks.map((book, index) => (
+  const bookCards = (lnBooks || []).map((book, index) => (
     <SwiperSlide key={index}>
       <BookCard
         card={{

@@ -52,14 +52,16 @@ export const HomeProvider = ({ children }: HomeProviderProps) => {
           ApiResponse<PageBookResponse>,
           ApiResponse<ListBookDetailsDTO>
         ] = await Promise.all([
-          searchBooks({ categoryId: 6, context: " " }), // LN
+          searchBooks({ categoryId: 4, context: " " }), // LN
           searchBooks({ categoryId: 5, context: " " }), // Manga
           getTopWeeklyBooks(),
         ]);
-
-        setLnBooks(lnRes.result.content);
-        setMangaBooks(mangaRes.result.content);
-        setTopWeekly(topWeeklyBooksRes.result.books);
+        console.log("lnRes", lnRes);
+        console.log("mangaRes", mangaRes);
+        console.log("topWeeklyBooksRes", topWeeklyBooksRes);
+        setLnBooks(() => lnRes.result.content);
+        setMangaBooks(() => mangaRes.result.content);
+        setTopWeekly(() => topWeeklyBooksRes.result.content);
       } catch (err) {
         console.error(err);
         setError("Failed to load books");

@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 export function Manga() {
   const { mangaBooks, isLoading, error } = useHomeContext();
   const navigate = useNavigate();
-  const bookCards = mangaBooks.map((book, index) => (
+  const bookCards = (mangaBooks || []).map((book, index) => (
     <SwiperSlide key={index}>
       <BookCard
         card={{

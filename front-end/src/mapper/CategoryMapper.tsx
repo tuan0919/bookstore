@@ -119,6 +119,7 @@ export function mapCategories(categories: CategoryItem[]): Category[] {
   });
 }
 const categories = await getCategoriesFromApi();
+console.log("categories", categories);
 const genres = await getGenre();
 export function getCategories() {
   const mappedCategories = mapCategories(categories);

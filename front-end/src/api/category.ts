@@ -16,7 +16,7 @@ export async function getCategories() {
   if (response.status !== 200) {
     throw new Error("Failed to fetch categories");
   }
-  return response.data.result.categoryResponseDTOs.children;
+  return response.data.result.categoryResponseDTOs;
 }
 export async function getGenre() {
   const response = await axiosInstance.get(API_ENDPOINTS.CATEGORY.CATEGORY);
